@@ -23,6 +23,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import springfox.documentation.annotations.ApiIgnore;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
@@ -30,6 +32,7 @@ import java.util.Map;
  * @since 1.0.RC5
  */
 @Controller
+@ApiIgnore
 public class RestrictedErrorController implements ErrorController {
     private static final String ERROR_PATH = "/error";
 

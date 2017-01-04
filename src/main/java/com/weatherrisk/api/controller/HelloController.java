@@ -28,10 +28,13 @@ import com.stormpath.sdk.servlet.account.AccountResolver;
 import com.weatherrisk.api.cnst.StormPathCnst;
 import com.weatherrisk.api.service.HelloService;
 
+import springfox.documentation.annotations.ApiIgnore;
+
 /**
  * @since 1.0.RC4.4
  */
 @Controller
+@ApiIgnore
 public class HelloController {
 
     @Autowired
