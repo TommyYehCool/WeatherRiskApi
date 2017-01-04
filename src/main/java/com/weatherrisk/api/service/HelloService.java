@@ -16,6 +16,8 @@
 package com.weatherrisk.api.service;
 
 import com.stormpath.sdk.account.Account;
+import com.weatherrisk.api.cnst.StormPathCnst;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +27,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class HelloService {
 
-    //Let's just specify some role here so we can grant it access to restricted resources
-    public static final String MY_GROUP = "https://api.stormpath.com/v1/groups/tolIaK9mnNs71KLww1ild";
-
     /**
      * Only users who have a Custom Data entry in their Stormpath Account or Group containing something like
      * <code>"springSecurityPermissions":["say:*"]</code> or <code>"springSecurityPermissions":["say:hello"]</code>
      * will be allowed to execute this method.
      */
-    @PreAuthorize("hasAuthority('" + MY_GROUP + "') and hasPermission('say', 'hello')")
+    @PreAuthorize("hasAuthority('" + StormPathCnst.GROUP_ADMIN_URL + "') and hasPermission('say', 'hello')")
     public String sayHello(Account account) {
         return "Hello " + account.getGivenName() + "! You have the required permissions to access this restricted resource.";
     }
