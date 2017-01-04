@@ -1,0 +1,86 @@
+version = '1.0'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+// Version settings
+ext {
+	jbcryptVersion = '0.3m'
+	lombokVersion = '1.16.10'
+	
+	swaggerVersion = '2.2.2'
+	
+	apacheCommonsIoVersion = '2.5'
+	
+	junitVersion = '4.+'
+}
+
+buildscript {
+	ext {
+		springBootVersion = '1.4.1.RELEASE'
+	}
+
+    repositories {
+    	jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "io.spring.gradle:dependency-management-plugin:0.5.4.RELEASE"
+    }
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven { 
+    	url "https://jitpack.io" 
+    }
+}
+
+javadoc {
+    options {
+        failOnError = false
+        encoding = "UTF-8"    
+        docEncoding = "UTF-8" 
+        charSet = "UTF-8" 
+        linkSource = true
+    }
+}
+
+springBoot {
+    mainClass = "com.weatherrisk.api.Application"
+}
+
+dependencies {
+	// --------- Spring Boot ---------
+    compile "org.springframework.boot:spring-boot-starter-web"
+	compile "org.springframework.boot:spring-boot-starter-security"
+	compile "org.springframework.boot:spring-boot-starter-mail"
+
+    // --------- Use to encrypt/decrypt ---------
+	compile "org.mindrot:jbcrypt:${jbcryptVersion}"
+
+	// --------- https://projectlombok.org/ --------- 
+	compile "org.projectlombok:lombok:${lombokVersion}"
+	
+	// --------- 自動產生 RESTapi 文件 ---------
+	compile "io.springfox:springfox-swagger-ui:${swaggerVersion}"
+	compile "io.springfox:springfox-swagger2:${swaggerVersion}"
+	
+	// --------- Apache commons-io ----------
+	compile "commons-io:commons-io:${apacheCommonsIoVersion}"
+	
+	// --------- JUnit --------- 
+    testCompile "junit:junit:${junitVersion}"
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.14.1'
+}
