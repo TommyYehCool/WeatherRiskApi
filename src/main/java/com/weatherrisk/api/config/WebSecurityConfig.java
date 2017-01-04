@@ -14,6 +14,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
     protected void configure(HttpSecurity http) throws Exception {
         http.apply(stormpath());
+        System.out.println(">>>>> In WebSecurityConfig configure");
     }
 	
 }
