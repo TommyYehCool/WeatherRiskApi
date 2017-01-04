@@ -52,7 +52,7 @@ public class HelloController {
     }
 
     @RequestMapping("/restricted")
-    String restricted(HttpServletRequest request, Model model) {
+    public String restricted(HttpServletRequest request, Model model) {
         Account account = AccountResolver.INSTANCE.getAccount(request);
         String msg = helloService.sayHello(account);
         model.addAttribute("msg", msg);
@@ -60,4 +60,8 @@ public class HelloController {
         return "restricted";
     }
 
+    @RequestMapping("/apis")
+    public String apis(HttpServletRequest request, Model model) {
+    	return "swagger-ui.html";
+    }
 }

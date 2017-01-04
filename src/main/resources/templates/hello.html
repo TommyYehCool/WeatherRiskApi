@@ -37,6 +37,7 @@
                         <h4 th:text="'Provider: ' + ${account.ProviderData.ProviderId}"></h4>
                         <form id="logoutForm" th:action="@{/logout}" method="post">
                             <a th:href="@{/restricted}" class="btn btn-warning">Restricted</a>
+                            <a th:href="@{/apis}" class="btn btn-success">Apis</a>
                             <input type="submit" class="btn btn-danger" value="Logout"/>
                         </form>
                     </div>
