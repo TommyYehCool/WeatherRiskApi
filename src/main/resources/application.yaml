@@ -1,0 +1,3 @@
+stormpath.application.href: ${STORMPATH_APP_HREF}
+stormpath.client.apiKey.id: ${STORMPATH_APIKEY_ID}
+stormpath.client.apiKey.secret: ${STORMPATH_APIKEY_SECRET}

@@ -67,8 +67,9 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter-mail"
 	compile "org.springframework.boot:spring-boot-starter-data-mongodb"
 	
-	// --------- https://api.stormpath.com/ui2/index.html#/quickstart/java/none/frontend/project-type/existing ------
-	compile "com.stormpath.spring:stormpath-default-spring-boot-starter:1.2.3"
+	compile "com.stormpath.spring:stormpath-spring-security-webmvc-spring-boot-starter:${stormpathVersion}"
+	compile "com.stormpath.sdk:stormpath-sdk-httpclient:${stormpathVersion}"
+	compile "com.stormpath.spring:stormpath-thymeleaf-spring-boot-starter:${stormpathVersion}"
 
     // --------- Use to encrypt/decrypt ---------
 	compile "org.mindrot:jbcrypt:${jbcryptVersion}"
