@@ -63,6 +63,7 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-web"
 	compile "org.springframework.boot:spring-boot-starter-security"
 	compile "org.springframework.boot:spring-boot-starter-mail"
+	compile "org.springframework.boot:spring-boot-starter-data-mongodb"
 
     // --------- Use to encrypt/decrypt ---------
 	compile "org.mindrot:jbcrypt:${jbcryptVersion}"
