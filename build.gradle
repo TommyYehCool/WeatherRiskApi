@@ -64,9 +64,11 @@ dependencies {
 	// --------- Spring Boot ---------
     compile "org.springframework.boot:spring-boot-starter-web"
 	compile "org.springframework.boot:spring-boot-starter-security"
+	compile "org.springframework.boot:spring-boot-starter-test"
 	compile "org.springframework.boot:spring-boot-starter-mail"
 	compile "org.springframework.boot:spring-boot-starter-data-mongodb"
 	
+	// --------- Stormpath ---------
 	compile "com.stormpath.spring:stormpath-spring-security-webmvc-spring-boot-starter:${stormpathVersion}"
 	compile "com.stormpath.sdk:stormpath-sdk-httpclient:${stormpathVersion}"
 	compile "com.stormpath.spring:stormpath-thymeleaf-spring-boot-starter:${stormpathVersion}"
