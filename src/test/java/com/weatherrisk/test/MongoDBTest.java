@@ -25,7 +25,9 @@ public class MongoDBTest {
 	
 	@Test
 	public void test() throws Exception {
-		City city = cityRepository.findByCity("NEW YORK");
-		assertThat(city.getCity()).isEqualTo("NEW YORK");
+		City city = cityRepository.findByState("NY");
+		System.out.println("City: " + city);
+		assertThat(city).isNotNull();
+		assertThat(city.getState()).isEqualTo("NY");
 	}
 }
