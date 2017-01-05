@@ -25,7 +25,7 @@ public class MainController {
     @RequestMapping("/")
     public String home(HttpServletRequest request, Model model) {
 
-        String name = "the co-worker of WeatherRisk";
+        String name = "the member of WeatherRisk";
 
         Account account = AccountResolver.INSTANCE.getAccount(request);
         if (account != null) {
