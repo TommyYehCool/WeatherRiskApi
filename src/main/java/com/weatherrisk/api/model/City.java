@@ -1,5 +1,7 @@
 package com.weatherrisk.api.model;
 
+import java.util.Arrays;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,7 +24,17 @@ public class City {
 	private String state;
 	private Integer pop;
 	private Float[] loc;
-
+	
+	public City() {
+	}
+	
+	public City(String city, String state, Integer pop, Float[] loc) {
+		this.city = city;
+		this.state = state;
+		this.pop = pop;
+		this.loc = loc;
+	}
+	
 	public City(Long id, String city, String state, Integer pop, Float[] loc) {
 		this.id = id;
 		this.city = city;
@@ -69,6 +81,14 @@ public class City {
 
 	public void setLoc(Float[] loc) {
 		this.loc = loc;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("City [id=").append(id).append(", city=").append(city).append(", state=").append(state)
+				.append(", pop=").append(pop).append(", loc=").append(Arrays.toString(loc)).append("]");
+		return builder.toString();
 	}
 
 }

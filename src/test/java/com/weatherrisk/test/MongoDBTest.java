@@ -24,7 +24,12 @@ public class MongoDBTest {
 	private CityRepository cityRepository;
 	
 	@Test
-	public void test() throws Exception {
+	public void testAddCity() throws Exception {
+		cityRepository.save(new City(3L, "Taipei", "Taipei", 123, new Float[] {123F, 456F}));
+	}
+	
+	@Test
+	public void testFindCityByState() throws Exception {
 		City city = cityRepository.findByState("NY");
 		System.out.println("City: " + city);
 		assertThat(city).isNotNull();
