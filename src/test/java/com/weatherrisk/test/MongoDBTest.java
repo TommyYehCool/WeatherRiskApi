@@ -25,7 +25,7 @@ public class MongoDBTest {
 	
 	@Test
 	public void testAddCity() throws Exception {
-		cityRepository.save(new City(3L, "Taipei", "Taipei", 123, new Float[] {123F, 456F}));
+		cityRepository.save(new City(4L, "New Taipei City", "New Taipei City", 123, new Float[] {123F, 456F}));
 	}
 	
 	@Test
