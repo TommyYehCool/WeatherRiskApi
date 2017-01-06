@@ -30,7 +30,7 @@ public class MongoDB_Activity_Test {
 	private ActivityRepository activityRepository;
 	
 	@Test
-	public void test_1_addActivity() {
+	public void test_1_AddActivity() {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 1);
 		System.out.println(cal.getTime());
