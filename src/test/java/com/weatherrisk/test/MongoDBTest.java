@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.weatherrisk.api.Application;
+import com.weatherrisk.api.model.Activity;
+import com.weatherrisk.api.model.ActivityRepository;
 import com.weatherrisk.api.model.City;
 import com.weatherrisk.api.model.CityRepository;
 
@@ -21,7 +23,28 @@ import com.weatherrisk.api.model.CityRepository;
 public class MongoDBTest {
 	
 	@Autowired
+	private ActivityRepository activityRepository;
+	
+	@Autowired
 	private CityRepository cityRepository;
+	
+	@Test
+	public void testFindActivityById() {
+		long id = 1L;
+		Activity activity = activityRepository.findById(id);
+		System.out.println(activity);
+		assertThat(activity).isNotNull();
+		assertThat(activity.getId()).isEqualTo(id);
+	}
+	
+	@Test
+	public void testFindActivityByCreateUser() {
+		String createUser = "Tommy";
+		Activity activity = activityRepository.findByCreateUser(createUser);
+		System.out.println(activity);
+		assertThat(activity).isNotNull();
+		assertThat(activity.getCreateUser()).isEqualTo(createUser);
+	}
 	
 	@Test
 	public void testAddCity() throws Exception {
@@ -30,9 +53,10 @@ public class MongoDBTest {
 	
 	@Test
 	public void testFindCityByState() throws Exception {
-		City city = cityRepository.findByState("NY");
-		System.out.println("City: " + city);
+		String state = "NY";
+		City city = cityRepository.findByState(state);
+		System.out.println(city);
 		assertThat(city).isNotNull();
-		assertThat(city.getState()).isEqualTo("NY");
+		assertThat(city.getState()).isEqualTo(state);
 	}
 }
