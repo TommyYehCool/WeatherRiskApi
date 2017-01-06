@@ -21,7 +21,7 @@ import com.weatherrisk.api.model.CityRepository;
 	webEnvironment = WebEnvironment.RANDOM_PORT
 )
 @FixMethodOrder(MethodSorters.DEFAULT)
-public class MongoDB_City_Test {
+public class Test_MongoDB_City {
 
 	@Autowired
 	private CityRepository cityRepository;

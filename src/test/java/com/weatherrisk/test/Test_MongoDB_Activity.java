@@ -24,7 +24,7 @@ import com.weatherrisk.api.model.ActivityRepository;
 	webEnvironment = WebEnvironment.RANDOM_PORT
 )
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class MongoDB_Activity_Test {
+public class Test_MongoDB_Activity {
 	
 	@Autowired
 	private ActivityRepository activityRepository;
