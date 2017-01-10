@@ -49,6 +49,7 @@ public class Test_MongoDB_Consume {
 		consumeRepository.save(new Consume(lotteryNo, user, consumeDate, type, prodName, amount, prize, got, alreadySent));
 		
 		lotteryNo = "87654321";
+		prodName = "Lucky Strike";
 		consumeRepository.save(new Consume(lotteryNo, user, consumeDate, type, prodName, amount, prize, got, alreadySent));
 	}
 	
@@ -56,7 +57,6 @@ public class Test_MongoDB_Consume {
 	public void test_2_findConsumeByLotteyNo() throws Exception {
 		String lotteryNo = "12345678";
 		Consume consume = consumeRepository.findByLotteryNo(lotteryNo);
-		System.out.println(consume);
 		assertThat(consume).isNotNull();
 		assertThat(consume.getLotteryNo()).isEqualTo(lotteryNo);
 	}
@@ -69,6 +69,7 @@ public class Test_MongoDB_Consume {
 	@Test
 	public void test_3_findConsumeByExample() throws Exception {
 		String lotteryNo = "12345678";
+		String prodName = "御茶園";
 
 		List<Consume> consumes 
 			= mongoTemplate.find(
@@ -79,5 +80,28 @@ public class Test_MongoDB_Consume {
 
 		assertThat(consumes.size()).isEqualTo(1);
 		assertThat(consumes.get(0).getLotteryNo()).isEqualTo(lotteryNo);
+		assertThat(consumes.get(0).getProdName()).isEqualTo(prodName);
+		
+		System.out.println(">>>>> " + consumes.get(0));
+	}
+
+	/**
+	 * 參考: <a href="http://www.baeldung.com/queries-in-spring-data-mongodb">queries-in-spring-data-mongodb</a>
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void test_4_findConsumeByExample() throws Exception {
+		String prodName = "Lucky Strike";
+		
+		Query query = new Query();
+		query.addCriteria(Criteria.where("prodName").is(prodName));
+
+		List<Consume> consumes = mongoTemplate.find(query, Consume.class);
+
+		assertThat(consumes.size()).isEqualTo(1);
+		assertThat(consumes.get(0).getProdName()).isEqualTo(prodName);
+		
+		System.out.println(">>>>> " + consumes.get(0));
 	}
 }
