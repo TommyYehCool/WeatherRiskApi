@@ -56,9 +56,13 @@ public class Test_MongoDB_Consume {
 	@Test
 	public void test_2_findConsumeByLotteyNo() throws Exception {
 		String lotteryNo = "12345678";
+
 		Consume consume = consumeRepository.findByLotteryNo(lotteryNo);
+
 		assertThat(consume).isNotNull();
 		assertThat(consume.getLotteryNo()).isEqualTo(lotteryNo);
+		
+		System.out.println(">>>>> Test 2 -> " + consume);
 	}
 	
 	/**
@@ -105,11 +109,20 @@ public class Test_MongoDB_Consume {
 		System.out.println(">>>>> Test 4 -> " + consumes.get(0));
 	}
 	
+	/**
+	 * 參考: <a href="http://www.baeldung.com/queries-in-spring-data-mongodb">queries-in-spring-data-mongodb</a>
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void test_5_findConsumeByProdNameStartingWith() throws Exception {
+		String prodName = "Lucky Strike";
 		String prodNameStartingWith = "Lucky";
 		
 		List<Consume> consumes = consumeRepository.findByProdNameStartingWith(prodNameStartingWith);
+		
+		assertThat(consumes.size()).isEqualTo(1);
+		assertThat(consumes.get(0).getProdName()).isEqualTo(prodName);
 		
 		System.out.println(">>>>> Test 5 -> " + consumes.get(0));
 	}
