@@ -46,7 +46,7 @@ public class TestContoller {
 	}
 	
 	@RequestMapping(value = "/testQueryConsume", method = RequestMethod.GET)
-	@ApiOperation(value = "測試查詢消費資料", response = Consume.class)
+	@ApiOperation(value = "測試查詢消費資料", responseContainer = "List", response = Consume.class)
 	public @ResponseBody List<Consume> testQuesyConsumes(@RequestParam(value = "prodName", required = true) String prodName) {
 		return consumeService.queryConsumeByProdName(prodName);
 	}
