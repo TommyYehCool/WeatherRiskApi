@@ -82,7 +82,7 @@ public class Test_MongoDB_Consume {
 		assertThat(consumes.get(0).getLotteryNo()).isEqualTo(lotteryNo);
 		assertThat(consumes.get(0).getProdName()).isEqualTo(prodName);
 		
-		System.out.println(">>>>> " + consumes.get(0));
+		System.out.println(">>>>> Test 3 -> " + consumes.get(0));
 	}
 
 	/**
@@ -102,6 +102,15 @@ public class Test_MongoDB_Consume {
 		assertThat(consumes.size()).isEqualTo(1);
 		assertThat(consumes.get(0).getProdName()).isEqualTo(prodName);
 		
-		System.out.println(">>>>> " + consumes.get(0));
+		System.out.println(">>>>> Test 4 -> " + consumes.get(0));
+	}
+	
+	@Test
+	public void test_5_findConsumeByProdNameStartingWith() throws Exception {
+		String prodNameStartingWith = "Lucky";
+		
+		List<Consume> consumes = consumeRepository.findByProdNameStartingWith(prodNameStartingWith);
+		
+		System.out.println(">>>>> Test 5 -> " + consumes.get(0));
 	}
 }
