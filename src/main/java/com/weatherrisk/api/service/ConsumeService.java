@@ -9,9 +9,13 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.weatherrisk.api.model.Consume;
+import com.weatherrisk.api.model.ConsumeRepository;
 
 @Service
 public class ConsumeService {
+	
+	@Autowired
+	private ConsumeRepository consumeRepo;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -24,5 +28,9 @@ public class ConsumeService {
 		List<Consume> consumes = mongoTemplate.find(query, Consume.class);
 
 		return consumes;
+	}
+	
+	public List<Consume> queryConsumesByAmountBetween(Long amountGT, Long amountLT) {
+		return consumeRepo.findByAmountBetween(amountGT, amountLT);
 	}
 }

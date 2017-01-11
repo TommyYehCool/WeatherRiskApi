@@ -46,8 +46,16 @@ public class TestContoller {
 	}
 	
 	@RequestMapping(value = "/testQueryConsumesByProdName", method = RequestMethod.GET)
-	@ApiOperation(value = "測試查詢消費資料", responseContainer = "List", response = Consume.class)
+	@ApiOperation(value = "測試根據商品名稱, 查詢消費資料", responseContainer = "List", response = Consume.class)
 	public @ResponseBody List<Consume> testQueryConsumesByProdName(@RequestParam(value = "prodName", required = true) String prodName) {
 		return consumeService.queryConsumesByProdName(prodName);
+	}
+	
+	@RequestMapping(value = "/testQueryConsumesByAmountBetween", method = RequestMethod.GET)
+	@ApiOperation(value = "測試根據消費金額區間, 查詢消費資料", responseContainer = "List", response = Consume.class)
+	public @ResponseBody List<Consume> testQueryConsumesByAmountBetween(
+		@RequestParam(value = "amountGT", required = true) Long amountGT, 
+		@RequestParam(value = "amountLT", required = true) Long amountLT) {
+		return consumeService.queryConsumesByAmountBetween(amountGT, amountLT);
 	}
 }
