@@ -20,28 +20,35 @@ import com.weatherrisk.api.model.CityRepository;
 	classes = Application.class,
 	webEnvironment = WebEnvironment.RANDOM_PORT
 )
-@FixMethodOrder(MethodSorters.DEFAULT)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Test_MongoDB_City {
 
 	@Autowired
 	private CityRepository cityRepository;
 	
 	@Test
-	public void test_1_AddCity() throws Exception {
-		cityRepository.save(new City(4L, "New Taipei City", "New Taipei City", 123, new Float[] {123F, 456F}));
+	public void test_1_deleteAllCities() {
+		cityRepository.deleteAll();
+		
+		System.out.println(">>>>> Test 1: deleteAllCities -> Delete all testing datas done");
 	}
 	
 	@Test
-	public void test_2_FindCityByState() throws Exception {
+	public void test_2_addCity() throws Exception {
+		cityRepository.save(new City(4L, "New Taipei City", "New Taipei City", 123, new Float[] {123F, 456F}));
+		
+		System.out.println(">>>>> Test 2: addCity -> Add testing datas done");
+	}
+	
+	@Test
+	public void test_3_findCityByState() throws Exception {
 		String state = "New Taipei City";
+
 		City city = cityRepository.findByState(state);
-		System.out.println(city);
+
 		assertThat(city).isNotNull();
 		assertThat(city.getState()).isEqualTo(state);
-	}
-	
-	@Test
-	public void test_3_DeleteAllCities() {
-		cityRepository.deleteAll();
+		
+		System.out.println("Test 3: findCityByState -> " + city);
 	}
 }
