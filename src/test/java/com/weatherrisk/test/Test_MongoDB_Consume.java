@@ -77,7 +77,7 @@ public class Test_MongoDB_Consume {
 		assertThat(consume).isNotNull();
 		assertThat(consume.getLotteryNo()).isEqualTo(lotteryNo);
 		
-		System.out.println(">>>>> Test 3: findConsumeByLotteyNo -> " + consume);
+		System.out.println(">>>>> Test 3: findConsumeByLotteyNo(" + lotteryNo + ") -> " + consume);
 	}
 	
 	/**

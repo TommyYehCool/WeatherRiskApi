@@ -80,7 +80,7 @@ public class Test_MongoDB_Activity {
 		assertThat(activity).isNotNull();
 		assertThat(activity.getId()).isEqualTo(id);
 		
-		System.out.println(">>>>> Test 3: findActivityById -> " + activity);
+		System.out.println(">>>>> Test 3: findActivityById(" + id + ") -> " + activity);
 	}
 	
 	@Test
@@ -95,6 +95,6 @@ public class Test_MongoDB_Activity {
 			assertThat(activity.getCreateUser()).isEqualTo(createUser);
 		}
 		
-		System.out.println(">>>>> Test 4: findActivityByCreateUser -> " + activities);
+		System.out.println(">>>>> Test 4: findActivityByCreateUser(" + createUser + ") -> " + activities);
 	}
 }
