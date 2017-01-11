@@ -16,8 +16,9 @@ public class ConsumeService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	
-	public List<Consume> queryConsumeByProdName(String prodName) {
+	public List<Consume> queryConsumesByProdName(String prodName) {
 		Query query = new Query();
+		
 		query.addCriteria(Criteria.where("prodName").is(prodName));
 
 		List<Consume> consumes = mongoTemplate.find(query, Consume.class);
