@@ -39,7 +39,7 @@ public class Test_MongoDB_Activity {
 	}
 	
 	@Test
-	public void test_2_addActivity() throws Exception {
+	public void test_2_addActivities() throws Exception {
 		// ----- Add 第一筆 -----
 		Long id = 1L;
 		String createUser = "Tommy";
@@ -84,7 +84,7 @@ public class Test_MongoDB_Activity {
 	}
 	
 	@Test
-	public void test_4_findActivityByCreateUser() {
+	public void test_4_findActivitiesByCreateUser() {
 		String createUser = "Tommy";
 		
 		List<Activity> activities = activityRepository.findByCreateUser(createUser);
