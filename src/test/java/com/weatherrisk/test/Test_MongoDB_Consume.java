@@ -50,6 +50,12 @@ public class Test_MongoDB_Consume {
 		
 		lotteryNo = "87654321";
 		prodName = "Lucky Strike";
+		amount = 85L;
+		consumeRepository.save(new Consume(lotteryNo, user, consumeDate, type, prodName, amount, prize, got, alreadySent));
+		
+		lotteryNo = "11223344";
+		prodName = "御茶園檸檬紅茶";
+		amount = 25L;
 		consumeRepository.save(new Consume(lotteryNo, user, consumeDate, type, prodName, amount, prize, got, alreadySent));
 	}
 	
@@ -71,7 +77,7 @@ public class Test_MongoDB_Consume {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_3_findConsumeByExample() throws Exception {
+	public void test_3_findConsumesByExample() throws Exception {
 		String lotteryNo = "12345678";
 		String prodName = "御茶園";
 
@@ -95,7 +101,7 @@ public class Test_MongoDB_Consume {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_4_findConsumeByExample() throws Exception {
+	public void test_4_findConsumesByExample() throws Exception {
 		String prodName = "Lucky Strike";
 		
 		Query query = new Query();
@@ -115,7 +121,7 @@ public class Test_MongoDB_Consume {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_5_findConsumeByProdNameStartingWith() throws Exception {
+	public void test_5_findConsumesByProdNameStartingWith() throws Exception {
 		String prodName = "Lucky Strike";
 		String prodNameStartingWith = "Lucky";
 		
@@ -125,5 +131,33 @@ public class Test_MongoDB_Consume {
 		assertThat(consumes.get(0).getProdName()).isEqualTo(prodName);
 		
 		System.out.println(">>>>> Test 5 -> " + consumes.get(0));
+	}
+	
+	/**
+	 * 參考: <a href="http://www.baeldung.com/queries-in-spring-data-mongodb">queries-in-spring-data-mongodb</a>
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void test_6_findConsumesByAmountBetween() throws Exception {
+		Long amountGT = 10L;
+		Long amountLT = 30L;
+		
+		List<Consume> consumes = consumeRepository.findByAmountBetween(amountGT, amountLT);
+		
+		assertThat(consumes.size()).isEqualTo(1);
+		
+		System.out.println(">>>>> Test 6 -> " + consumes.get(0));
+	}
+	
+	@Test
+	public void test_7_findConsumesByProdNameLikeOrderByLotteryNo() throws Exception {
+		String prodNameLike = "御";
+		
+		List<Consume> consumes = consumeRepository.findByProdNameLikeOrderByLotteryNoAsc(prodNameLike);
+		
+		assertThat(consumes.size()).isEqualTo(2);
+		
+		System.out.println(">>>>> Test 7 -> " + consumes);
 	}
 }
