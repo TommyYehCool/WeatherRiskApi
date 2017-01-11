@@ -12,8 +12,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @author tommy.feng
  *
  */
-public interface CityRepository extends MongoRepository<City, Long> {
-	City findByCity(String city);
-	
-	City findByState(String state);
+public interface AttractionRepository extends MongoRepository<Attraction, Long> {
+
 }
