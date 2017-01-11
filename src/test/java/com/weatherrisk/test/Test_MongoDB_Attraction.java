@@ -52,6 +52,12 @@ public class Test_MongoDB_Attraction {
 		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
 		
 		id++;
+		attractionType = AttractionType.SHOPPING;
+		name = "林口三井 OUTLET";
+		loc = new Float[] {25.071159F, 121.363789F};
+		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
+		
+		id++;
 		attractionType = AttractionType.RESTAURANT;
 		name = "大嗑西式餐館";
 		loc = new Float[] {25.041049F, 121.528263F};
