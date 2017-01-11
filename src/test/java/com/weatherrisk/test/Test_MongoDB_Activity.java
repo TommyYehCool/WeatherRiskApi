@@ -32,14 +32,14 @@ public class Test_MongoDB_Activity {
 	private ActivityRepository activityRepository;
 	
 	@Test
-	public void test_1_DeleteAllActivities() {
+	public void test_1_deleteAllActivities() {
 		activityRepository.deleteAll();
 		
-		System.out.println(">>>>> Test 1 -> Delete all testing datas done");
+		System.out.println(">>>>> Test 1: deleteAllActivities -> Delete all testing datas done");
 	}
 	
 	@Test
-	public void test_2_AddActivity() throws Exception {
+	public void test_2_addActivity() throws Exception {
 		// ----- Add 第一筆 -----
 		Long id = 1L;
 		String createUser = "Tommy";
@@ -69,27 +69,32 @@ public class Test_MongoDB_Activity {
 		
 		activityRepository.save(new Activity(id, createUser, createDate, title, description, startDatetime, latitude, longitude, attendeeNum));
 		
-		System.out.println(">>>>> Test 2 -> Add testing datas done");
+		System.out.println(">>>>> Test 2: addActivity -> Add testing datas done");
 	}
 	
 	@Test
-	public void test_3_FindActivityById() {
+	public void test_3_findActivityById() {
 		long id = 1L;
 		Activity activity = activityRepository.findById(id);
 		
 		assertThat(activity).isNotNull();
 		assertThat(activity.getId()).isEqualTo(id);
 		
-		System.out.println(">>>>> Test 3 -> " + activity);
+		System.out.println(">>>>> Test 3: findActivityById -> " + activity);
 	}
 	
 	@Test
-	public void test_4_FindActivityByCreateUser() {
+	public void test_4_findActivityByCreateUser() {
 		String createUser = "Tommy";
+		
 		List<Activity> activities = activityRepository.findByCreateUser(createUser);
 
 		assertThat(activities.size()).isEqualTo(2);
 		
-		System.out.println(">>>>> Test 4 -> " + activities);
+		for (Activity activity : activities) {
+			assertThat(activity.getCreateUser()).isEqualTo(createUser);
+		}
+		
+		System.out.println(">>>>> Test 4: findActivityByCreateUser -> " + activities);
 	}
 }

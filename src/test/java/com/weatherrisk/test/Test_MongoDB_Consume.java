@@ -26,7 +26,7 @@ import com.weatherrisk.api.model.ConsumeRepository;
 	classes = Application.class,
 	webEnvironment = WebEnvironment.RANDOM_PORT
 )
-@FixMethodOrder(MethodSorters.DEFAULT)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Test_MongoDB_Consume {
 	
 	@Autowired
@@ -36,7 +36,14 @@ public class Test_MongoDB_Consume {
 	private MongoTemplate mongoTemplate;
 	
 	@Test
-	public void test_1_addConsume() throws Exception {
+	public void test_1_delelteAllConsumes() throws Exception {
+		consumeRepository.deleteAll();
+		
+		System.out.println(">>>>> Test 1: delelteAllConsumes -> Delete all testing datas done");
+	}
+	
+	@Test
+	public void test_2_addConsume() throws Exception {
 		String lotteryNo = "12345678";
 		String user = "Tommy";
 		Date consumeDate = new Date();
@@ -57,10 +64,12 @@ public class Test_MongoDB_Consume {
 		prodName = "御茶園檸檬紅茶";
 		amount = 25L;
 		consumeRepository.save(new Consume(lotteryNo, user, consumeDate, type, prodName, amount, prize, got, alreadySent));
+		
+		System.out.println(">>>>> Test 2: addConsume -> Add testing datas done");
 	}
 	
 	@Test
-	public void test_2_findConsumeByLotteyNo() throws Exception {
+	public void test_3_findConsumeByLotteyNo() throws Exception {
 		String lotteryNo = "12345678";
 
 		Consume consume = consumeRepository.findByLotteryNo(lotteryNo);
@@ -68,7 +77,7 @@ public class Test_MongoDB_Consume {
 		assertThat(consume).isNotNull();
 		assertThat(consume.getLotteryNo()).isEqualTo(lotteryNo);
 		
-		System.out.println(">>>>> Test 2 -> " + consume);
+		System.out.println(">>>>> Test 3: findConsumeByLotteyNo -> " + consume);
 	}
 	
 	/**
@@ -77,9 +86,8 @@ public class Test_MongoDB_Consume {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_3_findConsumesByExample() throws Exception {
+	public void test_4_findConsumesByExample() throws Exception {
 		String lotteryNo = "12345678";
-		String prodName = "御茶園";
 
 		List<Consume> consumes 
 			= mongoTemplate.find(
@@ -90,9 +98,8 @@ public class Test_MongoDB_Consume {
 
 		assertThat(consumes.size()).isEqualTo(1);
 		assertThat(consumes.get(0).getLotteryNo()).isEqualTo(lotteryNo);
-		assertThat(consumes.get(0).getProdName()).isEqualTo(prodName);
 		
-		System.out.println(">>>>> Test 3 -> " + consumes.get(0));
+		System.out.println(">>>>> Test 4: findConsumesByExample -> " + consumes.get(0));
 	}
 
 	/**
@@ -101,7 +108,7 @@ public class Test_MongoDB_Consume {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_4_findConsumesByExample() throws Exception {
+	public void test_5_findConsumesByExample() throws Exception {
 		String prodName = "Lucky Strike";
 		
 		Query query = new Query();
@@ -112,7 +119,7 @@ public class Test_MongoDB_Consume {
 		assertThat(consumes.size()).isEqualTo(1);
 		assertThat(consumes.get(0).getProdName()).isEqualTo(prodName);
 		
-		System.out.println(">>>>> Test 4 -> " + consumes.get(0));
+		System.out.println(">>>>> Test 5: findConsumesByExample -> " + consumes.get(0));
 	}
 	
 	/**
@@ -121,7 +128,7 @@ public class Test_MongoDB_Consume {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_5_findConsumesByProdNameStartingWith() throws Exception {
+	public void test_6_findConsumesByProdNameStartingWith() throws Exception {
 		String prodName = "Lucky Strike";
 		String prodNameStartingWith = "Lucky";
 		
@@ -130,7 +137,7 @@ public class Test_MongoDB_Consume {
 		assertThat(consumes.size()).isEqualTo(1);
 		assertThat(consumes.get(0).getProdName()).isEqualTo(prodName);
 		
-		System.out.println(">>>>> Test 5 -> " + consumes.get(0));
+		System.out.println(">>>>> Test 6: findConsumesByProdNameStartingWith -> " + consumes.get(0));
 	}
 	
 	/**
@@ -139,15 +146,15 @@ public class Test_MongoDB_Consume {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_6_findConsumesByAmountBetween() throws Exception {
+	public void test_7_findConsumesByAmountBetween() throws Exception {
 		Long amountGT = 10L;
 		Long amountLT = 30L;
 		
 		List<Consume> consumes = consumeRepository.findByAmountBetween(amountGT, amountLT);
 		
-		assertThat(consumes.size()).isEqualTo(1);
+		assertThat(consumes.size()).isEqualTo(2);
 		
-		System.out.println(">>>>> Test 6 -> " + consumes.get(0));
+		System.out.println(">>>>> Test 7: findConsumesByAmountBetween(" + amountGT + "," + amountLT + ") -> " + consumes);
 	}
 	
 	/**
@@ -156,13 +163,17 @@ public class Test_MongoDB_Consume {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_7_findConsumesByProdNameLikeOrderByLotteryNo() throws Exception {
+	public void test_8_findConsumesByProdNameLikeOrderByLotteryNo() throws Exception {
 		String prodNameLike = "御";
 		
 		List<Consume> consumes = consumeRepository.findByProdNameLikeOrderByLotteryNoAsc(prodNameLike);
 		
 		assertThat(consumes.size()).isEqualTo(2);
 		
-		System.out.println(">>>>> Test 7 -> " + consumes);
+		for (Consume consume : consumes) {
+			assertThat(consume.getProdName()).contains(prodNameLike);
+		}
+		 
+		System.out.println(">>>>> Test 8: findConsumesByProdNameLikeOrderByLotteryNo -> " + consumes);
 	}
 }
