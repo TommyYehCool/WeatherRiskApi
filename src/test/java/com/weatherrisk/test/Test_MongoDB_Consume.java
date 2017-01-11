@@ -150,6 +150,11 @@ public class Test_MongoDB_Consume {
 		System.out.println(">>>>> Test 6 -> " + consumes.get(0));
 	}
 	
+	/**
+	 * 參考: <a href="http://www.baeldung.com/queries-in-spring-data-mongodb">queries-in-spring-data-mongodb</a>
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void test_7_findConsumesByProdNameLikeOrderByLotteryNo() throws Exception {
 		String prodNameLike = "御";
