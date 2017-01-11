@@ -11,12 +11,14 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.weatherrisk.api.Application;
 import com.weatherrisk.api.model.Attraction;
 import com.weatherrisk.api.model.AttractionRepository;
 import com.weatherrisk.api.model.AttractionType;
+import com.weatherrisk.api.service.CounterService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -25,63 +27,74 @@ import com.weatherrisk.api.model.AttractionType;
 )
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Test_MongoDB_Attraction {
+	
+	@Autowired
+	private CounterService counterService;
 
 	@Autowired
 	private AttractionRepository attractionRepository;
+	
+	private final String collectionName = ((Document) Attraction.class.getAnnotation(Document.class)).collection();
 	
 	@Test
 	public void test_1_deleteAllAttractions() {
 		attractionRepository.deleteAll();
 		
-		System.out.println(">>>>> Test 1: deleteAllAttractions -> Delete all testing datas done");
+		List<Attraction> allAttractions = attractionRepository.findAll();
+		assertThat(allAttractions.size()).isEqualTo(0);
+		
+		Long currentSeqNo = counterService.resetSequence(collectionName);
+		assertThat(currentSeqNo).isEqualTo(0L);
+		
+		System.out.println(">>>>> Test 1: deleteAllAttractions -> Delete all testing datas and reset counters done");
 	}
 	
 	@Test
 	public void test_2_addAttractions() throws Exception {
-		Long id = 1L;
+		Long id = counterService.getNextSequence(collectionName);
 		AttractionType attractionType = AttractionType.PERSONAL;
 		String country = "Taiwan";
 		String name = "偷米家";
 		Float[] loc = new Float[] {25.076198F, 121.480525F};
 		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
 		
-		id++;
+		id = counterService.getNextSequence(collectionName);
 		attractionType = AttractionType.PERSONAL;
 		name = "白白家";
 		loc = new Float[] {25.005747F, 121.465384F};
 		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
 		
-		id++;
+		id = counterService.getNextSequence(collectionName);
 		attractionType = AttractionType.SHOPPING;
 		name = "林口三井 OUTLET";
 		loc = new Float[] {25.071159F, 121.363789F};
 		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
 		
-		id++;
+		id = counterService.getNextSequence(collectionName);
 		attractionType = AttractionType.RESTAURANT;
 		name = "大嗑西式餐館";
 		loc = new Float[] {25.041049F, 121.528263F};
 		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
 		
-		id++;
+		id = counterService.getNextSequence(collectionName);
 		attractionType = AttractionType.RESTAURANT;
 		name = "上引水產";
 		loc = new Float[] {25.066956F, 121.537046F};
 		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
 		
-		id++;
+		id = counterService.getNextSequence(collectionName);
 		attractionType = AttractionType.RESTAURANT;
 		name = "WE里手工pizza 日本料理 串燒";
 		loc = new Float[] {25.061350F, 121.528933F};
 		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
 		
-		id++;
+		id = counterService.getNextSequence(collectionName);
 		attractionType = AttractionType.RESTAURANT;
 		name = "花家食堂";
 		loc = new Float[] {25.057268F, 121.563983F};
 		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
 		
-		id++;
+		id = counterService.getNextSequence(collectionName);
 		attractionType = AttractionType.RESTAURANT;
 		name = "東京紅茶餐廳 KANO嘉農";
 		loc = new Float[] {25.041333F, 121.532515F};

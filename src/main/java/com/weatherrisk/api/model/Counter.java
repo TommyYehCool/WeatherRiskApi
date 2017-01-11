@@ -8,12 +8,12 @@ public class Counter {
 	@Id
 	private String id;
 
-	private int seq;
+	private Long seq;
 	
 	public Counter() {
 	}
 
-	public Counter(String id, int seq) {
+	public Counter(String id, Long seq) {
 		this.id = id;
 		this.seq = seq;
 	}
@@ -26,11 +26,11 @@ public class Counter {
 		this.id = id;
 	}
 
-	public int getSeq() {
+	public Long getSeq() {
 		return seq;
 	}
 
-	public void setSeq(int seq) {
+	public void setSeq(Long seq) {
 		this.seq = seq;
 	}
 	

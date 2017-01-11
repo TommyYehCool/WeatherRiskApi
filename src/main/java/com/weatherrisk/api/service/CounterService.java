@@ -23,10 +23,22 @@ import com.weatherrisk.api.model.Counter;
  */
 @Service
 public class CounterService {
+	
 	@Autowired
 	private MongoOperations mongo;
+	
+	public Long resetSequence(String collectionName) {
+		Counter counter 
+			= mongo.findAndModify(
+					query(where("_id").is(collectionName)), 
+					new Update().set("seq", 0), 
+					options().returnNew(true), 
+					Counter.class
+			  );
+		return counter.getSeq();
+	}
 
-	public int getNextSequence(String collectionName) {
+	public Long getNextSequence(String collectionName) {
 		Counter counter 
 			= mongo.findAndModify(
 					query(where("_id").is(collectionName)), 

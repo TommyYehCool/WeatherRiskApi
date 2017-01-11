@@ -15,10 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.weatherrisk.api.Application;
 import com.weatherrisk.api.model.Activity;
 import com.weatherrisk.api.model.ActivityRepository;
+import com.weatherrisk.api.service.CounterService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -29,19 +31,30 @@ import com.weatherrisk.api.model.ActivityRepository;
 public class Test_MongoDB_Activity {
 	
 	@Autowired
+	private CounterService counterService;
+	
+	@Autowired
 	private ActivityRepository activityRepository;
+	
+	private final String collectionName = ((Document) Activity.class.getAnnotation(Document.class)).collection();
 	
 	@Test
 	public void test_1_deleteAllActivities() {
 		activityRepository.deleteAll();
 		
-		System.out.println(">>>>> Test 1: deleteAllActivities -> Delete all testing datas done");
+		List<Activity> allActivities = activityRepository.findAll();
+		assertThat(allActivities.size()).isEqualTo(0);
+		
+		Long currentSeqNo = counterService.resetSequence(collectionName);
+		assertThat(currentSeqNo).isEqualTo(0L);
+		
+		System.out.println(">>>>> Test 1: deleteAllActivities -> Delete all testing datas and reset counters done");
 	}
 	
 	@Test
 	public void test_2_addActivities() throws Exception {
 		// ----- Add 第一筆 -----
-		Long id = 1L;
+		Long id = counterService.getNextSequence(collectionName);
 		String createUser = "Tommy";
 		Date createDate = new Date();
 		String title = "一起 Party";
@@ -58,7 +71,7 @@ public class Test_MongoDB_Activity {
 		activityRepository.save(new Activity(id, createUser, createDate, title, description, startDatetime, latitude, longitude, attendeeNum));
 		
 		// ----- Add 第二筆 -----
-		id++;
+		id = counterService.getNextSequence(collectionName);
 		title = "Tommy 生日趴";
 		description = "一起 Happy";
 		
