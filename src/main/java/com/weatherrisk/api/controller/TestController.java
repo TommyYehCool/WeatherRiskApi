@@ -26,7 +26,7 @@ import io.swagger.annotations.ApiOperation;
 @Controller
 @RequestMapping(value = "/test")
 @Api(value = "TestController - 測試相關 API")
-public class TestContoller {
+public class TestController {
 	
 	@Autowired
 	private ConsumeService consumeService;
