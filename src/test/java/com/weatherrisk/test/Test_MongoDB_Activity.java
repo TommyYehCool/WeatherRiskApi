@@ -58,7 +58,7 @@ public class Test_MongoDB_Activity {
 		activityRepository.save(new Activity(id, createUser, createDate, title, description, startDatetime, latitude, longitude, attendeeNum));
 		
 		// ----- Add 第二筆 -----
-		id = 2L;
+		id++;
 		title = "Tommy 生日趴";
 		description = "一起 Happy";
 		
@@ -69,7 +69,7 @@ public class Test_MongoDB_Activity {
 		
 		activityRepository.save(new Activity(id, createUser, createDate, title, description, startDatetime, latitude, longitude, attendeeNum));
 		
-		System.out.println(">>>>> Test 2: addActivity -> Add testing datas done");
+		System.out.println(">>>>> Test 2: addActivity -> Add testing datas done, total datas: " + id);
 	}
 	
 	@Test

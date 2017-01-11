@@ -1,5 +1,7 @@
 package com.weatherrisk.api.model;
 
+import java.util.Arrays;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -20,6 +22,7 @@ public class Attraction {
 
 	@Id
 	private Long id;
+	private AttractionType attractionType;
 	private String country;
 	private String name;
 	private Float[] loc;
@@ -27,8 +30,9 @@ public class Attraction {
 	public Attraction() {
 	}
 
-	public Attraction(Long id, String country, String name, Float[] loc) {
+	public Attraction(Long id, AttractionType attractionType, String country, String name, Float[] loc) {
 		this.id = id;
+		this.attractionType = attractionType;
 		this.country = country;
 		this.name = name;
 		this.loc = loc;
@@ -40,6 +44,14 @@ public class Attraction {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public AttractionType getAttractionType() {
+		return attractionType;
+	}
+
+	public void setAttractionType(AttractionType attractionType) {
+		this.attractionType = attractionType;
 	}
 
 	public String getCountry() {
@@ -65,5 +77,14 @@ public class Attraction {
 	public void setLoc(Float[] loc) {
 		this.loc = loc;
 	}
-	
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Attraction [id=").append(id).append(", attractionType=").append(attractionType)
+				.append(", country=").append(country).append(", name=").append(name).append(", loc=")
+				.append(Arrays.toString(loc)).append("]");
+		return builder.toString();
+	}
+
 }

@@ -1,5 +1,9 @@
 package com.weatherrisk.test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.weatherrisk.api.Application;
 import com.weatherrisk.api.model.Attraction;
 import com.weatherrisk.api.model.AttractionRepository;
+import com.weatherrisk.api.model.AttractionType;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -34,17 +39,61 @@ public class Test_MongoDB_Attraction {
 	@Test
 	public void test_2_addAttractions() throws Exception {
 		Long id = 1L;
+		AttractionType attractionType = AttractionType.PERSONAL;
 		String country = "Taiwan";
 		String name = "偷米家";
 		Float[] loc = new Float[] {25.076198F, 121.480525F};
-		attractionRepository.save(new Attraction(id, country, name, loc));
+		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
 		
-		id = 2L;
+		id++;
+		attractionType = AttractionType.PERSONAL;
 		name = "白白家";
 		loc = new Float[] {25.005747F, 121.465384F};
-		attractionRepository.save(new Attraction(id, country, name, loc));
+		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
 		
-		System.out.println(">>>>> Test 2: addAttractions -> Add testing datas done");
+		id++;
+		attractionType = AttractionType.RESTAURANT;
+		name = "大嗑西式餐館";
+		loc = new Float[] {25.041049F, 121.528263F};
+		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
+		
+		id++;
+		attractionType = AttractionType.RESTAURANT;
+		name = "上引水產";
+		loc = new Float[] {25.066956F, 121.537046F};
+		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
+		
+		id++;
+		attractionType = AttractionType.RESTAURANT;
+		name = "WE里手工pizza 日本料理 串燒";
+		loc = new Float[] {25.061350F, 121.528933F};
+		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
+		
+		id++;
+		attractionType = AttractionType.RESTAURANT;
+		name = "花家食堂";
+		loc = new Float[] {25.057268F, 121.563983F};
+		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
+		
+		id++;
+		attractionType = AttractionType.RESTAURANT;
+		name = "東京紅茶餐廳 KANO嘉農";
+		loc = new Float[] {25.041333F, 121.532515F};
+		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
+		
+		System.out.println(">>>>> Test 2: addAttractions -> Add testing datas done, total datas: " + id);
 	}
 	
+	@Test
+	public void test_3_findAttractionsByAttractionType() throws Exception {
+		AttractionType attractionType = AttractionType.RESTAURANT;
+
+		List<Attraction> attractions = attractionRepository.findAttractionsByAttractionType(attractionType);
+		
+		for (Attraction attraction : attractions) {
+			assertThat(attraction.getAttractionType()).isEqualTo(attractionType);
+		}
+		
+		System.out.println(">>>>> Test 3: findAttractionsByAttractionType(" + attractionType + ") -> Data counts: " + attractions.size() + ", Datas: " + attractions);
+	}
 }
