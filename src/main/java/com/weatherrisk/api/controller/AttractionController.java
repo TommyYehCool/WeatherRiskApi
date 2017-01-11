@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.weatherrisk.api.cnst.ResultCode;
 import com.weatherrisk.api.model.Attraction;
 import com.weatherrisk.api.model.AttractionType;
 import com.weatherrisk.api.service.AttractionService;
+import com.weatherrisk.api.vo.response.RespCommon;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,16 +27,29 @@ import io.swagger.annotations.ApiOperation;
  *
  */
 @Controller
-@RequestMapping(value = "/test")
+@RequestMapping(value = "/attraction")
 @Api(value = "AttractionController - 景點相關 API")
 public class AttractionController {
-	
+
 	@Autowired
 	private AttractionService attractionService;
-	
-	@RequestMapping(value = "queryAttractionsByType", method = RequestMethod.GET)
+
+	@RequestMapping(value = "add", method = RequestMethod.POST)
+	@ApiOperation(value = "新增景點")
+	public @ResponseBody RespCommon add(
+			@RequestParam(name = "景點類別", required = true) AttractionType attractionType,
+			@RequestParam(name = "國家", required = true) String country,
+			@RequestParam(name = "名稱", required = true) String name,
+			@RequestParam(name = "緯度", required = true) Float latitude,
+			@RequestParam(name = "經度", required = true) Float longitude) {
+		attractionService.add(attractionType, country, name, latitude, longitude);
+		return new RespCommon(ResultCode.SUCCESS);
+	}
+
+	@RequestMapping(value = "queryByType", method = RequestMethod.GET)
 	@ApiOperation(value = "根據景點類別, 查詢景點資料", responseContainer = "List", response = Attraction.class)
-	public @ResponseBody List<Attraction> queryAttractionsByType(@RequestParam(value = "attractionType", required = true) AttractionType type) {
-		return attractionService.queryAttrationsByType(type);
+	public @ResponseBody List<Attraction> queryByType(
+			@RequestParam(name = "景點類別", required = true) AttractionType type) {
+		return attractionService.queryByType(type);
 	}
 }
