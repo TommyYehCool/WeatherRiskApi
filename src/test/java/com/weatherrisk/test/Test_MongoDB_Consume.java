@@ -86,7 +86,7 @@ public class Test_MongoDB_Consume {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_4_findConsumesByExample() throws Exception {
+	public void test_4_findConsumesByExampleLotteryNo() throws Exception {
 		String lotteryNo = "12345678";
 
 		List<Consume> consumes 
@@ -99,7 +99,7 @@ public class Test_MongoDB_Consume {
 		assertThat(consumes.size()).isEqualTo(1);
 		assertThat(consumes.get(0).getLotteryNo()).isEqualTo(lotteryNo);
 		
-		System.out.println(">>>>> Test 4: findConsumesByExample -> " + consumes.get(0));
+		System.out.println(">>>>> Test 4: findConsumesByExampleLotteryNo(" + lotteryNo + ") -> " + consumes.get(0));
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class Test_MongoDB_Consume {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_5_findConsumesByExample() throws Exception {
+	public void test_5_findConsumesByExampleProdName() throws Exception {
 		String prodName = "Lucky Strike";
 		
 		Query query = new Query();
@@ -119,7 +119,7 @@ public class Test_MongoDB_Consume {
 		assertThat(consumes.size()).isEqualTo(1);
 		assertThat(consumes.get(0).getProdName()).isEqualTo(prodName);
 		
-		System.out.println(">>>>> Test 5: findConsumesByExample -> " + consumes.get(0));
+		System.out.println(">>>>> Test 5: findConsumesByExampleProdName(" + prodName + ") -> " + consumes.get(0));
 	}
 	
 	/**
@@ -129,15 +129,16 @@ public class Test_MongoDB_Consume {
 	 */
 	@Test
 	public void test_6_findConsumesByProdNameStartingWith() throws Exception {
-		String prodName = "Lucky Strike";
 		String prodNameStartingWith = "Lucky";
+		String prodName = "Lucky Strike";
 		
 		List<Consume> consumes = consumeRepository.findByProdNameStartingWith(prodNameStartingWith);
 		
 		assertThat(consumes.size()).isEqualTo(1);
+		assertThat(consumes.get(0).getProdName()).startsWith(prodNameStartingWith);
 		assertThat(consumes.get(0).getProdName()).isEqualTo(prodName);
 		
-		System.out.println(">>>>> Test 6: findConsumesByProdNameStartingWith -> " + consumes.get(0));
+		System.out.println(">>>>> Test 6: findConsumesByProdNameStartingWith(" + prodNameStartingWith + ") -> " + consumes.get(0));
 	}
 	
 	/**
@@ -174,6 +175,6 @@ public class Test_MongoDB_Consume {
 			assertThat(consume.getProdName()).contains(prodNameLike);
 		}
 		 
-		System.out.println(">>>>> Test 8: findConsumesByProdNameLikeOrderByLotteryNo -> " + consumes);
+		System.out.println(">>>>> Test 8: findConsumesByProdNameLikeOrderByLotteryNo(" + prodNameLike + ") -> " + consumes);
 	}
 }
