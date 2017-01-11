@@ -2,8 +2,10 @@ package com.weatherrisk.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -30,34 +32,64 @@ public class Test_MongoDB_Activity {
 	private ActivityRepository activityRepository;
 	
 	@Test
-	public void test_1_AddActivity() {
+	public void test_1_DeleteAllActivities() {
+		activityRepository.deleteAll();
+		
+		System.out.println(">>>>> Test 1 -> Delete all testing datas done");
+	}
+	
+	@Test
+	public void test_2_AddActivity() throws Exception {
+		// ----- Add 第一筆 -----
+		Long id = 1L;
+		String createUser = "Tommy";
+		Date createDate = new Date();
+		String title = "一起 Party";
+		String description = "一起喝酒喝喝喝";
+		
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 1);
-		System.out.println(cal.getTime());
-		Activity activity = new Activity(1L, "Tommy", new Date(), "一起 Party", "一起喝酒喝喝喝", cal.getTime(), 25.075926F, 121.480557F, 10);
-		activityRepository.insert(activity);
+		Date startDatetime = cal.getTime();
+		
+		Float latitude = 25.075926F;
+		Float longitude = 121.480557F;
+		Integer attendeeNum = 10;
+		
+		activityRepository.save(new Activity(id, createUser, createDate, title, description, startDatetime, latitude, longitude, attendeeNum));
+		
+		// ----- Add 第二筆 -----
+		id = 2L;
+		title = "Tommy 生日趴";
+		description = "一起 Happy";
+		
+		SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+		startDatetime = dateTimeFormat.parse("2017/11/12 18:00");
+		
+		attendeeNum = 20;
+		
+		activityRepository.save(new Activity(id, createUser, createDate, title, description, startDatetime, latitude, longitude, attendeeNum));
+		
+		System.out.println(">>>>> Test 2 -> Add testing datas done");
 	}
 	
 	@Test
-	public void test_2_FindActivityById() {
+	public void test_3_FindActivityById() {
 		long id = 1L;
 		Activity activity = activityRepository.findById(id);
-		System.out.println(activity);
+		
 		assertThat(activity).isNotNull();
 		assertThat(activity.getId()).isEqualTo(id);
+		
+		System.out.println(">>>>> Test 3 -> " + activity);
 	}
 	
 	@Test
-	public void test_3_FindActivityByCreateUser() {
+	public void test_4_FindActivityByCreateUser() {
 		String createUser = "Tommy";
-		Activity activity = activityRepository.findByCreateUser(createUser);
-		System.out.println(activity);
-		assertThat(activity).isNotNull();
-		assertThat(activity.getCreateUser()).isEqualTo(createUser);
-	}
-	
-	@Test
-	public void test_4_DeleteAllActivities() {
-		activityRepository.deleteAll();
+		List<Activity> activities = activityRepository.findByCreateUser(createUser);
+
+		assertThat(activities.size()).isEqualTo(2);
+		
+		System.out.println(">>>>> Test 4 -> " + activities);
 	}
 }
