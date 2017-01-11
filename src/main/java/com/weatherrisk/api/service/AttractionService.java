@@ -26,12 +26,16 @@ public class AttractionService {
 	private String collectionName = ((Document) Attraction.class.getAnnotation(Document.class)).collection();
 
 	public void add(AttractionType attractionType, String country, String name, Float latitude, Float longitude) {
-		Long id = counterService.getNextSequence(collectionName);
+		Long id = getNextSeq();
 		Float[] loc = new Float[] {latitude, longitude};
 		attractionRepo.save(new Attraction(id, attractionType, country, name, loc));
 	}
 
 	public List<Attraction> queryByType(AttractionType type) {
 		return attractionRepo.findAttractionsByAttractionType(type);
+	}
+	
+	private Long getNextSeq() {
+		return counterService.getNextSequence(collectionName);
 	}
 }
