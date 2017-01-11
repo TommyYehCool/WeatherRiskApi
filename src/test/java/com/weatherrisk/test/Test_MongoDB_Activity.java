@@ -97,4 +97,17 @@ public class Test_MongoDB_Activity {
 		
 		System.out.println(">>>>> Test 4: findActivityByCreateUser(" + createUser + ") -> " + activities);
 	}
+	
+	@Test
+	public void test_5_findActivitiesByStartDatetimeBetween() throws Exception {
+		SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+		Date startDate = dateTimeFormat.parse("2017/02/01 00:00");
+		Date endDate = dateTimeFormat.parse("2017/12/01 00:00");
+		
+		List<Activity> activities = activityRepository.findByStartDatetimeBetween(startDate, endDate);
+		
+		assertThat(activities.size()).isEqualTo(1);
+		
+		System.out.println(">>>>> Test 5: test_5_findActivitiesByStartDateBetween(" + startDate + ", " + endDate + ") -> " + activities);
+	}
 }
