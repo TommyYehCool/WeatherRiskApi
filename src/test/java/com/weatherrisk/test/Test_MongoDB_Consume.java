@@ -36,10 +36,10 @@ public class Test_MongoDB_Consume {
 	private MongoTemplate mongoTemplate;
 	
 	@Test
-	public void test_1_delelteAllConsumes() throws Exception {
+	public void test_1_deleteAllConsumes() throws Exception {
 		consumeRepository.deleteAll();
 		
-		System.out.println(">>>>> Test 1: delelteAllConsumes -> Delete all testing datas done");
+		System.out.println(">>>>> Test 1: deleteAllConsumes -> Delete all testing datas done");
 	}
 	
 	@Test
