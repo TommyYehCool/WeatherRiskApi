@@ -45,6 +45,13 @@ public class AttractionController {
 		attractionService.add(attractionType, country, name, latitude, longitude);
 		return new RespCommon(ResultCode.SUCCESS);
 	}
+	
+	@RequestMapping(value = "delete", method = RequestMethod.PUT)
+	public @ResponseBody RespCommon delete(
+			@RequestParam(name = "ID", required = true) Long id) {
+		attractionService.delete(id);
+		return new RespCommon(ResultCode.SUCCESS);
+	}
 
 	@RequestMapping(value = "queryByType", method = RequestMethod.GET)
 	@ApiOperation(value = "根據景點類別, 查詢景點資料", responseContainer = "List", response = Attraction.class)

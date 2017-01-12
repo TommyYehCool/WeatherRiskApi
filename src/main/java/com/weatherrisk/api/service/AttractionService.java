@@ -30,6 +30,10 @@ public class AttractionService {
 		Float[] loc = new Float[] {latitude, longitude};
 		attractionRepo.save(new Attraction(id, attractionType, country, name, loc));
 	}
+	
+	public void delete(Long id) {
+		attractionRepo.delete(id);
+	}
 
 	public List<Attraction> queryByType(AttractionType type) {
 		return attractionRepo.findAttractionsByAttractionType(type);
@@ -38,4 +42,5 @@ public class AttractionService {
 	private Long getNextSeq() {
 		return counterService.getNextSequence(collectionName);
 	}
+
 }

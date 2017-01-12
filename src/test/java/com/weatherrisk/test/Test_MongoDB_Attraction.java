@@ -106,6 +106,12 @@ public class Test_MongoDB_Attraction {
 		loc = new Float[] {25.042681F, 121.510857F};
 		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
 		
+		id = counterService.getNextSequence(collectionName);
+		attractionType = AttractionType.RESTAURANT;
+		name = "Jenny港式茶餐廳";
+		loc = new Float[] {25.120514F, 121.526618F};
+		attractionRepository.save(new Attraction(id, attractionType, country, name, loc));
+		
 		System.out.println(">>>>> Test 2: addAttractions -> Add testing datas done, total datas: " + id);
 	}
 	
