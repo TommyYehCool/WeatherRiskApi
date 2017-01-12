@@ -44,6 +44,8 @@ public class Test_MongoDB_Consume {
 	
 	@Test
 	public void test_2_addConsume() throws Exception {
+		int dataCnts = 0;
+		
 		String lotteryNo = "12345678";
 		String user = "Tommy";
 		Date consumeDate = new Date();
@@ -54,18 +56,21 @@ public class Test_MongoDB_Consume {
 		Boolean got = false;
 		Boolean alreadySent = false;
 		consumeRepository.save(new Consume(lotteryNo, user, consumeDate, type, prodName, amount, prize, got, alreadySent));
+		dataCnts++;
 		
 		lotteryNo = "87654321";
 		prodName = "Lucky Strike";
 		amount = 85L;
 		consumeRepository.save(new Consume(lotteryNo, user, consumeDate, type, prodName, amount, prize, got, alreadySent));
+		dataCnts++;
 		
 		lotteryNo = "11223344";
 		prodName = "御茶園檸檬紅茶";
 		amount = 25L;
 		consumeRepository.save(new Consume(lotteryNo, user, consumeDate, type, prodName, amount, prize, got, alreadySent));
+		dataCnts++;
 		
-		System.out.println(">>>>> Test 2: addConsume -> Add testing datas done");
+		System.out.println(">>>>> Test 2: addConsume -> Add testing datas done, total datas: " + dataCnts);
 	}
 	
 	@Test
