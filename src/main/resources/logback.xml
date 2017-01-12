@@ -2,7 +2,7 @@
 <configuration>
 	<property name="LOG_HOME" value="../WeatherRiskApiLog" />
 	<property name="CHARSET" value="UTF-8" />
-	<property name="PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}][%thread][%-5level][%logger{50}] %m%n" />
+	<property name="PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}][%thread][%-5level][%logger] %m%n" />
 
 	<!-- For local 
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
