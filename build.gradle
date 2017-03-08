@@ -67,6 +67,9 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter-data-mongodb"
 	compile "org.springframework.boot:spring-boot-starter-test"
 	
+	// --------- line bot spring boot ---------
+	compile "com.linecorp.bot:line-bot-spring-boot:1.6.0"
+	
 	// --------- Stormpath ---------
 	compile "com.stormpath.spring:stormpath-spring-security-webmvc-spring-boot-starter:${stormpathVersion}"
 	compile "com.stormpath.sdk:stormpath-sdk-httpclient:${stormpathVersion}"
