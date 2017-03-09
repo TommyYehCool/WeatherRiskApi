@@ -72,19 +72,18 @@ public class ParkingLotService {
 			// http://stackoverflow.com/questions/20363719/java-8-listv-into-mapk-v
 			Map<String, ParkingLotAvailable> map = availables.stream().collect(Collectors.toMap(ParkingLotAvailable::getId, Function.identity()));
 			
-			
 			StringBuilder buffer = new StringBuilder();
 			for (ParkingLotInfo info : infos) {
 				buffer.append("名稱：").append(info.getName()).append("\n")
 					  .append("地址：").append(info.getAddress()).append("\n")
 					  .append("收費方式：").append(info.getPayex()).append("\n")
-					  .append("服務時間：").append(info.getServiceTime()).append("\n\n");
+					  .append("服務時間：").append(info.getServiceTime()).append("\n");
 				ParkingLotAvailable available = map.get(info.getId());
 				if (available != null) {
 					buffer.append("汽車剩餘位數: ").append(available.getAvailableCar() != -9 ? available.getAvailableCar() : "不提供即時訊息").append("\n")
-					  	  .append("機車剩餘位數: ").append(available.getAvailableMotor() != -9 ? available.getAvailableMotor() : "不提供即時訊息").append("\n")
-					  	  .append("\n");
+					  	  .append("機車剩餘位數: ").append(available.getAvailableMotor() != -9 ? available.getAvailableMotor() : "不提供即時訊息").append("\n");
 				}
+				buffer.append("---------------------------------------");
 			}
 			return buffer.toString();
 		}
