@@ -1,11 +1,12 @@
 package com.weatherrisk.api.model;
 
-import java.util.Arrays;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * <pre>
@@ -17,6 +18,9 @@ import io.swagger.annotations.ApiModelProperty;
  * @author tommy.feng
  *
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Document(collection = "attractions")
 public class Attraction {
 
@@ -36,64 +40,4 @@ public class Attraction {
 	@ApiModelProperty(notes = "經緯度")
 	private Float[] loc;
 	
-	public Attraction() {
-	}
-
-	public Attraction(Long id, AttractionType attractionType, String country, String name, Float[] loc) {
-		this.id = id;
-		this.attractionType = attractionType;
-		this.country = country;
-		this.name = name;
-		this.loc = loc;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public AttractionType getAttractionType() {
-		return attractionType;
-	}
-
-	public void setAttractionType(AttractionType attractionType) {
-		this.attractionType = attractionType;
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Float[] getLoc() {
-		return loc;
-	}
-
-	public void setLoc(Float[] loc) {
-		this.loc = loc;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Attraction [id=").append(id).append(", attractionType=").append(attractionType)
-				.append(", country=").append(country).append(", name=").append(name).append(", loc=")
-				.append(Arrays.toString(loc)).append("]");
-		return builder.toString();
-	}
-
 }
