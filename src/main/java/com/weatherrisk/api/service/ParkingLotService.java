@@ -33,8 +33,8 @@ public class ParkingLotService {
 			StringBuilder buffer = new StringBuilder();
 			
 			if (available != null) {
-				buffer.append("汽車剩餘位數: ").append(available.getAvailableCar()).append("\n")
-					  .append("機車剩餘位數: ").append(available.getAvailableMotor()).append("\n");
+				buffer.append("汽車剩餘位數: ").append(available.getAvailableCar() != -9 ? available.getAvailableCar() : "不提供即時訊息").append("\n")
+					  .append("機車剩餘位數: ").append(available.getAvailableMotor() != -9 ? available.getAvailableMotor() : "不提供即時訊息").append("\n");
 			}
 			buffer.append("行政區: ").append(info.getArea()).append("\n")
 				  .append("名稱: ").append(info.getName()).append("\n")
@@ -51,10 +51,6 @@ public class ParkingLotService {
 		else {
 			return "您輸入的停車場名稱, 找不到對應資料";
 		}
-	}
-	
-	private ParkingLotInfo findParkingLotInfoById(String id) {
-		return parkingLotInfoRepo.findById(id);
 	}
 	
 	private List<ParkingLotInfo> findParkingLotInfoByArea(String area) {

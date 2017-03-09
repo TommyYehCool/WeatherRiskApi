@@ -6,8 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ParkingLotInfoRepository extends MongoRepository<ParkingLotInfo, String> {
 	
-	ParkingLotInfo findById(String id);
-	
 	List<ParkingLotInfo> findByArea(String area);
 	
 	ParkingLotInfo findByName(String name);
