@@ -34,18 +34,19 @@ public class ParkingLotService {
 			
 			if (available != null) {
 				buffer.append("汽車剩餘位數: ").append(available.getAvailableCar() != -9 ? available.getAvailableCar() : "不提供即時訊息").append("\n")
-					  .append("機車剩餘位數: ").append(available.getAvailableMotor() != -9 ? available.getAvailableMotor() : "不提供即時訊息").append("\n");
+					  .append("機車剩餘位數: ").append(available.getAvailableMotor() != -9 ? available.getAvailableMotor() : "不提供即時訊息").append("\n")
+					  .append("\n");
 			}
-			buffer.append("行政區: ").append(info.getArea()).append("\n")
-				  .append("名稱: ").append(info.getName()).append("\n")
-				  .append("簡介: ").append(info.getSummary()).append("\n")
-				  .append("地址: ").append(info.getAddress()).append("\n")
-				  .append("電話: ").append(info.getTel()).append("\n")
-				  .append("收費方式: ").append(info.getPayex()).append("\n")
-				  .append("服務時間: ").append(info.getServiceTime()).append("\n")
-				  .append("汽車總車位數: ").append(info.getTotalCar()).append("\n")
-				  .append("機車總車位數: ").append(info.getTotalMotor()).append("\n")
-				  .append("自行車總車位數: ").append(info.getTotalBike()).append("\n");
+			buffer.append("行政區：").append(info.getArea()).append("\n")
+				  .append("名稱：").append(info.getName()).append("\n")
+				  .append("簡介：").append(info.getSummary()).append("\n")
+				  .append("地址：").append(info.getAddress()).append("\n")
+				  .append("電話：").append(info.getTel()).append("\n")
+				  .append("收費方式：").append(info.getPayex()).append("\n")
+				  .append("服務時間：").append(info.getServiceTime()).append("\n")
+				  .append("汽車總車位數：").append(info.getTotalCar()).append("\n")
+				  .append("機車總車位數：").append(info.getTotalMotor()).append("\n")
+				  .append("自行車總車位數：").append(info.getTotalBike()).append("\n");
 			return buffer.toString();
 		}
 		else {
