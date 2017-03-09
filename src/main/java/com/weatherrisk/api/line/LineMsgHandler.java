@@ -22,12 +22,16 @@ public class LineMsgHandler {
     @EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
     	logger.info(">>>>> handle text message event, event: {}", event);
+
     	String inputMsg = event.getMessage().getText();
+    	
+    	// 精準搜尋
     	if (inputMsg.startsWith("#")) {
     		String name = inputMsg.substring(1, inputMsg.length());
     		String queryResult = parkingLotService.findByName(name);
     		return new TextMessage(queryResult);
     	}
+    	// 模糊搜尋
     	else if (inputMsg.startsWith("@")) {
     		String name = inputMsg.substring(1, inputMsg.length());
     		String queryResult = parkingLotService.findByNameLike(name);

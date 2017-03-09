@@ -57,6 +57,9 @@ public class ParkingLotService {
 		}
 	}
 	
+	/**
+	 * 資料太多會有這個問題 -> {"message":"Length must be between 0 and 2000"}
+	 */
 	public String findByNameLike(String name) {
 		// 取得最新資料
 		openDataService.getNewestParkingLotAvailable();
@@ -76,14 +79,13 @@ public class ParkingLotService {
 			for (ParkingLotInfo info : infos) {
 				buffer.append("名稱：").append(info.getName()).append("\n")
 					  .append("地址：").append(info.getAddress()).append("\n")
-					  .append("收費方式：").append(info.getPayex()).append("\n")
 					  .append("服務時間：").append(info.getServiceTime()).append("\n");
 				ParkingLotAvailable available = map.get(info.getId());
 				if (available != null) {
 					buffer.append("汽車剩餘位數: ").append(available.getAvailableCar() != -9 ? available.getAvailableCar() : "不提供即時訊息").append("\n")
 					  	  .append("機車剩餘位數: ").append(available.getAvailableMotor() != -9 ? available.getAvailableMotor() : "不提供即時訊息").append("\n");
 				}
-				buffer.append("---------------------------------------");
+				buffer.append("-------------");
 			}
 			return buffer.toString();
 		}
