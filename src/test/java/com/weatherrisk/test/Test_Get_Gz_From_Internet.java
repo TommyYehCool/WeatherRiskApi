@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.zip.GZIPInputStream;
 
@@ -14,10 +16,11 @@ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.util.StringUtils;
 
-public class Test_Download_And_Read_Gz {
+public class Test_Get_Gz_From_Internet {
 	
 	private final String PARKING_LOT_INFO_URL = "https://tcgbusfs.blob.core.windows.net/blobtcmsv/TCMSV_alldesc.gz";
 	
@@ -28,6 +31,42 @@ public class Test_Download_And_Read_Gz {
 	private final String PARKING_LOT_AVAILABLE_FILE_LOCATION = "D://ParkingLotAvailable.gz";
 	
 	@Test
+	public void testReadGzFromInternet() {
+		readGzFromInternet(PARKING_LOT_INFO_URL);
+		readGzFromInternet(PARKING_LOT_AVAILABLE_URL);
+	}
+	
+	private void readGzFromInternet(String url) {
+		URL objUrl = null;
+		InputStream inStream = null;
+		BufferedReader br = null;
+		try {
+			objUrl = new URL(url);
+			inStream = objUrl.openStream();
+			
+			br = new BufferedReader(new InputStreamReader(new GZIPInputStream(inStream), "MS950"));
+				
+			StringBuilder buffer = new StringBuilder();
+				
+			String line;
+			while ((line = br.readLine()) != null) {
+				if (!StringUtils.isEmpty(line)) {
+					buffer.append(line);
+				}
+			}
+			System.out.println(buffer.toString());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			IOUtils.closeQuietly(inStream);
+			IOUtils.closeQuietly(br);
+		}
+	}
+	
+	@Test
+	@Ignore
 	public void testDownloadAndReadGz() {
 		try {
 			downloadFile(PARKING_LOT_INFO_URL, PARKING_LOT_INFO_FILE_LOCATION);
