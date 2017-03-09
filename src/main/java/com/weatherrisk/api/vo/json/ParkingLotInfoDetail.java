@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @JsonDeserialize(using = ParkingLotDetailDeserializer.class)
 @NoArgsConstructor
-public class ParkingLotDetail {
+public class ParkingLotInfoDetail {
 	
 	private String updateTime;
 	

@@ -10,14 +10,14 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.weatherrisk.api.model.ParkingLotInfo;
-import com.weatherrisk.api.vo.json.ParkingLotDetail;
+import com.weatherrisk.api.vo.json.ParkingLotInfoDetail;
 
-public class ParkingLotDetailDeserializer extends JsonDeserializer<ParkingLotDetail> {
+public class ParkingLotDetailDeserializer extends JsonDeserializer<ParkingLotInfoDetail> {
 
 	@Override
-	public ParkingLotDetail deserialize(JsonParser jp, DeserializationContext ctxt) 
+	public ParkingLotInfoDetail deserialize(JsonParser jp, DeserializationContext ctxt) 
 			throws IOException, JsonProcessingException {
-		ParkingLotDetail result = new ParkingLotDetail();
+		ParkingLotInfoDetail result = new ParkingLotInfoDetail();
 		
 		ObjectCodec oc = jp.getCodec();
 	    JsonNode rootNode = oc.readTree(jp);

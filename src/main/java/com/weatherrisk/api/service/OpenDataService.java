@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherrisk.api.model.ParkingLogInfoRepository;
 import com.weatherrisk.api.model.ParkingLotInfo;
 import com.weatherrisk.api.util.GetFileUtil;
-import com.weatherrisk.api.vo.json.ParkingLotDetail;
+import com.weatherrisk.api.vo.json.ParkingLotInfoDetail;
 
 @Service
 public class OpenDataService {
@@ -39,7 +39,7 @@ public class OpenDataService {
 			// ref: http://www.journaldev.com/2324/jackson-json-java-parser-api-example-tutorial
 			ObjectMapper mapper = new ObjectMapper();
 			
-			ParkingLotDetail parkingLotDetail = mapper.readValue(jsonData, ParkingLotDetail.class);
+			ParkingLotInfoDetail parkingLotDetail = mapper.readValue(jsonData, ParkingLotInfoDetail.class);
 			
 			List<ParkingLotInfo> parkingLotInfos = parkingLotDetail.getParkingLotInfos();
 			
@@ -61,7 +61,7 @@ public class OpenDataService {
 			logger.info("<<<<< Save all parking lot informations done, data-size: <{}>, time-spent: <{} ms>", parkingLotInfos.size(), System.currentTimeMillis() - startTime);
 			
 		} catch (IOException e) {
-			logger.error("IOException raised while tring to get newest parking lot informations", e);
+			logger.error("IOException raised while trying to get newest parking lot informations", e);
 		}
 	}
 	
