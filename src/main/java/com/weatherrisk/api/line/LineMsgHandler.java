@@ -28,6 +28,11 @@ public class LineMsgHandler {
     		String queryResult = parkingLotService.findByName(name);
     		return new TextMessage(queryResult);
     	}
+    	else if (inputMsg.startsWith("@")) {
+    		String name = inputMsg.substring(1, inputMsg.length());
+    		String queryResult = parkingLotService.findByNameLike(name);
+    		return new TextMessage(queryResult);
+    	}
     	return new TextMessage(event.getMessage().getText());
     }
 

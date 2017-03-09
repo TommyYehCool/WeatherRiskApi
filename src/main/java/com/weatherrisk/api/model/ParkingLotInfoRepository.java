@@ -10,4 +10,5 @@ public interface ParkingLotInfoRepository extends MongoRepository<ParkingLotInfo
 	
 	ParkingLotInfo findByName(String name);
 
+	List<ParkingLotInfo> findByNameLike(String name);
 }

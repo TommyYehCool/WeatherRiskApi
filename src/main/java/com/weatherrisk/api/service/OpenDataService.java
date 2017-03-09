@@ -85,7 +85,7 @@ public class OpenDataService {
 			
 			String jsonData = GetFileUtil.readGzFromInternet(PARKING_LOT_AVAILABLE_URL);
 			
-			logger.info(">>>>> Get all parking lot availables from url: <{}> done, time-spent: <{} ms>", PARKING_LOT_AVAILABLE_URL, System.currentTimeMillis() - startTime);
+			logger.info("<<<<< Get all parking lot availables from url: <{}> done, time-spent: <{} ms>", PARKING_LOT_AVAILABLE_URL, System.currentTimeMillis() - startTime);
 			
 			// ref: http://www.journaldev.com/2324/jackson-json-java-parser-api-example-tutorial
 			ObjectMapper mapper = new ObjectMapper();

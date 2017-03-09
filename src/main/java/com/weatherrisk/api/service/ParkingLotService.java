@@ -1,6 +1,9 @@
 package com.weatherrisk.api.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,9 +29,9 @@ public class ParkingLotService {
 		// 取得最新資料
 		openDataService.getNewestParkingLotAvailable();
 		
-		ParkingLotInfo info = findParkingLotInfoByName(name);
+		ParkingLotInfo info = parkingLotInfoRepo.findByName(name);
 		if (info != null) {
-			ParkingLotAvailable available = findParkingLotAvailableById(info.getId());
+			ParkingLotAvailable available = parkingLotAvailableRepo.findById(info.getId());
 			
 			StringBuilder buffer = new StringBuilder();
 			
@@ -54,15 +57,40 @@ public class ParkingLotService {
 		}
 	}
 	
-	private List<ParkingLotInfo> findParkingLotInfoByArea(String area) {
-		return parkingLotInfoRepo.findByArea(area);
+	public String findByNameLike(String name) {
+		// 取得最新資料
+		openDataService.getNewestParkingLotAvailable();
+		
+		List<ParkingLotInfo> infos = parkingLotInfoRepo.findByNameLike(name);
+		
+		if (infos != null && !infos.isEmpty()) {
+			// http://stackoverflow.com/questions/737244/java-map-a-list-of-objects-to-a-list-with-values-of-their-property-attributes
+			List<String> ids = infos.stream().map(ParkingLotInfo::getId).collect(Collectors.toList());
+
+			List<ParkingLotAvailable> availables = parkingLotAvailableRepo.findByIdIn(ids);
+			
+			// http://stackoverflow.com/questions/20363719/java-8-listv-into-mapk-v
+			Map<String, ParkingLotAvailable> map = availables.stream().collect(Collectors.toMap(ParkingLotAvailable::getId, Function.identity()));
+			
+			
+			StringBuilder buffer = new StringBuilder();
+			for (ParkingLotInfo info : infos) {
+				buffer.append("名稱：").append(info.getName()).append("\n")
+					  .append("地址：").append(info.getAddress()).append("\n")
+					  .append("收費方式：").append(info.getPayex()).append("\n")
+					  .append("服務時間：").append(info.getServiceTime()).append("\n\n");
+				ParkingLotAvailable available = map.get(info.getId());
+				if (available != null) {
+					buffer.append("汽車剩餘位數: ").append(available.getAvailableCar() != -9 ? available.getAvailableCar() : "不提供即時訊息").append("\n")
+					  	  .append("機車剩餘位數: ").append(available.getAvailableMotor() != -9 ? available.getAvailableMotor() : "不提供即時訊息").append("\n")
+					  	  .append("\n");
+				}
+			}
+			return buffer.toString();
+		}
+		else {
+			return "您輸入的停車場名稱, 找不到對應資料";
+		}
 	}
 	
-	private ParkingLotInfo findParkingLotInfoByName(String name) {
-		return parkingLotInfoRepo.findByName(name);
-	}
-
-	private ParkingLotAvailable findParkingLotAvailableById(String id) {
-		return parkingLotAvailableRepo.findById(id);
-	}
 }
