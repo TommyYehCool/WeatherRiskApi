@@ -5,13 +5,13 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.weatherrisk.api.model.ParkingLotInfo;
-import com.weatherrisk.api.vo.json.deserializer.ParkingLotDetailDeserializer;
+import com.weatherrisk.api.vo.json.deserializer.ParkingLotInfoDetailDeserializer;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@JsonDeserialize(using = ParkingLotDetailDeserializer.class)
+@JsonDeserialize(using = ParkingLotInfoDetailDeserializer.class)
 @NoArgsConstructor
 public class ParkingLotInfoDetail {
 	
