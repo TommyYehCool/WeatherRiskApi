@@ -9,14 +9,12 @@ targetCompatibility = 1.8
 
 // Version settings
 ext {
+	stormpathVersion = '1.2.3'
 	jbcryptVersion = '0.3m'
 	lombokVersion = '1.16.10'
-	
 	swaggerVersion = '2.2.2'
-	
 	apacheCommonsIoVersion = '2.5'
-	
-	stormpathVersion = '1.2.3'
+	apacheCommonsCompressVersion = '1.13'
 	
 	junitVersion = '4.+'
 }
@@ -87,6 +85,9 @@ dependencies {
 	
 	// --------- Apache commons-io ----------
 	compile "commons-io:commons-io:${apacheCommonsIoVersion}"
+	
+	// --------- Apache commons-compress ----------
+	compile "org.apache.commons:commons-compress:${apacheCommonsCompressVersion}"
 	
 	// --------- JUnit --------- 
     testCompile "junit:junit:${junitVersion}"
