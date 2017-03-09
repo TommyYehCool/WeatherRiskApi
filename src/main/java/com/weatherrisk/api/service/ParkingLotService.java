@@ -85,7 +85,7 @@ public class ParkingLotService {
 					buffer.append("汽車剩餘位數: ").append(available.getAvailableCar() != -9 ? available.getAvailableCar() : "不提供即時訊息").append("\n")
 					  	  .append("機車剩餘位數: ").append(available.getAvailableMotor() != -9 ? available.getAvailableMotor() : "不提供即時訊息").append("\n");
 				}
-				buffer.append("-------------");
+				buffer.append("-------------\n");
 			}
 			return buffer.toString();
 		}
