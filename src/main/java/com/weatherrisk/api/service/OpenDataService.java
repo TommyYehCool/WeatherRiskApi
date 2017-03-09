@@ -9,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weatherrisk.api.model.ParkingLogInfoRepository;
+import com.weatherrisk.api.model.ParkingLotInfoRepository;
+import com.weatherrisk.api.model.ParkingLotAvailable;
+import com.weatherrisk.api.model.ParkingLotAvailableRepository;
 import com.weatherrisk.api.model.ParkingLotInfo;
 import com.weatherrisk.api.util.GetFileUtil;
+import com.weatherrisk.api.vo.json.ParkingLotAvailableDetail;
 import com.weatherrisk.api.vo.json.ParkingLotInfoDetail;
 
 @Service
@@ -24,13 +27,19 @@ public class OpenDataService {
 	private final String PARKING_LOT_AVAILABLE_URL = "https://tcgbusfs.blob.core.windows.net/blobtcmsv/TCMSV_allavailable.gz";
 	
 	@Autowired
-	private ParkingLogInfoRepository parkingLotInfoRepo;
+	private ParkingLotInfoRepository parkingLotInfoRepo;
+	
+	@Autowired
+	private ParkingLotAvailableRepository parkingLotAvailableRepo;
 
+	/**
+	 * 從台北市政府 Open Data 取得所有停車場資訊
+	 */
 	public void getNewestParkingLotInfos() {
 		try {
-			long startTime = System.currentTimeMillis();
-			
 			logger.info(">>>>> Prepare to get all parking lot informations from url: <{}>", PARKING_LOT_INFO_URL);
+			
+			long startTime = System.currentTimeMillis();
 			
 			String jsonData = GetFileUtil.readGzFromInternet(PARKING_LOT_INFO_URL);
 			
@@ -39,9 +48,9 @@ public class OpenDataService {
 			// ref: http://www.journaldev.com/2324/jackson-json-java-parser-api-example-tutorial
 			ObjectMapper mapper = new ObjectMapper();
 			
-			ParkingLotInfoDetail parkingLotDetail = mapper.readValue(jsonData, ParkingLotInfoDetail.class);
+			ParkingLotInfoDetail parkingLotInfoDetail = mapper.readValue(jsonData, ParkingLotInfoDetail.class);
 			
-			List<ParkingLotInfo> parkingLotInfos = parkingLotDetail.getParkingLotInfos();
+			List<ParkingLotInfo> parkingLotInfos = parkingLotInfoDetail.getParkingLotInfos();
 			
 			logger.info(">>>>> Prepare to delete all parking lot informations...");
 
@@ -51,7 +60,7 @@ public class OpenDataService {
 			
 			logger.info("<<<<< Delete all parking lot informations done, time-spent: <{} ms>", System.currentTimeMillis() - startTime);
 			
-			logger.info("<<<<< Prepare to save all parking lot informations, data-size: <{}>...", parkingLotInfos.size());
+			logger.info(">>>>> Prepare to save all parking lot informations, data-size: <{}>...", parkingLotInfos.size());
 
 			startTime = System.currentTimeMillis();
 			
@@ -65,14 +74,38 @@ public class OpenDataService {
 		}
 	}
 	
+	/**
+	 * 從台北市政府 Open Data 取得所有停車場剩餘車位資訊
+	 */
 	public void getNewestParkingLotAvailable() {
 		try {
+			logger.info(">>>>> Prepare to get all parking lot availables from url: <{}>", PARKING_LOT_AVAILABLE_URL);
+			
+			long startTime = System.currentTimeMillis();
+			
 			String jsonData = GetFileUtil.readGzFromInternet(PARKING_LOT_AVAILABLE_URL);
 			
-			// TODO try to store to MongoDB and construct to object
-			System.out.println(jsonData);
+			logger.info(">>>>> Get all parking lot availables from url: <{}> done, time-spent: <{} ms>", PARKING_LOT_AVAILABLE_URL, System.currentTimeMillis() - startTime);
+			
+			// ref: http://www.journaldev.com/2324/jackson-json-java-parser-api-example-tutorial
+			ObjectMapper mapper = new ObjectMapper();
+			
+			ParkingLotAvailableDetail parkingLotAvailableDetail = mapper.readValue(jsonData, ParkingLotAvailableDetail.class);
+			
+			List<ParkingLotAvailable> parkingLotAvailables = parkingLotAvailableDetail.getParkingLotAvailables();
+
+			// 這邊不 delete all 了, 改用 save 去處理, 因為資料量遠小於停車場數目
+			logger.info(">>>>> Prepare to save all parking lot availables, data-size: <{}>...", parkingLotAvailables.size());
+			
+			startTime = System.currentTimeMillis();
+			
+			// insert is more faster than save
+			parkingLotAvailableRepo.save(parkingLotAvailables);
+			
+			logger.info("<<<<< Save all parking lot availables done, data-size: <{}>, time-spent: <{} ms>", parkingLotAvailables.size(), System.currentTimeMillis() - startTime);
+			
 		} catch (IOException e) {
-			logger.error("IOException raised while tring to get newest parking lot available", e);
+			logger.error("IOException raised while tring to get newest parking lot availables", e);
 		}
 	}
 }
