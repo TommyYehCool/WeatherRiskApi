@@ -1,7 +1,9 @@
 package com.weatherrisk.api.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -41,10 +43,12 @@ public class CwbService {
 			
 			logger.info("----> Prepare to get weather little helper with city: <{}> from url: <{}>", city, url);
 			
+			// 這種寫法本機跑沒問題, 但放到  Heroku 會壞掉
+//			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new URL(url));
+
 			String xmlContent = HttpUtil.getWeatherContentFromCwb(url);
 			logger.info(xmlContent);
-			
-			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new URL(url));
+			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new ByteArrayInputStream(xmlContent.getBytes(StandardCharsets.UTF_8)));
 			
 			logger.info("<---- Got response, <{}>", data);
 			
