@@ -6,3 +6,7 @@ spring:
     data:
         mongodb:
             uri: ${MONGO_DB_URI}
+            
+# -------- Custom Config --------
+cwb:
+    apikey: ${CWB_API_KEY}

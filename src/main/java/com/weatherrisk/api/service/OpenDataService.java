@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherrisk.api.model.ParkingLotInfoRepository;
+import com.weatherrisk.api.config.CwbConfig;
 import com.weatherrisk.api.model.ParkingLotAvailable;
 import com.weatherrisk.api.model.ParkingLotAvailableRepository;
 import com.weatherrisk.api.model.ParkingLotInfo;
@@ -31,6 +32,13 @@ public class OpenDataService {
 	
 	@Autowired
 	private ParkingLotAvailableRepository parkingLotAvailableRepo;
+	
+	@Autowired
+	private CwbConfig cwbConfig;
+	
+	public void testCwb() {
+		System.out.println(cwbConfig.getNormalWeatherPredictionUrl());
+	}
 
 	/**
 	 * 從台北市政府 Open Data 取得所有停車場資訊
