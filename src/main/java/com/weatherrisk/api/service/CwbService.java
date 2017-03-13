@@ -52,6 +52,7 @@ public class CwbService {
 			
 			// 這種寫法本機跑沒問題, 但放到  Heroku 會壞掉, maybe is the JDK version problem, heroku use OpenJDK
 			// 幹真的是 JDK 版本問題!!!!!!!!!!!!!!!!!!
+			// https://devcenter.heroku.com/articles/java-support
 			// https://bugs.openjdk.java.net/browse/JDK-8165299
 			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new URL(url));
 
