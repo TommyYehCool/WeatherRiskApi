@@ -10,11 +10,15 @@ import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
+import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.ParkingLotService;
 
 @LineMessageHandler
 public class LineMsgHandler {
 	private static final Logger logger = LoggerFactory.getLogger(LineMsgHandler.class);
+	
+	@Autowired
+	private CwbService cwbService;
 	
 	@Autowired
 	private ParkingLotService parkingLotService;
@@ -25,16 +29,22 @@ public class LineMsgHandler {
 
     	String inputMsg = event.getMessage().getText();
     	
-    	// 精準搜尋
+    	// 停車場-精準搜尋
     	if (inputMsg.startsWith("#")) {
     		String name = inputMsg.substring(1, inputMsg.length());
     		String queryResult = parkingLotService.findByName(name);
     		return new TextMessage(queryResult);
     	}
-    	// 模糊搜尋
+    	// 停車場-模糊搜尋
     	else if (inputMsg.startsWith("@")) {
     		String name = inputMsg.substring(1, inputMsg.length());
     		String queryResult = parkingLotService.findByNameLike(name);
+    		return new TextMessage(queryResult);
+    	}
+    	// 天氣-城市小幫手
+    	else if (inputMsg.endsWith("天氣")) {
+    		String city = inputMsg.substring(0, inputMsg.length() - 2);
+    		String queryResult = cwbService.getWeatherLitteleHelperByCity(city);
     		return new TextMessage(queryResult);
     	}
     	return new TextMessage(event.getMessage().getText());

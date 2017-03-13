@@ -25,4 +25,11 @@ public class Test_Java {
 		
 		System.out.println(format);
 	}
+	
+	@Test
+	public void test_3_testSubstring() {
+		String inputMsg = "台北市天氣";
+		String city = inputMsg.substring(0, inputMsg.length() - 2);
+		System.out.println(city);
+	}
 }

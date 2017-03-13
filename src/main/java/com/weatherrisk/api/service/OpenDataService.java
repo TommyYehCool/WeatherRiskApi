@@ -9,12 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weatherrisk.api.model.ParkingLotInfoRepository;
-import com.weatherrisk.api.config.CwbConfig;
 import com.weatherrisk.api.model.ParkingLotAvailable;
 import com.weatherrisk.api.model.ParkingLotAvailableRepository;
 import com.weatherrisk.api.model.ParkingLotInfo;
-import com.weatherrisk.api.util.GetFileUtil;
+import com.weatherrisk.api.model.ParkingLotInfoRepository;
+import com.weatherrisk.api.util.HttpUtil;
 import com.weatherrisk.api.vo.json.ParkingLotAvailableDetail;
 import com.weatherrisk.api.vo.json.ParkingLotInfoDetail;
 
@@ -33,9 +32,6 @@ public class OpenDataService {
 	@Autowired
 	private ParkingLotAvailableRepository parkingLotAvailableRepo;
 	
-	@Autowired
-	private CwbConfig cwbConfig;
-	
 	/**
 	 * 從台北市政府 Open Data 取得所有停車場資訊
 	 */
@@ -45,7 +41,7 @@ public class OpenDataService {
 			
 			long startTime = System.currentTimeMillis();
 			
-			String jsonData = GetFileUtil.readGzFromInternet(PARKING_LOT_INFO_URL);
+			String jsonData = HttpUtil.getGzContentFromOpenData(PARKING_LOT_INFO_URL);
 			
 			logger.info("<<<<< Get all parking lot informations from url: <{}> done, time-spent: <{} ms>", PARKING_LOT_INFO_URL, System.currentTimeMillis() - startTime);
 			
@@ -87,7 +83,7 @@ public class OpenDataService {
 			
 			long startTime = System.currentTimeMillis();
 			
-			String jsonData = GetFileUtil.readGzFromInternet(PARKING_LOT_AVAILABLE_URL);
+			String jsonData = HttpUtil.getGzContentFromOpenData(PARKING_LOT_AVAILABLE_URL);
 			
 			logger.info("<<<<< Get all parking lot availables from url: <{}> done, time-spent: <{} ms>", PARKING_LOT_AVAILABLE_URL, System.currentTimeMillis() - startTime);
 			

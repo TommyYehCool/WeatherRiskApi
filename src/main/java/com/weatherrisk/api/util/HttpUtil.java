@@ -5,14 +5,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.compress.utils.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.util.EntityUtils;
 import org.springframework.util.StringUtils;
 
-public class GetFileUtil {
+public class HttpUtil {
 
-	public static String readGzFromInternet(String url) throws IOException {
+	public static String getGzContentFromOpenData(String url) throws IOException {
 		URL objUrl = null;
 		InputStream inStream = null;
 		BufferedReader br = null;
@@ -36,5 +43,19 @@ public class GetFileUtil {
 			IOUtils.closeQuietly(inStream);
 			IOUtils.closeQuietly(br);
 		}
+	}
+	
+	public static String getWeatherContentFromCwb(String url) throws IOException {
+		HttpClient client 
+			= HttpClientBuilder.create()
+				.setRedirectStrategy(new LaxRedirectStrategy()).build();
+		
+		HttpGet get = new HttpGet(url);
+		
+		HttpResponse response = client.execute(get);
+		
+		String responseData = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+		
+		return responseData;
 	}
 }

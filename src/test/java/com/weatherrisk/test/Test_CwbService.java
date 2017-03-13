@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.weatherrisk.api.Application;
-import com.weatherrisk.api.service.OpenDataService;
+import com.weatherrisk.api.service.CwbService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -18,12 +18,14 @@ import com.weatherrisk.api.service.OpenDataService;
 	webEnvironment = WebEnvironment.RANDOM_PORT
 )
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class Test_OpenDataService {
+public class Test_CwbService {
 	
 	@Autowired
-	private OpenDataService openDataSerivce;
+	private CwbService cwbService;
 
 	@Test
-	public void test_1_openDataServiceCwb() {
+	public void test_1_CwbService_getWeatherLittleHelperByCity() {
+		String data = cwbService.getWeatherLitteleHelperByCity("台北市");
+		System.out.println(data);
 	}
 }
