@@ -48,7 +48,7 @@ public class CwbService {
 			
 			logger.info("----> Prepare to get weather little helper with city: <{}> from url: <{}>", city, url);
 			
-			// 這種寫法本機跑沒問題, 但放到  Heroku 會壞掉
+			// 這種寫法本機跑沒問題, 但放到  Heroku 會壞掉, maybe is the JDK version problem, heroku use OpenJDK
 //			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new URL(url));
 
 			String xmlContent = HttpUtil.getWeatherContentFromCwb(url);
