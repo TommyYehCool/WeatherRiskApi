@@ -40,6 +40,8 @@ public class CwbService {
 			
 			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new URL(url));
 			
+			logger.info("<<<<< Got response, {}", data);
+			
 			Dataset dataset = data.getDataset();
 			ParameterSet parameterSet = dataset.getParameterSet();
 
