@@ -2,7 +2,6 @@ package com.weatherrisk.api.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
