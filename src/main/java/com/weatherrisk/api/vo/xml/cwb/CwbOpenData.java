@@ -1,11 +1,12 @@
 package com.weatherrisk.api.vo.xml.cwb;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 
 import lombok.Data;
 
 @Data
 @XmlRootElement(name = "cwbopendata", namespace = "urn:cwb:gov:tw:cwbcommon:0.1")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CwbOpenData {
 	private String identifier;
 	
