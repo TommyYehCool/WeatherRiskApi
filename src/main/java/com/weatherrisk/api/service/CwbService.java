@@ -38,9 +38,11 @@ public class CwbService {
 				return "請輸入正確城市名稱";
 			}
 			
+			logger.info("----> Prepare to get weather little helper with city: {} from url: {}", city, url);
+			
 			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new URL(url));
 			
-			logger.info("<<<<< Got response, {}", data);
+			logger.info("<---- Got response, {}", data);
 			
 			Dataset dataset = data.getDataset();
 			ParameterSet parameterSet = dataset.getParameterSet();
