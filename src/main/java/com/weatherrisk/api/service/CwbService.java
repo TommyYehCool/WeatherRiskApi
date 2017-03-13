@@ -33,12 +33,13 @@ public class CwbService {
 	
 	public String getWeatherLitteleHelperByCity(String city) {
 		try {
-			JAXBContext jaxbContext 
-				= JAXBContext.newInstance(
-						new Class[] {
-							CwbOpenData.class, Dataset.class, DatasetInfo.class, Location.class, ParameterSet.class, Parameter.class
-						}
-				  );
+//			JAXBContext jaxbContext 
+//				= JAXBContext.newInstance(
+//						new Class[] {
+//							CwbOpenData.class, Dataset.class, DatasetInfo.class, Location.class, ParameterSet.class, Parameter.class
+//						}
+//				  );
+			JAXBContext jaxbContext = JAXBContext.newInstance(CwbOpenData.class);
 			
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 			
