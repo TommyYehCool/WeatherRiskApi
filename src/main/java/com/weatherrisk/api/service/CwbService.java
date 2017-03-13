@@ -18,6 +18,8 @@ import com.weatherrisk.api.config.CwbConfig;
 import com.weatherrisk.api.util.HttpUtil;
 import com.weatherrisk.api.vo.xml.cwb.CwbOpenData;
 import com.weatherrisk.api.vo.xml.cwb.Dataset;
+import com.weatherrisk.api.vo.xml.cwb.DatasetInfo;
+import com.weatherrisk.api.vo.xml.cwb.Location;
 import com.weatherrisk.api.vo.xml.cwb.Parameter;
 import com.weatherrisk.api.vo.xml.cwb.ParameterSet;
 
@@ -31,7 +33,12 @@ public class CwbService {
 	
 	public String getWeatherLitteleHelperByCity(String city) {
 		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(CwbOpenData.class);
+			JAXBContext jaxbContext 
+				= JAXBContext.newInstance(
+						new Class[] {
+							CwbOpenData.class, Dataset.class, DatasetInfo.class, Location.class, ParameterSet.class, Parameter.class
+						}
+				  );
 			
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 			

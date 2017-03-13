@@ -6,8 +6,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @XmlRootElement(name = "cwbopendata", namespace = "urn:cwb:gov:tw:cwbcommon:0.1")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CwbOpenData {
