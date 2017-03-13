@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.weatherrisk.api.model.Consume;
 import com.weatherrisk.api.service.ConsumeService;
+import com.weatherrisk.api.service.CwbService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,6 +31,15 @@ public class TestController {
 	
 	@Autowired
 	private ConsumeService consumeService;
+	
+	@Autowired
+	private CwbService cwbService;
+	
+	@RequestMapping(value = "/testGetCityWeatherLittleHelper", method = RequestMethod.GET)
+	@ApiOperation(value = "測試 GET City Weather Little Helper by RequestParam")
+	public @ResponseBody String testGetWeatherLittleHelperByCity(@RequestParam(value = "city", required = true) String city) {
+		return cwbService.getWeatherLitteleHelperByCity(city);
+	}
 	
 	/**
 	 * <pre>
