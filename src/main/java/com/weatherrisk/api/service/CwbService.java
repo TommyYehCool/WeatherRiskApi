@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.weatherrisk.api.config.CwbConfig;
+import com.weatherrisk.api.util.HttpUtil;
 import com.weatherrisk.api.vo.xml.cwb.CwbOpenData;
 import com.weatherrisk.api.vo.xml.cwb.Dataset;
 import com.weatherrisk.api.vo.xml.cwb.Parameter;
@@ -38,11 +39,18 @@ public class CwbService {
 				return "請輸入正確城市名稱";
 			}
 			
-			logger.info("----> Prepare to get weather little helper with city: {} from url: {}", city, url);
+			logger.info("----> Prepare to get weather little helper with city: <{}> from url: <{}>", city, url);
+			
+			String xmlContent = HttpUtil.getWeatherContentFromCwb(url);
+			logger.info(xmlContent);
 			
 			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new URL(url));
 			
-			logger.info("<---- Got response, {}", data);
+			logger.info("<---- Got response, <{}>", data);
+			
+			if (data.getDataset() == null) {
+				return "不好意思, 程式寫太爛, 壞掉啦!";
+			}
 			
 			Dataset dataset = data.getDataset();
 			ParameterSet parameterSet = dataset.getParameterSet();
