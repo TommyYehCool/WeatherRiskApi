@@ -1,5 +1,7 @@
 package com.weatherrisk.test;
 
+import java.text.MessageFormat;
+
 import org.junit.Test;
 
 public class Test_Java {
@@ -9,5 +11,18 @@ public class Test_Java {
 		String inputMsg = "#大安森林公園地下停車場";
 		String searchStr = inputMsg.substring(1, inputMsg.length());
 		System.out.println(searchStr);
+	}
+	
+	@Test
+	public void test_2_message_format() {
+		String CWB_URL = "http://opendata.cwb.gov.tw/opendataapi?dataid={0}&authorizationkey={1}";
+		
+		String dataId = "F-C0032-001";
+
+		String CWB_AUTHOR_API_KEY = "CWB-177B46C0-418B-4126-AC66-99C778E8CABE";
+		
+		String format = MessageFormat.format(CWB_URL, dataId, CWB_AUTHOR_API_KEY);
+		
+		System.out.println(format);
 	}
 }
