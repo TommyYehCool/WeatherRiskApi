@@ -78,7 +78,7 @@ public class CwbService {
 			
 			List<Parameter> parameters = parameterSet.getParameter();
 			for (Parameter parameter : parameters) {
-				buffer.append(parameter.getParameterValue()).append("\n");
+				buffer.append(parameter.getParameterValue()).append("\n\n");
 			}
 			
 			return buffer.toString();
