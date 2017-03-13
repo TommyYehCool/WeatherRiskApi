@@ -11,30 +11,30 @@ import lombok.Data;
 @XmlRootElement(name = "cwbopendata", namespace = "urn:cwb:gov:tw:cwbcommon:0.1")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CwbOpenData {
-	@XmlElement
+	@XmlElement(name = "identifier")
 	private String identifier;
 	
-	@XmlElement
+	@XmlElement(name = "sender")
 	private String sender;
 	
-	@XmlElement
+	@XmlElement(name = "sent")
 	private String sent;
 	
-	@XmlElement
+	@XmlElement(name = "status")
 	private String status;
 	
-	@XmlElement
+	@XmlElement(name = "msgType")
 	private String msgType;
 	
-	@XmlElement
+	@XmlElement(name = "scope")
 	private String scope;
 	
-	@XmlElement
+	@XmlElement(name = "dataid")
 	private String dataid;
 	
-	@XmlElement
+	@XmlElement(name = "source")
 	private String source;
 	
-	@XmlElement
+	@XmlElement(name = "dataset")
 	private Dataset dataset;
 }
