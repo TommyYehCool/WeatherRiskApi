@@ -25,6 +25,5 @@ public class Test_OpenDataService {
 
 	@Test
 	public void test_1_openDataServiceCwb() {
-		openDataSerivce.testCwb();
 	}
 }

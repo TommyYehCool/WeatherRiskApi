@@ -13,12 +13,8 @@ public class CwbConfig {
 	
 	private String BASE_URL = "http://opendata.cwb.gov.tw/opendataapi?authorizationkey={0}&dataid={1}";
 	
-	public String getApiKey() {
-		return this.apiKey;
-	}
-	
-	public String getNormalWeatherPredictionUrl() {
-		String dataid = "F-C0032-001";
-		return MessageFormat.format(BASE_URL, getApiKey(), dataid);
+	public String getTaiepiWeatherLittleHelperUrl() {
+		String dataid = "F-C0032-009";
+		return MessageFormat.format(BASE_URL, this.apiKey, dataid);
 	}
 }

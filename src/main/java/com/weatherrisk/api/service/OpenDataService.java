@@ -36,10 +36,6 @@ public class OpenDataService {
 	@Autowired
 	private CwbConfig cwbConfig;
 	
-	public void testCwb() {
-		System.out.println(cwbConfig.getNormalWeatherPredictionUrl());
-	}
-
 	/**
 	 * 從台北市政府 Open Data 取得所有停車場資訊
 	 */
