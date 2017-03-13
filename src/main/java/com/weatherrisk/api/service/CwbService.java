@@ -1,9 +1,7 @@
 package com.weatherrisk.api.service;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -54,11 +52,12 @@ public class CwbService {
 //			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new URL(url));
 
 			String xmlContent = HttpUtil.getWeatherContentFromCwb(url);
-			logger.info(xmlContent);
+			logger.info("<---- Got response, xml content: {}", xmlContent);
+
 			StringReader reader = new StringReader(xmlContent);
 			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(reader);
 			
-			logger.info("<---- Got response, <{}>", data);
+			logger.info("----- Unmarshal to CwbOpenData result: {}", data);
 			
 			if (data.getDataset() == null) {
 				return "不好意思, 程式寫太爛, 壞掉啦!";
