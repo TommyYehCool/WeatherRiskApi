@@ -2,6 +2,7 @@ package com.weatherrisk.api.service;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -49,13 +50,15 @@ public class CwbService {
 			logger.info("----> Prepare to get weather little helper with city: <{}> from url: <{}>", city, url);
 			
 			// 這種寫法本機跑沒問題, 但放到  Heroku 會壞掉, maybe is the JDK version problem, heroku use OpenJDK
-//			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new URL(url));
+			// 幹真的是 JDK 版本問題!!!!!!!!!!!!!!!!!!
+			// https://bugs.openjdk.java.net/browse/JDK-8165299
+			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new URL(url));
 
-			String xmlContent = HttpUtil.getWeatherContentFromCwb(url);
-			logger.info("<---- Got response, xml content: {}", xmlContent);
-
-			StringReader reader = new StringReader(xmlContent);
-			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(reader);
+//			String xmlContent = HttpUtil.getWeatherContentFromCwb(url);
+//			logger.info("<---- Got response, xml content: {}", xmlContent);
+//
+//			StringReader reader = new StringReader(xmlContent);
+//			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(reader);
 			
 			logger.info("----- Unmarshal to CwbOpenData result: {}", data);
 			
