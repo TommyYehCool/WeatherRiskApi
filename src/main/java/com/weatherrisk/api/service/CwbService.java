@@ -143,6 +143,8 @@ public class CwbService {
 
 	public String getOneWeekWeatherPrediction(String region) {
 		try {
+			final String regionModified = checkCityName(region);
+			
 			JAXBContext jaxbContext = JAXBContext.newInstance(CwbOpenData.class);
 			
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -160,7 +162,7 @@ public class CwbService {
 			
 			List<Location> locations = dataset.getLocation();
 			
-			List<Location> regionLoc = locations.stream().filter(l -> l.getLocationName().equals(region)).collect(Collectors.toList());
+			List<Location> regionLoc = locations.stream().filter(l -> l.getLocationName().equals(regionModified)).collect(Collectors.toList());
 			if (regionLoc.isEmpty() || regionLoc.size() != 1) {
 				return "找不到對應一週資訊, 請確認輸入為 'xxxx一週";
 			}
