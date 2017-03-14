@@ -68,7 +68,7 @@ public class LineMsgHandler {
     		return new TextMessage(queryResult);
     	}
     	// 天氣_一周資訊
-    	else if (inputMsg.endsWith("一週") || inputMsg.endsWith("一周")) {
+    	else if (!inputMsg.startsWith("桃園市") && (inputMsg.endsWith("一週") || inputMsg.endsWith("一周"))) {
     		String region = inputMsg.substring(0, inputMsg.length() - 2);
     		String queryResult = cwbService.getOneWeekWeatherPrediction(region);
     		return new TextMessage(queryResult);
