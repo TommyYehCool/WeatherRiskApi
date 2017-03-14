@@ -71,7 +71,7 @@ public class CwbService {
 
 			Location location = regionLoc.get(0);
 			
-			buffer.append("----- ").append(location.getLocationName()).append(" -----\n");
+			buffer.append(location.getLocationName()).append(" 一週天氣資訊:\n");
 			
 			List<WeatherElement> weatherElements = location.getWeatherElement();
 			
