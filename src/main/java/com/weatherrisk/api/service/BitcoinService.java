@@ -85,7 +85,7 @@ public class BitcoinService {
 		buffer.append("最低價 ").append(baseCurrency).append("/USD: ").append(ticker.getLow()).append("\n");
 		buffer.append("更新時間: ").append(updateTimeFormat.format(ticker.getTimestamp())).append("\n");
 		buffer.append("USD/TWD: ").append(usdTwdRate).append("\n");
-		buffer.append("(備註: 美金對台幣匯率, 資料來源為台灣銀行銀行現金買入)\n");
+		buffer.append("(備註: 美金對台幣匯率, 參考台灣銀行現金買入)\n");
 	}
 
 	/**
