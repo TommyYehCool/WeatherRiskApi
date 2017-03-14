@@ -1,5 +1,7 @@
 package com.weatherrisk.api.line;
 
+import java.util.Random;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,14 @@ public class LineMsgHandler {
 	
 	@Autowired
 	private ParkingLotService parkingLotService;
+	
+	private final String[] templateMsgs 
+		= new String[] {
+			"你好呀, 吃飽沒?",
+			"今天有沒有打扮得很美呀?",
+			"我愛你",
+			"去簽看看樂透會不會中獎"
+		};
 	
     @EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
@@ -58,7 +68,12 @@ public class LineMsgHandler {
     		String queryResult = cwbService.getOneWeekWeatherPrediction(region);
     		return new TextMessage(queryResult);
     	}
-    	return new TextMessage(event.getMessage().getText());
+    	return new TextMessage(getRandomMsg());
+    }
+    
+    private String getRandomMsg() {
+    	Random random = new Random();
+    	return String.valueOf(templateMsgs[random.nextInt(templateMsgs.length)]);
     }
 
     @EventMapping
