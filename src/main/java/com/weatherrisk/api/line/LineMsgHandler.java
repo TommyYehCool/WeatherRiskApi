@@ -29,26 +29,31 @@ public class LineMsgHandler {
 
     	String inputMsg = event.getMessage().getText();
     	
-    	// 停車場-精準搜尋
+    	// 停車場_精準搜尋
     	if (inputMsg.startsWith("#")) {
     		String name = inputMsg.substring(1, inputMsg.length());
     		String queryResult = parkingLotService.findByName(name);
     		return new TextMessage(queryResult);
     	}
-    	// 停車場-模糊搜尋
+    	// 停車場_模糊搜尋
     	else if (inputMsg.startsWith("@")) {
     		String name = inputMsg.substring(1, inputMsg.length());
     		String queryResult = parkingLotService.findByNameLike(name);
     		return new TextMessage(queryResult);
     	}
-    	// 天氣-城市小幫手
+    	// 天氣_城市小幫手
     	else if (inputMsg.endsWith("天氣")) {
     		String city = inputMsg.substring(0, inputMsg.length() - 2);
     		String queryResult = cwbService.getWeatherLitteleHelperByCity(city);
     		return new TextMessage(queryResult);
     	}
-    	// 天氣-一周資訊
-    	else if (inputMsg.endsWith("一週")) {
+    	// 天氣_查詢一周提供資訊
+    	else if (inputMsg.equals("一週提供") || inputMsg.equals("一周提供")) {
+    		String queryResult = cwbService.getOneWeekWeatherPredictionProvided();
+    		return new TextMessage(queryResult);
+    	}
+    	// 天氣_一周資訊
+    	else if (inputMsg.endsWith("一週") || inputMsg.endsWith("一周")) {
     		String region = inputMsg.substring(0, inputMsg.length() - 2);
     		String queryResult = cwbService.getOneWeekWeatherPrediction(region);
     		return new TextMessage(queryResult);

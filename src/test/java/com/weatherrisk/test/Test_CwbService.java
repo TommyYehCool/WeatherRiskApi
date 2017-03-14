@@ -1,7 +1,6 @@
 package com.weatherrisk.test;
 
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -33,6 +32,12 @@ public class Test_CwbService {
 	@Test
 	public void test_2_CwbService_getOneWeekWeatherPrediction() {
 		String data = cwbService.getOneWeekWeatherPrediction("臺北市");
+		System.out.println(data);
+	}
+	
+	@Test
+	public void test_3_CwbService_getOneWeekWeatherPredictionProvided() {
+		String data = cwbService.getOneWeekWeatherPredictionProvided();
 		System.out.println(data);
 	}
 }
