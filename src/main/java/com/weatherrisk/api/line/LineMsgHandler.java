@@ -47,6 +47,12 @@ public class LineMsgHandler {
     		String queryResult = cwbService.getWeatherLitteleHelperByCity(city);
     		return new TextMessage(queryResult);
     	}
+    	// 天氣-一周資訊
+    	else if (inputMsg.endsWith("一週")) {
+    		String region = inputMsg.substring(0, inputMsg.length() - 2);
+    		String queryResult = cwbService.getOneWeekWeatherPrediction(region);
+    		return new TextMessage(queryResult);
+    	}
     	return new TextMessage(event.getMessage().getText());
     }
 

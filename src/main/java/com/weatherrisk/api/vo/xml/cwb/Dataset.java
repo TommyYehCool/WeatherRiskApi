@@ -1,5 +1,7 @@
 package com.weatherrisk.api.vo.xml.cwb;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -16,7 +18,7 @@ public class Dataset {
 	private DatasetInfo datasetInfo;
 	
 	@XmlElement(name = "location")
-	private Location location;
+	private List<Location> location;
 	
 	@XmlElement(name = "parameterSet")
 	private ParameterSet parameterSet;

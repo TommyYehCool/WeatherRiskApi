@@ -11,17 +11,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CwbConfig {
 	
-	private static final String BASE_URL = "http://opendata.cwb.gov.tw/opendataapi?authorizationkey={0}&dataid={1}";
+	private final String BASE_URL = "http://opendata.cwb.gov.tw/opendataapi?authorizationkey={0}&dataid={1}";
 	
-	private static final Map<String, String> weatherPredictionUrl = new HashMap<>();
+	private String oneWeekWeatherPredictionUrl; 
 	
-	private static final Map<String, String> cityWeatherLittleHelpUrl = new HashMap<>();
+	private Map<String, String> cityWeatherLittleHelpUrl = new HashMap<>();
 	
 	@Autowired
 	public CwbConfig(@Value("${cwb.apikey}") String apiKey) {
-		weatherPredictionUrl.put("七天", MessageFormat.format(BASE_URL, apiKey, "F-C0032-003"));
-
-		cityWeatherLittleHelpUrl.put("台北市", MessageFormat.format(BASE_URL, apiKey, "F-C0032-009"));
+		oneWeekWeatherPredictionUrl = MessageFormat.format(BASE_URL, apiKey, "F-C0032-003");
+		
+		cityWeatherLittleHelpUrl.put("臺北市", MessageFormat.format(BASE_URL, apiKey, "F-C0032-009"));
 		cityWeatherLittleHelpUrl.put("新北市", MessageFormat.format(BASE_URL, apiKey, "F-C0032-010"));
 		cityWeatherLittleHelpUrl.put("基隆市", MessageFormat.format(BASE_URL, apiKey, "F-C0032-011"));
 		cityWeatherLittleHelpUrl.put("花蓮縣", MessageFormat.format(BASE_URL, apiKey, "F-C0032-012"));
@@ -43,7 +43,11 @@ public class CwbConfig {
 		cityWeatherLittleHelpUrl.put("彰化縣", MessageFormat.format(BASE_URL, apiKey, "F-C0032-028"));
 	    cityWeatherLittleHelpUrl.put("雲林縣", MessageFormat.format(BASE_URL, apiKey, "F-C0032-029"));
         cityWeatherLittleHelpUrl.put("連江縣", MessageFormat.format(BASE_URL, apiKey, "F-C0032-030"));
-	}                                
+	}
+	
+	public String getOneWeekWeatherPredictionUrl() {
+		return oneWeekWeatherPredictionUrl;
+	}
      
 	public String getLittleHelperUrlByCity(String city) {
 		return cityWeatherLittleHelpUrl.get(city);
