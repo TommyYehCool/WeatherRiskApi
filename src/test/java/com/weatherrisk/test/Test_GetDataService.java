@@ -1,5 +1,8 @@
 package com.weatherrisk.test;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -12,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.weatherrisk.api.Application;
+import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.service.BitcoinService;
 import com.weatherrisk.api.service.CwbService;
 
@@ -64,5 +68,11 @@ public class Test_GetDataService {
 		
 		data = bitcoinService.getPriceFromExchanges(CurrencyPair.ETH_USD);
 		System.out.println(data);
+	}
+	
+	@Test
+	public void test_6_BitcoinService_getRatesFromTaiwanBank() throws IOException {
+		BigDecimal usdRatesFromTaiwanBank = bitcoinService.getRatesFromTaiwanBank(CurrencyCnst.USD);
+		System.out.println("USD/TWD: " + usdRatesFromTaiwanBank);
 	}
 }

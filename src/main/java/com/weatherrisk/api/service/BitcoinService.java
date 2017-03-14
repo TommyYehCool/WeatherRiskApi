@@ -3,6 +3,7 @@ package com.weatherrisk.api.service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.weatherrisk.api.cnst.CurrencyCnst;
 
 @Service
 public class BitcoinService {
@@ -38,15 +40,17 @@ public class BitcoinService {
 	public String getPriceFromExchanges(CurrencyPair currencyPair) {
 		StringBuilder buffer = new StringBuilder();
 		try {
+			BigDecimal usdTwdRate = getRatesFromTaiwanBank(CurrencyCnst.USD);
+			
 			if (currencyPair.equals(CurrencyPair.BTC_USD)) {
-				getPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), currencyPair);
+				getPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), CurrencyCnst.BTC, currencyPair, usdTwdRate);
 
 				buffer.append("\n");
 				
-				getPriceFromExchange(buffer, "Bitstamp", BitstampExchange.class.getName(), currencyPair);
+				getPriceFromExchange(buffer, "Bitstamp", BitstampExchange.class.getName(), CurrencyCnst.BTC, currencyPair, usdTwdRate);
 			}
 			else if (currencyPair.equals(CurrencyPair.ETH_USD)) {
-				getPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), currencyPair);
+				getPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), CurrencyCnst.ETH, currencyPair, usdTwdRate);
 			}
 			
 			return buffer.toString();
@@ -63,7 +67,8 @@ public class BitcoinService {
 	 * 參考: <a href="https://github.com/timmolter/XChange/blob/develop/xchange-examples/src/main/java/org/knowm/xchange/examples/bitstamp/marketdata/BitstampTickerDemo.java">Bitstamp Ticker Demo</a>
 	 * </pre>
 	 */
-	private void getPriceFromExchange(StringBuilder buffer, String exchangeName, String exchangeClassName, CurrencyPair currencyPair) throws IOException {
+	private void getPriceFromExchange(StringBuilder buffer, String exchangeName, String exchangeClassName,
+			CurrencyCnst baseCurrency, CurrencyPair currencyPair, BigDecimal usdTwdRate) throws IOException {
 		Exchange exchange = ExchangeFactory.INSTANCE.createExchange(exchangeClassName);
 
 		MarketDataService marketDataService = exchange.getMarketDataService();
@@ -71,15 +76,57 @@ public class BitcoinService {
 		Ticker ticker = marketDataService.getTicker(currencyPair);
 		
 		DateFormat updateTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		DecimalFormat outDecFormat = new DecimalFormat("#.##");
 		
 		buffer.append(exchangeName).append(":\n");
-		buffer.append(ticker.getCurrencyPair()).append(": ").append(ticker.getLast()).append("\n");
-		buffer.append("最高價: ").append(ticker.getHigh()).append("\n");
-		buffer.append("最低價: ").append(ticker.getLow()).append("\n");
+		buffer.append("目前成交價 ").append(ticker.getCurrencyPair()).append(": ").append(ticker.getLast()).append("\n");
+		buffer.append("換算台幣價 ").append(baseCurrency).append("/TWD: ").append(outDecFormat.format(usdTwdRate.multiply(ticker.getLast()))).append("\n");
+		buffer.append("最高價 ").append(baseCurrency).append("/USD: ").append(ticker.getHigh()).append("\n");
+		buffer.append("最低價 ").append(baseCurrency).append("/USD: ").append(ticker.getLow()).append("\n");
 		buffer.append("更新時間: ").append(updateTimeFormat.format(ticker.getTimestamp())).append("\n");
+		buffer.append("USD/TWD: ").append(usdTwdRate).append("\n");
+		buffer.append("(PS: USD/TWD 資料來源為台灣銀行)\n");
 	}
 
+	/**
+	 * <pre>
+	 * 從台灣銀行取得美金對台幣匯率
+	 * 
+	 * 參考: <a href="http://blog.asper.tw/2015/05/json.html">取得匯率方法</a>
+	 * </pre> 
+	 */
+	@SuppressWarnings("unchecked")
+	public BigDecimal getRatesFromTaiwanBank(CurrencyCnst currency) throws IOException {
+		StringBuilder srcBuffer = new StringBuilder();
+		BufferedReader reader = null;
+	
+		try {
+			URL url = new URL("http://asper-bot-rates.appspot.com/currency.json");
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			
+			String line;
+			while ((line = reader.readLine()) != null) {
+				srcBuffer.append(line);
+			}
+		} finally {
+			IOUtils.closeQuietly(reader);
+		}
+		
+		ObjectMapper objectMapper = new ObjectMapper();
 
+		Map<String, ?> map = objectMapper.readValue(srcBuffer.toString(), HashMap.class);
+		
+		Map<String, ?> ratesMap = (Map<String, ?>) map.get("rates");
+		
+		Map<String, ?> currencyRatesMap = (Map<String, ?>) ratesMap.get(currency.toString());
+		
+		String strBuyCash = (String) currencyRatesMap.get("buyCash");
+		
+		return new BigDecimal(strBuyCash); 
+	}
+	
 	/**
 	 * <pre>
 	 * 從 winkdex 取得目前 BTC 價格
@@ -103,7 +150,6 @@ public class BitcoinService {
 			while ((line = reader.readLine()) != null) {
 				srcBuffer.append(line);
 			}
-			reader.close();
 		} catch (IOException e) {
 			logger.error("IOException raised while trying to get Bitcoin price from WINKDEXSM", e);
 			return "從 WINKDEXSM 抓取資料失敗";
