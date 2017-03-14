@@ -74,7 +74,7 @@ public class LineMsgHandler {
     	}
     	// Bitcoin 價格
     	else if (inputMsg.compareToIgnoreCase("bitcoin") == 0) {
-    		String queryResult = bitcoinService.getCurrentBitcoinPrice();
+    		String queryResult = bitcoinService.getBitcoinPriceFromExchanges();
     		return new TextMessage(queryResult);
     	}
     	return new TextMessage(getRandomMsg());

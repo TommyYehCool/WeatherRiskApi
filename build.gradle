@@ -9,6 +9,8 @@ targetCompatibility = 1.8
 
 // Version settings
 ext {
+	lineBotVersion = '1.6.0'
+	xchangeVersion = '4.2.0'
 	stormpathVersion = '1.2.3'
 	jbcryptVersion = '0.3m'
 	lombokVersion = '1.16.10'
@@ -67,7 +69,11 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter-test"
 	
 	// --------- line bot spring boot ---------
-	compile "com.linecorp.bot:line-bot-spring-boot:1.6.0"
+	compile "com.linecorp.bot:line-bot-spring-boot:${lineBotVersion}"
+	
+	// --------- https://github.com/timmolter/XChange ---------
+	compile "org.knowm.xchange:xchange-core:${xchangeVersion}"
+	compile "org.knowm.xchange:xchange-examples:${xchangeVersion}"
 	
 	// --------- Stormpath ---------
 	compile "com.stormpath.spring:stormpath-spring-security-webmvc-spring-boot-starter:${stormpathVersion}"

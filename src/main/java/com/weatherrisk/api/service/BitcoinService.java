@@ -14,6 +14,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.knowm.xchange.Exchange;
+import org.knowm.xchange.ExchangeFactory;
+import org.knowm.xchange.bitstamp.BitstampExchange;
+import org.knowm.xchange.btce.v3.BTCEExchange;
+import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.dto.marketdata.Ticker;
+import org.knowm.xchange.service.marketdata.MarketDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -24,6 +31,43 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class BitcoinService {
 	
 	private Logger logger = LoggerFactory.getLogger(BitcoinService.class);
+	
+	public String getBitcoinPriceFromExchanges() {
+		StringBuilder buffer = new StringBuilder();
+		try {
+			getBitcoinPrice(buffer, "Bitstamp", BitstampExchange.class.getName());
+			
+			buffer.append("\n");
+			
+			getBitcoinPrice(buffer, "BTC-E", BTCEExchange.class.getName());
+			
+			return buffer.toString();
+		} catch (IOException e) {
+			logger.error("IOException raised while trying to get bitcoin price");
+			return "抓取 Bitcoin 價格失敗";
+		}
+	}
+	
+	/**
+	 * 參考: <a href="https://github.com/timmolter/XChange/blob/develop/xchange-examples/src/main/java/org/knowm/xchange/examples/bitstamp/marketdata/BitstampTickerDemo.java">Bitstamp Ticker Demo</a>
+	 */
+	private void getBitcoinPrice(StringBuilder buffer, String exchangeName, String exchangeClassName) throws IOException {
+		// Use the factory to get Bitstamp exchange API using default settings
+		Exchange bitstamp = ExchangeFactory.INSTANCE.createExchange(exchangeClassName);
+
+		// Interested in the public market data feed (no authentication)
+		MarketDataService marketDataService = bitstamp.getMarketDataService();
+		
+		Ticker ticker = marketDataService.getTicker(CurrencyPair.BTC_USD);
+		
+		DateFormat updateTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		
+		buffer.append(exchangeName).append(":\n");
+		buffer.append(ticker.getCurrencyPair()).append(": ").append(ticker.getLast()).append("\n");
+		buffer.append("最高價: ").append(ticker.getHigh()).append("\n");
+		buffer.append("最低價: ").append(ticker.getLow()).append("\n");
+		buffer.append("更新時間: ").append(updateTimeFormat.format(ticker.getTimestamp())).append("\n");
+	}
 
 	/**
 	 * <pre>
@@ -33,7 +77,7 @@ public class BitcoinService {
 	 * </pre>
 	 */
 	@SuppressWarnings("unchecked")
-	public String getCurrentBitcoinPrice() {
+	public String getBitcoinPriceFromWinkdex() {
 		StringBuffer srcBuffer = new StringBuffer();
 
 		BufferedReader reader = null;

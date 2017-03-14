@@ -20,7 +20,7 @@ import com.weatherrisk.api.service.CwbService;
 	webEnvironment = WebEnvironment.RANDOM_PORT
 )
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class Test_CwbService {
+public class Test_GetDataService {
 	
 	@Autowired
 	private CwbService cwbService;
@@ -50,8 +50,14 @@ public class Test_CwbService {
 	}
 	
 	@Test
-	public void test_4_BitcoinService_getCurrentPrice() {
-		String data = bitcoinService.getCurrentBitcoinPrice();
+	public void test_4_BitcoinService_getBitcoinPriceFromWinkdex() {
+		String data = bitcoinService.getBitcoinPriceFromWinkdex();
+		System.out.println(data);
+	}
+	
+	@Test
+	public void test_5_BitcoinService_getBitcoinPriceFromBitstamp() {
+		String data = bitcoinService.getBitcoinPriceFromExchanges();
 		System.out.println(data);
 	}
 }
