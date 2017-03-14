@@ -127,16 +127,11 @@ public class CwbService {
 				String time = keys.next();
 				OneDayWeather oneDayWeather = tempMap.get(time);
 				
-				buffer.append(oneDayWeather.getTime()).append("\t");
-				buffer.append(oneDayWeather.getDesc());
-				if (oneDayWeather.getDesc().length() > 2) {
-					buffer.append("\t");
-				}
-				else {
-					buffer.append("\t\t");
-				}
+				buffer.append(oneDayWeather.getTime()).append("     ");
 				buffer.append(oneDayWeather.getMinT()).append(" ~ ");
-				buffer.append(oneDayWeather.getMaxT()).append("\n");
+				buffer.append(oneDayWeather.getMaxT()).append("     ");
+				buffer.append(oneDayWeather.getDesc()).append("\n");
+				
 			}
 			
 			return buffer.toString();
