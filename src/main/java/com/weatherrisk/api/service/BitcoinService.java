@@ -32,33 +32,43 @@ public class BitcoinService {
 	
 	private Logger logger = LoggerFactory.getLogger(BitcoinService.class);
 	
-	public String getBitcoinPriceFromExchanges() {
+	/**
+	 * 從各大交易所取得指定需擬貨幣目前價格
+	 */
+	public String getPriceFromExchanges(CurrencyPair currencyPair) {
 		StringBuilder buffer = new StringBuilder();
 		try {
-			getBitcoinPrice(buffer, "Bitstamp", BitstampExchange.class.getName());
-			
-			buffer.append("\n");
-			
-			getBitcoinPrice(buffer, "BTC-E", BTCEExchange.class.getName());
+			if (currencyPair.equals(CurrencyPair.BTC_USD)) {
+				getPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), currencyPair);
+
+				buffer.append("\n");
+				
+				getPriceFromExchange(buffer, "Bitstamp", BitstampExchange.class.getName(), currencyPair);
+			}
+			else if (currencyPair.equals(CurrencyPair.ETH_USD)) {
+				getPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), currencyPair);
+			}
 			
 			return buffer.toString();
 		} catch (IOException e) {
-			logger.error("IOException raised while trying to get bitcoin price");
-			return "抓取 Bitcoin 價格失敗";
+			logger.error("IOException raised while trying to get BTC price");
+			return "抓取 BTC 價格失敗";
 		}
 	}
 	
 	/**
+	 * <pre>
+	 * 從指定交易所取得價格
+	 * 
 	 * 參考: <a href="https://github.com/timmolter/XChange/blob/develop/xchange-examples/src/main/java/org/knowm/xchange/examples/bitstamp/marketdata/BitstampTickerDemo.java">Bitstamp Ticker Demo</a>
+	 * </pre>
 	 */
-	private void getBitcoinPrice(StringBuilder buffer, String exchangeName, String exchangeClassName) throws IOException {
-		// Use the factory to get Bitstamp exchange API using default settings
-		Exchange bitstamp = ExchangeFactory.INSTANCE.createExchange(exchangeClassName);
+	private void getPriceFromExchange(StringBuilder buffer, String exchangeName, String exchangeClassName, CurrencyPair currencyPair) throws IOException {
+		Exchange exchange = ExchangeFactory.INSTANCE.createExchange(exchangeClassName);
 
-		// Interested in the public market data feed (no authentication)
-		MarketDataService marketDataService = bitstamp.getMarketDataService();
+		MarketDataService marketDataService = exchange.getMarketDataService();
 		
-		Ticker ticker = marketDataService.getTicker(CurrencyPair.BTC_USD);
+		Ticker ticker = marketDataService.getTicker(currencyPair);
 		
 		DateFormat updateTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		
@@ -69,9 +79,10 @@ public class BitcoinService {
 		buffer.append("更新時間: ").append(updateTimeFormat.format(ticker.getTimestamp())).append("\n");
 	}
 
+
 	/**
 	 * <pre>
-	 * 抓取當下 Bitcoin 價格
+	 * 從 winkdex 取得目前 BTC 價格
 	 * 
 	 * 參考: <a href="https://breekmd.wordpress.com/2015/03/11/bitcoin-price-with-winkdex-api-in-java-part-i/">Bitcoin Price with Winkdex api</a>
 	 * </pre>

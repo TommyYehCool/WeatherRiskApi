@@ -5,6 +5,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.knowm.xchange.currency.CurrencyPair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -50,14 +51,18 @@ public class Test_GetDataService {
 	}
 	
 	@Test
+	@Ignore
 	public void test_4_BitcoinService_getBitcoinPriceFromWinkdex() {
 		String data = bitcoinService.getBitcoinPriceFromWinkdex();
 		System.out.println(data);
 	}
 	
 	@Test
-	public void test_5_BitcoinService_getBitcoinPriceFromBitstamp() {
-		String data = bitcoinService.getBitcoinPriceFromExchanges();
+	public void test_5_BitcoinService_getPriceFromExchanges() {
+		String data = bitcoinService.getPriceFromExchanges(CurrencyPair.BTC_USD);
+		System.out.println(data);
+		
+		data = bitcoinService.getPriceFromExchanges(CurrencyPair.ETH_USD);
 		System.out.println(data);
 	}
 }

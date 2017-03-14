@@ -2,6 +2,7 @@ package com.weatherrisk.api.line;
 
 import java.util.Random;
 
+import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,9 +73,14 @@ public class LineMsgHandler {
     		String queryResult = cwbService.getOneWeekWeatherPrediction(region);
     		return new TextMessage(queryResult);
     	}
-    	// Bitcoin 價格
-    	else if (inputMsg.compareToIgnoreCase("bitcoin") == 0) {
-    		String queryResult = bitcoinService.getBitcoinPriceFromExchanges();
+    	// BTC 價格
+    	else if (inputMsg.compareToIgnoreCase("btc") == 0 || inputMsg.compareToIgnoreCase("bitcoin") == 0) {
+    		String queryResult = bitcoinService.getPriceFromExchanges(CurrencyPair.BTC_USD);
+    		return new TextMessage(queryResult);
+    	}
+    	// ETH 價格
+    	else if (inputMsg.compareToIgnoreCase("eth") == 0) {
+    		String queryResult = bitcoinService.getPriceFromExchanges(CurrencyPair.ETH_USD);
     		return new TextMessage(queryResult);
     	}
     	return new TextMessage(getRandomMsg());
