@@ -12,6 +12,7 @@ import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
+import com.weatherrisk.api.service.BitcoinService;
 import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.ParkingLotService;
 
@@ -24,6 +25,9 @@ public class LineMsgHandler {
 	
 	@Autowired
 	private ParkingLotService parkingLotService;
+	
+	@Autowired
+	private BitcoinService bitcoinService;
 	
 	private final String[] templateMsgs 
 		= new String[] {
@@ -66,6 +70,11 @@ public class LineMsgHandler {
     	else if (inputMsg.endsWith("一週") || inputMsg.endsWith("一周")) {
     		String region = inputMsg.substring(0, inputMsg.length() - 2);
     		String queryResult = cwbService.getOneWeekWeatherPrediction(region);
+    		return new TextMessage(queryResult);
+    	}
+    	// Bitcoin 價格
+    	else if (inputMsg.compareToIgnoreCase("bitcoin") == 0) {
+    		String queryResult = bitcoinService.getCurrentBitcoinPrice();
     		return new TextMessage(queryResult);
     	}
     	return new TextMessage(getRandomMsg());
