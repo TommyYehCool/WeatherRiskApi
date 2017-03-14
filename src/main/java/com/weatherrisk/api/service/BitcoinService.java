@@ -51,7 +51,7 @@ public class BitcoinService {
 			
 			return buffer.toString();
 		} catch (IOException e) {
-			logger.error("IOException raised while trying to get BTC price");
+			logger.error("IOException raised while trying to get price", e);
 			return "抓取價格失敗";
 		}
 	}
@@ -105,8 +105,8 @@ public class BitcoinService {
 			}
 			reader.close();
 		} catch (IOException e) {
-			logger.error("IOException raised while trying to get Bitcoin price", e);
-			return "抓取資料失敗";
+			logger.error("IOException raised while trying to get Bitcoin price from WINKDEXSM", e);
+			return "從 WINKDEXSM 抓取資料失敗";
 		} finally {
 			IOUtils.closeQuietly(reader);
 		}
@@ -118,7 +118,7 @@ public class BitcoinService {
 			map = objectMapper.readValue(srcBuffer.toString(), HashMap.class);
 		} catch (IOException e) {
 			logger.error("IOException raised while read json string to hashmap", e);
-			return "抓取價格失敗";
+			return "從 WINKDEXSM 抓取價格失敗";
 		}
 		
 		DateFormat srcDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -130,7 +130,7 @@ public class BitcoinService {
 			date = srcDateFormat.parse(timestamp);
 		} catch (ParseException e) {
 			logger.error("ParseException raised while parsing timestamp to Date, timestamp: <{}>", timestamp, e);
-			return "抓取價格失敗";
+			return "從 WINKDEXSM 抓取價格失敗";
 		}
 		
 		Integer iPrice = (Integer) map.get("price");
