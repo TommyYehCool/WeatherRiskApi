@@ -39,70 +39,70 @@ public class CwbService {
 	private CwbConfig cwbConfig;
 	
 	public String getWeatherLitteleHelperByCity(String city) {
-			try {
-				city = checkCityName(city);
-				
-	//			JAXBContext jaxbContext 
-	//				= JAXBContext.newInstance(
-	//						new Class[] {
-	//							CwbOpenData.class, Dataset.class, DatasetInfo.class, Location.class, ParameterSet.class, Parameter.class
-	//						}
-	//				  );
-				JAXBContext jaxbContext = JAXBContext.newInstance(CwbOpenData.class);
-				
-				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-				
-				String url = cwbConfig.getLittleHelperUrlByCity(city);
-				if (url == null) {
-					return "請輸入正確城市名稱";
-				}
-				
-				long startTime = System.currentTimeMillis();
-				
-				logger.info("----> Prepare to get weather little helper with city: <{}> from url: <{}>", city, url);
-				
-				// 這種寫法本機跑沒問題, 但放到  Heroku 會壞掉, maybe is the JDK version problem, heroku use OpenJDK
-				// 幹真的是 JDK 版本問題!!!!!!!!!!!!!!!!!!
-				// https://devcenter.heroku.com/articles/java-support
-				// https://bugs.openjdk.java.net/browse/JDK-8165299
-				CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new URL(url));
-	
-				// 直接索取 xml content 並解析方法
-	//			String xmlContent = HttpUtil.getWeatherContentFromCwb(url);
-	//			logger.info("<---- Got response, xml content: {}", xmlContent);
-	//
-	//			StringReader reader = new StringReader(xmlContent);
-	//			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(reader);
-				
-				logger.info("<----- Unmarshal to CwbOpenData done, time-spent: {} ms, result: {}", System.currentTimeMillis() - startTime, data);
-				
-				Dataset dataset = data.getDataset();
-				if (dataset == null) {
-					return "不好意思, 程式寫太爛, 壞掉啦!";
-				}
-				
-				ParameterSet parameterSet = dataset.getParameterSet();
-	
-				StringBuilder buffer = new StringBuilder();
-				buffer.append(dataset.getLocation().get(0).getLocationName()).append("-");
-				
-				buffer.append(parameterSet.getParameterSetName()).append("\n\n");
-				
-				List<Parameter> parameters = parameterSet.getParameter();
-				for (Parameter parameter : parameters) {
-					buffer.append(parameter.getParameterValue()).append("\n\n");
-				}
-				
-				return buffer.toString();
-	
-			} catch (IOException e) {
-				logger.error("IOException raised while trying to get weather information", e);
-				return "抓取資料發生錯誤";
-			} catch (JAXBException e) {
-				logger.error("IOException raised while trying to get weather information", e);
-				return "抓取資料發生錯誤";
+		try {
+			city = checkCityName(city);
+			
+//			JAXBContext jaxbContext 
+//				= JAXBContext.newInstance(
+//						new Class[] {
+//							CwbOpenData.class, Dataset.class, DatasetInfo.class, Location.class, ParameterSet.class, Parameter.class
+//						}
+//				  );
+			JAXBContext jaxbContext = JAXBContext.newInstance(CwbOpenData.class);
+			
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			
+			String url = cwbConfig.getLittleHelperUrlByCity(city);
+			if (url == null) {
+				return "請輸入正確城市名稱";
 			}
+			
+			long startTime = System.currentTimeMillis();
+			
+			logger.info("----> Prepare to get weather little helper with city: <{}> from url: <{}>", city, url);
+			
+			// 這種寫法本機跑沒問題, 但放到  Heroku 會壞掉, maybe is the JDK version problem, heroku use OpenJDK
+			// 幹真的是 JDK 版本問題!!!!!!!!!!!!!!!!!!
+			// https://devcenter.heroku.com/articles/java-support
+			// https://bugs.openjdk.java.net/browse/JDK-8165299
+			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new URL(url));
+
+			// 直接索取 xml content 並解析方法
+//			String xmlContent = HttpUtil.getWeatherContentFromCwb(url);
+//			logger.info("<---- Got response, xml content: {}", xmlContent);
+//
+//			StringReader reader = new StringReader(xmlContent);
+//			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(reader);
+			
+			logger.info("<----- Unmarshal to CwbOpenData done, time-spent: {} ms, result: {}", System.currentTimeMillis() - startTime, data);
+			
+			Dataset dataset = data.getDataset();
+			if (dataset == null) {
+				return "不好意思, 程式寫太爛, 壞掉啦!";
+			}
+			
+			ParameterSet parameterSet = dataset.getParameterSet();
+
+			StringBuilder buffer = new StringBuilder();
+			buffer.append(dataset.getLocation().get(0).getLocationName()).append("-");
+			
+			buffer.append(parameterSet.getParameterSetName()).append("\n\n");
+			
+			List<Parameter> parameters = parameterSet.getParameter();
+			for (Parameter parameter : parameters) {
+				buffer.append(parameter.getParameterValue()).append("\n\n");
+			}
+			
+			return buffer.toString();
+
+		} catch (IOException e) {
+			logger.error("IOException raised while trying to get weather information", e);
+			return "抓取資料發生錯誤";
+		} catch (JAXBException e) {
+			logger.error("IOException raised while trying to get weather information", e);
+			return "抓取資料發生錯誤";
 		}
+	}
 
 	public String getOneWeekWeatherPredictionProvided() {
 		try {
