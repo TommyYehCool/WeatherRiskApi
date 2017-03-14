@@ -74,7 +74,7 @@ public class LineMsgHandler {
     		return new TextMessage(queryResult);
     	}
     	// 天氣_桃園市某區一週資訊
-    	else if (inputMsg.startsWith("桃園市") && inputMsg.endsWith("一週")) {
+    	else if (inputMsg.startsWith("桃園市") && (inputMsg.endsWith("一週") || inputMsg.endsWith("一周"))) {
     		if (!inputMsg.contains("區")) {
     			return new TextMessage("請指定某一區");
     		}
