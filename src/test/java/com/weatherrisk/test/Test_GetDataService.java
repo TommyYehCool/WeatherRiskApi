@@ -74,13 +74,16 @@ public class Test_GetDataService {
 	}
 	
 	@Test
-	@Ignore
 	public void test_6_BitcoinService_getRatesFromTaiwanBank() throws IOException {
-		BigDecimal usdRatesFromTaiwanBank = bitcoinService.getRatesFromTaiwanBank(CurrencyCnst.USD);
-		System.out.println("USD/TWD: " + usdRatesFromTaiwanBank);
+		String data = bitcoinService.getRealCurrencyRatesFromTaiwanBank(CurrencyCnst.USD);
+		System.out.println(data);
+		
+		data = bitcoinService.getRealCurrencyRatesFromTaiwanBank(CurrencyCnst.JPY);
+		System.out.println(data);
 	}
 	
 	@Test
+	@Ignore
 	public void test_7_CwbService_getTaoyuanOneWeekWeatherPrediction() throws IOException {
 		String data = cwbService.getTaoyuanOneWeekWeatherPrediction("中壢區");
 		System.out.println(data);

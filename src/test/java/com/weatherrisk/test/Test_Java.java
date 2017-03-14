@@ -4,6 +4,8 @@ import java.text.MessageFormat;
 
 import org.junit.Test;
 
+import com.weatherrisk.api.cnst.CurrencyCnst;
+
 public class Test_Java {
 	
 	@Test
@@ -35,5 +37,16 @@ public class Test_Java {
 		inputMsg = "桃園市中壢區一周";
 		String taoyuanRegion = inputMsg.substring(3, inputMsg.length() - 2);
 		System.out.println(taoyuanRegion);
+	}
+	
+	@Test
+	public void test_4_testEnumSet() {
+		System.out.println(">>>>> Starting to test_4_testEnumSet");
+		String code = "Btc";
+		boolean result = CurrencyCnst.isCryptoCurrency(code);
+		System.out.println(result);
+		result = CurrencyCnst.isRealCurrency(code);
+		System.out.println(result);
+		System.out.println("<<<<< test_4_testEnumSet done");
 	}
 }

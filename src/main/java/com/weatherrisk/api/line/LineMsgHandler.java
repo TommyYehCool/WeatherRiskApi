@@ -13,6 +13,7 @@ import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
+import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.service.BitcoinService;
 import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.ParkingLotService;
@@ -82,15 +83,32 @@ public class LineMsgHandler {
     		String queryResult = cwbService.getTaoyuanOneWeekWeatherPrediction(taoyuanRegion);
     		return new TextMessage(queryResult);
     	}
-    	// BTC 價格
-    	else if (inputMsg.compareToIgnoreCase("btc") == 0 || inputMsg.compareToIgnoreCase("bitcoin") == 0) {
-    		String queryResult = bitcoinService.getPriceFromExchanges(CurrencyPair.BTC_USD);
-    		return new TextMessage(queryResult);
-    	}
-    	// ETH 價格
-    	else if (inputMsg.compareToIgnoreCase("eth") == 0) {
-    		String queryResult = bitcoinService.getPriceFromExchanges(CurrencyPair.ETH_USD);
-    		return new TextMessage(queryResult);
+    	// 貨幣匯率
+    	else if (CurrencyCnst.isSupportedCurrency(inputMsg)) {
+    		String queryResult = "";
+
+    		CurrencyCnst currency = CurrencyCnst.convert(inputMsg);
+    		
+    		// 虛擬貨幣
+    		if (CurrencyCnst.isCryptoCurrency(inputMsg)) {
+    			switch (currency) {
+					case BTC:
+						queryResult = bitcoinService.getPriceFromExchanges(CurrencyPair.BTC_USD);
+			    		return new TextMessage(queryResult);
+
+					case ETH:
+						queryResult = bitcoinService.getPriceFromExchanges(CurrencyPair.ETH_USD);
+			    		return new TextMessage(queryResult);
+
+					default:
+						break;
+    			}
+     		}
+    		// 真實貨幣
+    		else if (CurrencyCnst.isRealCurrency(inputMsg)) {
+    			queryResult = bitcoinService.getRealCurrencyRatesFromTaiwanBank(currency);
+    			return new TextMessage(queryResult);
+    		}
     	}
     	return new TextMessage(getRandomMsg());
     }

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -26,6 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 
@@ -40,7 +44,7 @@ public class BitcoinService {
 	public String getPriceFromExchanges(CurrencyPair currencyPair) {
 		StringBuilder buffer = new StringBuilder();
 		try {
-			BigDecimal usdTwdRate = getRatesFromTaiwanBank(CurrencyCnst.USD);
+			BigDecimal usdTwdRate = getBuyCashRatesFromTaiwanBank(CurrencyCnst.USD);
 			
 			if (currencyPair.equals(CurrencyPair.BTC_USD)) {
 				getPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), CurrencyCnst.BTC, currencyPair, usdTwdRate);
@@ -87,16 +91,49 @@ public class BitcoinService {
 		buffer.append("USD/TWD: ").append(usdTwdRate).append("\n");
 		buffer.append("(備註: 美金對台幣匯率, 參考台灣銀行現金買入)\n");
 	}
+	
+	/**
+     * <pre>
+     * 從台灣銀行取得外幣對台幣匯率
+     * </pre>
+	 */
+	public String getRealCurrencyRatesFromTaiwanBank(CurrencyCnst currency) {
+		try {
+			Map<String, ?> currencyRatesMap = getCurrencyRatesMapFromTaiwanBank(currency);
+			
+			String buyCashRate = (String) currencyRatesMap.get("buyCash");
+			String sellCashRate = (String) currencyRatesMap.get("sellCash");
+			
+			StringBuilder buffer = new StringBuilder();
+			buffer.append(currency.toString()).append("/TWD (台灣銀行現金買入): ").append(buyCashRate).append("\n");
+			buffer.append(currency.toString()).append("/TWD (台灣銀行現金賣出): ").append(sellCashRate);
+			
+			return buffer.toString();
+			
+		} catch (IOException e) {
+			logger.error("IOException raised while trying to get price", e);
+			return "抓取價格失敗";
+		}
+	}
 
 	/**
 	 * <pre>
-	 * 從台灣銀行取得美金對台幣匯率
+	 * 從台灣銀行取得外幣對台幣銀行現金買進匯率
 	 * 
 	 * 參考: <a href="http://blog.asper.tw/2015/05/json.html">取得匯率方法</a>
 	 * </pre> 
 	 */
+	private BigDecimal getBuyCashRatesFromTaiwanBank(CurrencyCnst currency) throws IOException {
+		Map<String, ?> currencyRatesMap = getCurrencyRatesMapFromTaiwanBank(currency);
+		
+		String strBuyCash = (String) currencyRatesMap.get("buyCash");
+		
+		return new BigDecimal(strBuyCash); 
+	}
+
 	@SuppressWarnings("unchecked")
-	public BigDecimal getRatesFromTaiwanBank(CurrencyCnst currency) throws IOException {
+	private Map<String, ?> getCurrencyRatesMapFromTaiwanBank(CurrencyCnst currency)
+			throws MalformedURLException, IOException, ProtocolException, JsonParseException, JsonMappingException {
 		StringBuilder srcBuffer = new StringBuilder();
 		BufferedReader reader = null;
 	
@@ -113,18 +150,18 @@ public class BitcoinService {
 		} finally {
 			IOUtils.closeQuietly(reader);
 		}
+
+		String jsonResp = srcBuffer.toString();
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		Map<String, ?> map = objectMapper.readValue(srcBuffer.toString(), HashMap.class);
+		Map<String, ?> map = objectMapper.readValue(jsonResp, HashMap.class);
 		
 		Map<String, ?> ratesMap = (Map<String, ?>) map.get("rates");
 		
 		Map<String, ?> currencyRatesMap = (Map<String, ?>) ratesMap.get(currency.toString());
-		
-		String strBuyCash = (String) currencyRatesMap.get("buyCash");
-		
-		return new BigDecimal(strBuyCash); 
+
+		return currencyRatesMap;
 	}
 	
 	/**
@@ -193,4 +230,5 @@ public class BitcoinService {
 		
 		return outBuffer.toString();
 	}
+	
 }
