@@ -99,7 +99,7 @@ public class OpenDataService {
 			
 			startTime = System.currentTimeMillis();
 			
-			// insert is more faster than save
+			// 即時車位資訊不一定每次都包含全部, 所以用 save
 			parkingLotAvailableRepo.save(parkingLotAvailables);
 			
 			logger.info("<<<<< Save all parking lot availables done, data-size: <{}>, time-spent: <{} ms>", parkingLotAvailables.size(), System.currentTimeMillis() - startTime);
