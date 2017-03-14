@@ -15,11 +15,15 @@ public class CwbConfig {
 	
 	private String oneWeekWeatherPredictionUrl; 
 	
+	private String taoyuanOneWeekWeatherPredictionUrl;
+	
 	private Map<String, String> cityWeatherLittleHelpUrl = new HashMap<>();
 	
 	@Autowired
 	public CwbConfig(@Value("${cwb.apikey}") String apiKey) {
 		oneWeekWeatherPredictionUrl = MessageFormat.format(BASE_URL, apiKey, "F-C0032-003");
+		
+		taoyuanOneWeekWeatherPredictionUrl = MessageFormat.format(BASE_URL, apiKey, "F-D0047-007");
 		
 		cityWeatherLittleHelpUrl.put("臺北市", MessageFormat.format(BASE_URL, apiKey, "F-C0032-009"));
 		cityWeatherLittleHelpUrl.put("新北市", MessageFormat.format(BASE_URL, apiKey, "F-C0032-010"));
@@ -47,6 +51,10 @@ public class CwbConfig {
 	
 	public String getOneWeekWeatherPredictionUrl() {
 		return oneWeekWeatherPredictionUrl;
+	}
+	
+	public String getTaoyuanOneWeekWeatherPredictionUrl() {
+		return taoyuanOneWeekWeatherPredictionUrl;
 	}
      
 	public String getLittleHelperUrlByCity(String city) {

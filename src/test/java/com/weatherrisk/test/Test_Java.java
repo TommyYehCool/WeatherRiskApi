@@ -31,5 +31,9 @@ public class Test_Java {
 		String inputMsg = "台北市天氣";
 		String city = inputMsg.substring(0, inputMsg.length() - 2);
 		System.out.println(city);
+		
+		inputMsg = "桃園市中壢區一周";
+		String taoyuanRegion = inputMsg.substring(3, inputMsg.length() - 2);
+		System.out.println(taoyuanRegion);
 	}
 }

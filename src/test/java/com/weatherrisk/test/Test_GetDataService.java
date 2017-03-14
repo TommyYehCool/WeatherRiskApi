@@ -19,6 +19,8 @@ import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.service.BitcoinService;
 import com.weatherrisk.api.service.CwbService;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(
 	classes = Application.class,
@@ -62,6 +64,7 @@ public class Test_GetDataService {
 	}
 	
 	@Test
+	@Ignore
 	public void test_5_BitcoinService_getPriceFromExchanges() {
 		String data = bitcoinService.getPriceFromExchanges(CurrencyPair.BTC_USD);
 		System.out.println(data);
@@ -71,8 +74,15 @@ public class Test_GetDataService {
 	}
 	
 	@Test
+	@Ignore
 	public void test_6_BitcoinService_getRatesFromTaiwanBank() throws IOException {
 		BigDecimal usdRatesFromTaiwanBank = bitcoinService.getRatesFromTaiwanBank(CurrencyCnst.USD);
 		System.out.println("USD/TWD: " + usdRatesFromTaiwanBank);
+	}
+	
+	@Test
+	public void test_7_CwbService_getTaoyuanOneWeekWeatherPrediction() throws IOException {
+		String data = cwbService.getTaoyuanOneWeekWeatherPrediction("中壢區");
+		System.out.println(data);
 	}
 }

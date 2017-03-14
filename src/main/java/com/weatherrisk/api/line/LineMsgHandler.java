@@ -73,6 +73,15 @@ public class LineMsgHandler {
     		String queryResult = cwbService.getOneWeekWeatherPrediction(region);
     		return new TextMessage(queryResult);
     	}
+    	// 天氣_桃園市某區一週資訊
+    	else if (inputMsg.startsWith("桃園市") && inputMsg.endsWith("一週")) {
+    		if (!inputMsg.contains("區")) {
+    			return new TextMessage("請指定某一區");
+    		}
+    		String taoyuanRegion = inputMsg.substring(3, inputMsg.length() - 2);
+    		String queryResult = cwbService.getTaoyuanOneWeekWeatherPrediction(taoyuanRegion);
+    		return new TextMessage(queryResult);
+    	}
     	// BTC 價格
     	else if (inputMsg.compareToIgnoreCase("btc") == 0 || inputMsg.compareToIgnoreCase("bitcoin") == 0) {
     		String queryResult = bitcoinService.getPriceFromExchanges(CurrencyPair.BTC_USD);

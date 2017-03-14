@@ -23,6 +23,12 @@ public class Location {
 	@XmlElement(name = "geocode")
 	private String geocode;
 	
+	@XmlElement(name = "lat")
+	private String lat;
+	
+	@XmlElement(name = "lon")
+	private String lon;
+	
 	@XmlElement(name = "weatherElement")
 	private List<WeatherElement> weatherElement;
 }

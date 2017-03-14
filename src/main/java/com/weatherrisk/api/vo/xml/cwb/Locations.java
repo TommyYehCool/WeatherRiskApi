@@ -12,17 +12,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Dataset {
-
-	@XmlElement(name = "datasetInfo")
-	private DatasetInfo datasetInfo;
+public class Locations {
 	
-	@XmlElement(name = "locations")
-	private Locations locations;
+	@XmlElement(name = "locationsName")
+	private String locationsName;
 	
 	@XmlElement(name = "location")
 	private List<Location> location;
-	
-	@XmlElement(name = "parameterSet")
-	private ParameterSet parameterSet;
 }

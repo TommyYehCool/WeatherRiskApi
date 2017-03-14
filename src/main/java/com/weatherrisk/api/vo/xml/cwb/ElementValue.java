@@ -10,17 +10,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Time {
+public class ElementValue {
 	
-	@XmlElement(name = "startTime")
-	private String startTime;
+	@XmlElement(name = "value")
+	private String value;
 	
-	@XmlElement(name = "endTime")
-	private String endTime;
-	
-	@XmlElement(name = "elementValue")
-	private ElementValue elementValue;
-	
-	@XmlElement(name = "parameter")
-	private Parameter parameter;
+	@XmlElement(name = "measures")
+	private String measures;
 }
