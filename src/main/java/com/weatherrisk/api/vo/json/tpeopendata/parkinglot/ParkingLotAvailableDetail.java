@@ -1,4 +1,4 @@
-package com.weatherrisk.api.vo.json.tpeopendata;
+package com.weatherrisk.api.vo.json.tpeopendata.parkinglot;
 
 import java.util.ArrayList;
 import java.util.List;
