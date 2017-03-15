@@ -15,7 +15,7 @@ import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.cnst.UBikeCity;
-import com.weatherrisk.api.service.BitcoinService;
+import com.weatherrisk.api.service.CurrencyService;
 import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.ParkingLotService;
@@ -47,7 +47,7 @@ public class LineMsgHandler {
 	private ParkingLotService parkingLotService;
 	
 	@Autowired
-	private BitcoinService bitcoinService;
+	private CurrencyService bitcoinService;
 	
 	@Autowired
 	private TaipeiOpenDataService taipeiOpenDataService;
@@ -127,11 +127,11 @@ public class LineMsgHandler {
     		if (CurrencyCnst.isCryptoCurrency(inputMsg)) {
     			switch (currency) {
 					case BTC:
-						queryResult = bitcoinService.getPriceFromExchanges(CurrencyPair.BTC_USD);
+						queryResult = bitcoinService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.BTC_USD);
 						break;
 						
 					case ETH:
-						queryResult = bitcoinService.getPriceFromExchanges(CurrencyPair.ETH_USD);
+						queryResult = bitcoinService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.ETH_USD);
 			    		break;
 
 					default:

@@ -34,27 +34,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 
 @Service
-public class BitcoinService {
+public class CurrencyService {
 	
-	private Logger logger = LoggerFactory.getLogger(BitcoinService.class);
+	private Logger logger = LoggerFactory.getLogger(CurrencyService.class);
 	
 	/**
 	 * 從各大交易所取得指定需擬貨幣目前價格
 	 */
-	public String getPriceFromExchanges(CurrencyPair currencyPair) {
+	public String getCryptoCurrencyPriceFromExchanges(CurrencyPair currencyPair) {
 		StringBuilder buffer = new StringBuilder();
 		try {
 			BigDecimal usdTwdRate = getBuyCashRatesFromTaiwanBank(CurrencyCnst.USD);
 			
 			if (currencyPair.equals(CurrencyPair.BTC_USD)) {
-				getPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), CurrencyCnst.BTC, currencyPair, usdTwdRate);
+				getCryptoCurrencyPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), CurrencyCnst.BTC, currencyPair, usdTwdRate);
 
 				buffer.append("\n");
 				
-				getPriceFromExchange(buffer, "Bitstamp", BitstampExchange.class.getName(), CurrencyCnst.BTC, currencyPair, usdTwdRate);
+				getCryptoCurrencyPriceFromExchange(buffer, "Bitstamp", BitstampExchange.class.getName(), CurrencyCnst.BTC, currencyPair, usdTwdRate);
 			}
 			else if (currencyPair.equals(CurrencyPair.ETH_USD)) {
-				getPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), CurrencyCnst.ETH, currencyPair, usdTwdRate);
+				getCryptoCurrencyPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), CurrencyCnst.ETH, currencyPair, usdTwdRate);
 			}
 			
 			return buffer.toString();
@@ -71,7 +71,7 @@ public class BitcoinService {
 	 * 參考: <a href="https://github.com/timmolter/XChange/blob/develop/xchange-examples/src/main/java/org/knowm/xchange/examples/bitstamp/marketdata/BitstampTickerDemo.java">Bitstamp Ticker Demo</a>
 	 * </pre>
 	 */
-	private void getPriceFromExchange(StringBuilder buffer, String exchangeName, String exchangeClassName,
+	private void getCryptoCurrencyPriceFromExchange(StringBuilder buffer, String exchangeName, String exchangeClassName,
 			CurrencyCnst baseCurrency, CurrencyPair currencyPair, BigDecimal usdTwdRate) throws IOException {
 		Exchange exchange = ExchangeFactory.INSTANCE.createExchange(exchangeClassName);
 

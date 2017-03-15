@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.weatherrisk.api.Application;
 import com.weatherrisk.api.cnst.CurrencyCnst;
-import com.weatherrisk.api.service.BitcoinService;
+import com.weatherrisk.api.service.CurrencyService;
 import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
@@ -32,7 +32,7 @@ public class Test_GetDataService {
 	private CwbService cwbService;
 	
 	@Autowired
-	private BitcoinService bitcoinService;
+	private CurrencyService bitcoinService;
 	
 	@Autowired
 	private TaipeiOpenDataService taipeiOpenDataService;
@@ -67,10 +67,10 @@ public class Test_GetDataService {
 	@Test
 	@Ignore
 	public void test_4_BitcoinService_getPriceFromExchanges() {
-		String data = bitcoinService.getPriceFromExchanges(CurrencyPair.BTC_USD);
+		String data = bitcoinService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.BTC_USD);
 		System.out.println(data);
 		
-		data = bitcoinService.getPriceFromExchanges(CurrencyPair.ETH_USD);
+		data = bitcoinService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.ETH_USD);
 		System.out.println(data);
 	}
 	
