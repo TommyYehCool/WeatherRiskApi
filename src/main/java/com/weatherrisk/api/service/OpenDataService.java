@@ -13,8 +13,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.linecorp.bot.model.message.LocationMessage;
-import com.linecorp.bot.model.message.Message;
 import com.weatherrisk.api.util.HttpUtil;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeAllInfo;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
