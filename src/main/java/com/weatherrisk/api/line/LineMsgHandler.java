@@ -1,6 +1,7 @@
 package com.weatherrisk.api.line;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -207,8 +208,8 @@ public class LineMsgHandler {
         	}
         	
         	if (nearbyUbikeInfos != null && !nearbyUbikeInfos.isEmpty()) {
-        		List<Message> locMsgs = constructLocationMessages(nearbyUbikeInfos);
-        		reply(event.getReplyToken(), locMsgs);
+        		List<Message> msgs = constructLocationMessages(nearbyUbikeInfos);
+        		reply(event.getReplyToken(), msgs);
         	}
         	else {
         		reply(event.getReplyToken(), new TextMessage("查詢失敗"));
@@ -265,11 +266,23 @@ public class LineMsgHandler {
 
     private void reply(@NonNull String replyToken, @NonNull List<Message> messages) {
         try {
-            BotApiResponse apiResponse 
-            	= lineMessagingClient
-                    .replyMessage(new ReplyMessage(replyToken, messages))
-                    .get();
+        	BotApiResponse apiResponse = null;
+        	if (messages.size() > LINE_MAXIMUM_REAPLY_MSG_SIZE) {
+        		List<Message> errorMsg = Arrays.asList(new TextMessage[] {new TextMessage("資料數目超過可回傳訊息")});
+        		
+        		apiResponse 
+            		= lineMessagingClient
+                    	.replyMessage(new ReplyMessage(replyToken, errorMsg))
+                    	.get();
+        	}
+        	else {
+	            apiResponse 
+	            	= lineMessagingClient
+	                    .replyMessage(new ReplyMessage(replyToken, messages))
+	                    .get();
+        	}
             logger.info("Sent messages: {}", apiResponse);
+
         } catch (InterruptedException | ExecutionException e) {
             logger.error("Expcetion raised while tring to reply", e);
         }
