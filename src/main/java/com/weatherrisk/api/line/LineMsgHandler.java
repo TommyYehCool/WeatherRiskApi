@@ -219,16 +219,29 @@ public class LineMsgHandler {
     }
     
     private List<Message> constructLocationMessages(List<UBikeInfo> nearbyUbikeInfos) {
-    	List<Message> locMsgs = new ArrayList<>();
+    	List<Message> msgs = new ArrayList<>();
     	for (UBikeInfo ubikeInfo : nearbyUbikeInfos) {
     		String title = ubikeInfo.getSna();
 			String address = ubikeInfo.getAr();
 			double latitude = ubikeInfo.getLat();
 			double longitude = ubikeInfo.getLng();
+			
 			LocationMessage locMsg = new LocationMessage(title, address, latitude, longitude);
-    		locMsgs.add(locMsg);
+    		msgs.add(locMsg);
+    		
+    		String bicycleInfoMessage = constructBicycleInfoMessage(ubikeInfo);
+			TextMessage textMessage = new TextMessage(bicycleInfoMessage);
+			msgs.add(textMessage);
     	}
-		return locMsgs;
+		return msgs;
+	}
+
+	private String constructBicycleInfoMessage(UBikeInfo ubikeInfo) {
+		StringBuilder buffer = new StringBuilder();
+		buffer.append("總停車格: ").append(ubikeInfo.getTot()).append("\n");
+		buffer.append("目前車輛數量: ").append(ubikeInfo.getSbi()).append("\n");
+		buffer.append("空位數: ").append(ubikeInfo.getBemp());
+		return buffer.toString();
 	}
 
 	@EventMapping
