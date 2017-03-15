@@ -14,11 +14,24 @@ import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import com.weatherrisk.api.cnst.CurrencyCnst;
+import com.weatherrisk.api.cnst.UBikeCity;
 import com.weatherrisk.api.service.BitcoinService;
 import com.weatherrisk.api.service.CwbService;
+import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.ParkingLotService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
 
+/**
+ * <pre>
+ * 收到 LINE message 處理地方
+ * 
+ * 參考: <a href="https://github.com/line/line-bot-sdk-java">line-bot-sdk</a>
+ * 
+ * </pre>
+ * 
+ * @author tommy.feng
+ *
+ */
 @LineMessageHandler
 public class LineMsgHandler {
 	private static final Logger logger = LoggerFactory.getLogger(LineMsgHandler.class);
@@ -35,7 +48,10 @@ public class LineMsgHandler {
 	private BitcoinService bitcoinService;
 	
 	@Autowired
-	private TaipeiOpenDataService taipeiOpenDataSerivce;
+	private TaipeiOpenDataService taipeiOpenDataService;
+	
+	@Autowired
+	private NewTaipeiOpenDataService newTaipeiOpenDataService;
 	
 	private final String[] templateMsgs 
 		= new String[] {
@@ -65,8 +81,31 @@ public class LineMsgHandler {
     	}
     	// UBike_場站名稱模糊搜尋
     	else if (inputMsg.endsWith("ubike")) {
-    		String name = inputMsg.substring(0, inputMsg.indexOf("ubike")).trim();
-			queryResult = taipeiOpenDataSerivce.getNewestUBikeInfoByNameLike(name);
+    		final int cityNameLen = 3;
+    		
+    		String cityName = inputMsg.substring(0, cityNameLen);
+
+    		boolean isSupportedCity = UBikeCity.isSupportedCity(cityName);
+    		if (isSupportedCity) {
+    			String name = inputMsg.substring(inputMsg.indexOf(cityName) + cityName.length(), inputMsg.indexOf("ubike"));
+    			if (name.isEmpty()) {
+    				return new TextMessage("請輸入查詢關建字");
+    			}
+
+    			UBikeCity ubikeCity = UBikeCity.convert(cityName);
+				switch (ubikeCity) {
+	    			case TAIPEI:
+	    				queryResult = taipeiOpenDataService.getNewestUBikeInfoByNameLike(name);
+	    				break;
+
+					case NEW_TAIPEI_CITY:
+						queryResult = newTaipeiOpenDataService.getNewestUBikeInfoByNameLike(name);
+						break;
+    			}
+    		}
+    		else {
+    			queryResult = "目前只援台北市及新北市, 搜尋範例: 台北市 + 關鍵字 + ubike";
+    		}
     	}
     	// 天氣_城市小幫手
     	else if (inputMsg.endsWith("天氣")) {

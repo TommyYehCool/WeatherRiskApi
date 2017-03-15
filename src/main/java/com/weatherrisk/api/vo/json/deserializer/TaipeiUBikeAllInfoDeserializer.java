@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeAllInfo;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
-public class UBikeAllInfoDeserializer extends JsonDeserializer<UBikeAllInfo> {
+public class TaipeiUBikeAllInfoDeserializer extends JsonDeserializer<UBikeAllInfo> {
 
 	@Override
 	public UBikeAllInfo deserialize(JsonParser jp, DeserializationContext ctxt)

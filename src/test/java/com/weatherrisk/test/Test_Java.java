@@ -38,9 +38,9 @@ public class Test_Java {
 		String taoyuanRegion = inputMsg.substring(3, inputMsg.length() - 2);
 		System.out.println(taoyuanRegion);
 		
-		inputMsg = "台北市 ubike";
-		String area = inputMsg.substring(0, inputMsg.indexOf("ubike"));
-		System.out.println(area);
+		inputMsg = "台北市士林ubike";
+		String name = inputMsg.substring(inputMsg.indexOf("台北市") + "台北市".length(), inputMsg.indexOf("ubike"));
+		System.out.println(name);
 	}
 	
 	@Test

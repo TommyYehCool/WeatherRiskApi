@@ -17,6 +17,7 @@ import com.weatherrisk.api.Application;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.service.BitcoinService;
 import com.weatherrisk.api.service.CwbService;
+import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
 
 @RunWith(SpringRunner.class)
@@ -35,6 +36,9 @@ public class Test_GetDataService {
 	
 	@Autowired
 	private TaipeiOpenDataService taipeiOpenDataService;
+	
+	@Autowired
+	private NewTaipeiOpenDataService newTaipeiOpenDataService;
 
 	@Test
 	@Ignore
@@ -82,7 +86,13 @@ public class Test_GetDataService {
 	
 	@Test
 	public void test_6_TaipeiOpenDataService_getNewestUBikeInfo() {
-		String data = taipeiOpenDataService.getNewestUBikeInfoByArea("北投區");
+		String data = taipeiOpenDataService.getNewestUBikeInfoByNameLike("士林");
+		System.out.println(data);
+	}
+	
+	@Test
+	public void test_7_NewTaipeiOpenDataService_getNewestUBikeInfo() {
+		String data = newTaipeiOpenDataService.getNewestUBikeInfoByNameLike("三重");
 		System.out.println(data);
 	}
 }
