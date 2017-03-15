@@ -117,7 +117,7 @@ public class TaipeiOpenDataService {
 	/**
 	 * 從台北市政府 Open Data 取得 UBike
 	 */
-	public String getNewestUBikeInfoByArea(String area) {
+	public String getNewestUBikeInfoByNameLike(String name) {
 		try {
 			logger.info(">>>>> Prepare to get newest ubike informations from url: <{}>", UBIKE_INFO_URL);
 			
@@ -134,14 +134,14 @@ public class TaipeiOpenDataService {
 			
 			List<UBikeInfo> ubikeInfos = ubikeAllInfo.getUbikeInfos();
 			
-			List<UBikeInfo> specificAreaUBikeInfos = ubikeInfos.stream().filter(ubike -> ubike.getSarea().equals(area)).collect(Collectors.toList());
+			List<UBikeInfo> specificAreaUBikeInfos = ubikeInfos.stream().filter(ubike -> ubike.getSna().contains(name)).collect(Collectors.toList());
 			
 			if (specificAreaUBikeInfos.isEmpty()) {
 				return "請確認您輸入的行政區正確";
 			}
 			
 			StringBuilder buffer = new StringBuilder();
-			buffer.append(area).append(" UBike 資訊如下:\n");
+			buffer.append(name).append(" UBike 資訊如下:\n");
 			buffer.append("---------------------------------\n");
 			for (UBikeInfo ubikeInfo : specificAreaUBikeInfos) {
 				buffer.append("場站名稱: ").append(ubikeInfo.getSna()).append("\n");

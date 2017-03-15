@@ -63,10 +63,10 @@ public class LineMsgHandler {
     		String name = inputMsg.substring(1, inputMsg.length());
     		queryResult = parkingLotService.findByNameLike(name);
     	}
-    	// UBike_台北市行政區搜尋
+    	// UBike_場站名稱模糊搜尋
     	else if (inputMsg.endsWith("ubike")) {
-    		String area = inputMsg.substring(0, inputMsg.indexOf("ubike")).trim();
-			queryResult = taipeiOpenDataSerivce.getNewestUBikeInfoByArea(area);
+    		String name = inputMsg.substring(0, inputMsg.indexOf("ubike")).trim();
+			queryResult = taipeiOpenDataSerivce.getNewestUBikeInfoByNameLike(name);
     	}
     	// 天氣_城市小幫手
     	else if (inputMsg.endsWith("天氣")) {
