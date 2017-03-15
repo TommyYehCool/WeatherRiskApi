@@ -18,6 +18,9 @@ public class ParkingLotService {
 	
 	@Autowired
 	private TaipeiOpenDataService taipeiOpenDataService;
+	
+	@Autowired
+	private NewTaipeiOpenDataService newTaipeiOpenDataService;
 
 	@Autowired
 	private ParkingLotInfoRepository parkingLotInfoRepo;
@@ -25,9 +28,16 @@ public class ParkingLotService {
 	@Autowired
 	private ParkingLotAvailableRepository parkingLotAvailableRepo;
 	
-	public String findByName(String name) {
-		// 取得最新資料
+	/**
+	 * 更新及時車位資訊
+	 */
+	private void refreshNewestParkingLotAvailable() {
 		taipeiOpenDataService.getNewestParkingLotAvailable();
+		newTaipeiOpenDataService.getNewestParkingLotAvailable();
+	}
+	
+	public String findByName(String name) {
+		refreshNewestParkingLotAvailable();
 		
 		ParkingLotInfo info = parkingLotInfoRepo.findByName(name);
 		if (info != null) {
@@ -57,12 +67,8 @@ public class ParkingLotService {
 		}
 	}
 	
-	/**
-	 * 資料太多會有這個問題 -> {"message":"Length must be between 0 and 2000"}
-	 */
 	public String findByNameLike(String name) {
-		// 取得最新資料
-		taipeiOpenDataService.getNewestParkingLotAvailable();
+		refreshNewestParkingLotAvailable();
 		
 		List<ParkingLotInfo> infos = parkingLotInfoRepo.findByNameLike(name);
 		

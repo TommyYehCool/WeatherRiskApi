@@ -19,10 +19,8 @@ import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.service.CurrencyService;
 import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
-import com.weatherrisk.api.service.OpenDataService;
 import com.weatherrisk.api.service.ParkingLotService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
-import com.weatherrisk.api.vo.json.deserializer.NewTaipeiParkingLotAvailableDetailDeserializer;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
 @RunWith(SpringRunner.class)
