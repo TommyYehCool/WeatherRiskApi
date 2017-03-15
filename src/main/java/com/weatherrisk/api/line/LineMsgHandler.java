@@ -27,6 +27,8 @@ import com.weatherrisk.api.service.TaipeiOpenDataService;
  * 
  * 參考: <a href="https://github.com/line/line-bot-sdk-java">line-bot-sdk</a>
  * 
+ * 參考: <a href="https://github.com/line/line-bot-sdk-java/blob/master/sample-spring-boot-kitchensink/src/main/java/com/example/bot/spring/KitchenSinkController.java">Usage example</a>
+ * 
  * </pre>
  * 
  * @author tommy.feng
