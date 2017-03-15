@@ -17,6 +17,7 @@ import com.weatherrisk.api.util.HttpUtil;
 import com.weatherrisk.api.vo.json.deserializer.TaipeiUBikeAllInfoDeserializer;
 import com.weatherrisk.api.vo.json.tpeopendata.parkinglot.ParkingLotAvailableDetail;
 import com.weatherrisk.api.vo.json.tpeopendata.parkinglot.ParkingLotInfoDetail;
+import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
 @Service
 public class TaipeiOpenDataService extends OpenDataService {
@@ -112,10 +113,11 @@ public class TaipeiOpenDataService extends OpenDataService {
 		}
 	}
 	
-	/**
-	 * 從台北市政府 Open Data 取得 UBike
-	 */
 	public String getNewestUBikeInfoByNameLike(String name) {
-		return getNewestUBikeInfoByNameLike(UBIKE_INFO_URL, new TaipeiUBikeAllInfoDeserializer(), name);
+		return super.getNewestUBikeInfoByNameLike(UBIKE_INFO_URL, new TaipeiUBikeAllInfoDeserializer(), name);
+	}
+
+	public List<UBikeInfo> getNearbyUBikeStations(Double userLatitude, Double userLongitude) {
+		return super.getNearbyUBikeStations(UBIKE_INFO_URL, new TaipeiUBikeAllInfoDeserializer(), userLatitude, userLongitude);
 	}
 }

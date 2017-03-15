@@ -1,6 +1,7 @@
 package com.weatherrisk.test;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
@@ -19,6 +20,7 @@ import com.weatherrisk.api.service.CurrencyService;
 import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
+import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -85,14 +87,24 @@ public class Test_GetDataService {
 	}
 	
 	@Test
+	@Ignore
 	public void test_6_TaipeiOpenDataService_getNewestUBikeInfo() {
 		String data = taipeiOpenDataService.getNewestUBikeInfoByNameLike("士林");
 		System.out.println(data);
 	}
 	
 	@Test
+	@Ignore
 	public void test_7_NewTaipeiOpenDataService_getNewestUBikeInfo() {
 		String data = newTaipeiOpenDataService.getNewestUBikeInfoByNameLike("三重");
 		System.out.println(data);
+	}
+	
+	@Test
+	public void test_8_TaipeiOpenDataService_getNearbyUBikeStations() {
+		double userLatitude = 25.041861;
+		double userLongitude = 121.554212;
+		List<UBikeInfo> nearbyUBikeStations = taipeiOpenDataService.getNearbyUBikeStations(userLatitude, userLongitude);
+		nearbyUBikeStations.stream().forEach(System.out::println);
 	}
 }

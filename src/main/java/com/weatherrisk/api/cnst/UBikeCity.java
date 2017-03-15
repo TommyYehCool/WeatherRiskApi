@@ -27,10 +27,27 @@ public enum UBikeCity {
 		return false;
 	}
 	
-	public static UBikeCity convert(String cityName) {
+	public static boolean isSupportedAddress(String address) {
+		return isSupportedCity(address);
+	}
+	
+	public static UBikeCity convertByCityName(String cityName) {
 		for (UBikeCity ubikeCity : UBikeCity.values()) {
 			if (ubikeCity.cityName.contains(cityName)) {
 				return ubikeCity;
+			}
+		}
+		return null;
+	}
+	
+	public static UBikeCity convertByAddress(String address) {
+		for (UBikeCity ubikeCity : UBikeCity.values()) {
+			List<String> cityNames = ubikeCity.getCityName();
+			
+			for (String cityName : cityNames) {
+				if (address.contains(cityName)) {
+					return ubikeCity;
+				}
 			}
 		}
 		return null;

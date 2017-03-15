@@ -1,5 +1,7 @@
 package com.weatherrisk.api.vo.json.tpeopendata.ubike;
 
+import com.weatherrisk.api.util.GeoUtil;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -71,4 +73,12 @@ public class UBikeInfo {
 	 * 全站禁用狀態
 	 */
 	private Integer act;
+	/**
+	 * 暫存距離
+	 */
+	private Double distance;
+	
+	public void setDistance(Double userLatitude, Double userLongitude) {
+		this.distance = GeoUtil.calculateDistance(userLongitude, userLatitude, this.lng, this.lat);
+	}
 }

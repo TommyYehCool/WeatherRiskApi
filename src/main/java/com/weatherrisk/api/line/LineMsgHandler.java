@@ -1,10 +1,12 @@
 package com.weatherrisk.api.line;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
+import org.bouncycastle.crypto.tls.CipherType;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,7 @@ import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.ParkingLotService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
+import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
 import lombok.NonNull;
 
@@ -113,7 +116,7 @@ public class LineMsgHandler {
     				return new TextMessage("請輸入查詢關建字");
     			}
 
-    			UBikeCity ubikeCity = UBikeCity.convert(cityName);
+    			UBikeCity ubikeCity = UBikeCity.convertByCityName(cityName);
 				switch (ubikeCity) {
 	    			case TAIPEI:
 	    				queryResult = taipeiOpenDataService.getNewestUBikeInfoByNameLike(name);
@@ -178,16 +181,53 @@ public class LineMsgHandler {
     public void handleLocationMessageEvent(MessageEvent<LocationMessageContent> event) {
 		logger.info(">>>>> handle location message event, event: {}", event);
 		
-        LocationMessageContent locationMessage = event.getMessage();
-        reply(event.getReplyToken(), new LocationMessage(
-                locationMessage.getTitle(),
-                locationMessage.getAddress(),
-                locationMessage.getLatitude(),
-                locationMessage.getLongitude()
-        ));
+        LocationMessageContent locMsg = event.getMessage();
+        
+        String address = locMsg.getAddress();
+        Double userLatitude = locMsg.getLatitude();
+        Double userLongitude = locMsg.getLongitude();
+
+        boolean isSupportedAddress = UBikeCity.isSupportedAddress(address);
+        if (isSupportedAddress) {
+        	List<UBikeInfo> nearbyUbikeInfos = null;
+        	
+        	UBikeCity ubikeCity = UBikeCity.convertByAddress(address);
+        	switch (ubikeCity) {
+	        	case TAIPEI:
+	        		nearbyUbikeInfos
+	        			= taipeiOpenDataService.getNearbyUBikeStations(userLatitude, userLongitude);
+	        		break;
+
+				case NEW_TAIPEI_CITY:
+					nearbyUbikeInfos
+        				= newTaipeiOpenDataService.getNearbyUBikeStations(userLatitude, userLongitude);
+					break;
+        	}
+        	
+        	if (nearbyUbikeInfos != null && !nearbyUbikeInfos.isEmpty()) {
+        		List<Message> locMsgs = constructLocationMessages(nearbyUbikeInfos);
+        		reply(event.getReplyToken(), locMsgs);
+        	}
+        	else {
+        		reply(event.getReplyToken(), new TextMessage("查詢失敗"));
+        	}
+        }
     }
     
-    @EventMapping
+    private List<Message> constructLocationMessages(List<UBikeInfo> nearbyUbikeInfos) {
+    	List<Message> locMsgs = new ArrayList<>();
+    	for (UBikeInfo ubikeInfo : nearbyUbikeInfos) {
+    		String title = ubikeInfo.getSna();
+			String address = ubikeInfo.getAr();
+			double latitude = ubikeInfo.getLat();
+			double longitude = ubikeInfo.getLng();
+			LocationMessage locMsg = new LocationMessage(title, address, latitude, longitude);
+    		locMsgs.add(locMsg);
+    	}
+		return locMsgs;
+	}
+
+	@EventMapping
     public void handleDefaultMessageEvent(Event event) {
         logger.info(">>>>> handle default message event, event: {}", event);
     }
