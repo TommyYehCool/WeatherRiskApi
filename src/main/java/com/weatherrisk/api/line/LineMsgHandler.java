@@ -52,6 +52,7 @@ public class LineMsgHandler {
 	private static final Logger logger = LoggerFactory.getLogger(LineMsgHandler.class);
 	
 	private final int LINE_MAXIMUM_REAPLY_MSG_LENGTH = 2000;
+	private final int LINE_MAXIMUM_REAPLY_MSG_SIZE = 5;
 	
 	@Autowired
     private LineMessagingClient lineMessagingClient;

@@ -21,7 +21,7 @@ public class OpenDataService {
 	
 	private Logger logger = LoggerFactory.getLogger(OpenDataService.class);
 	
-	private final int RETURN_NEARBY_STATIONS_NUMS = 5;
+	private final int RETURN_NEARBY_STATIONS_NUMS = 2;
 	
 	private UBikeAllInfo getNewestUBikeInfo(String ubikeInfoUrl, JsonDeserializer<UBikeAllInfo> deserializer) throws IOException {
 		logger.info(">>>>> Prepare to get newest ubike informations from url: <{}>", ubikeInfoUrl);
