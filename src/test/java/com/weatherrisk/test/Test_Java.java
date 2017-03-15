@@ -5,6 +5,7 @@ import java.text.MessageFormat;
 import org.junit.Test;
 
 import com.weatherrisk.api.cnst.CurrencyCnst;
+import com.weatherrisk.api.cnst.UBikeCity;
 
 public class Test_Java {
 	
@@ -52,5 +53,12 @@ public class Test_Java {
 		result = CurrencyCnst.isRealCurrency(code);
 		System.out.println(result);
 		System.out.println("<<<<< test_4_testEnumSet done");
+	}
+	
+	@Test
+	public void test_5_testUBikeCity() {
+		String address = "106台灣台北市大安區延吉街70巷5弄10號";
+		boolean result = UBikeCity.isSupportedAddress(address);
+		System.out.println("test5 --> " + result);
 	}
 }

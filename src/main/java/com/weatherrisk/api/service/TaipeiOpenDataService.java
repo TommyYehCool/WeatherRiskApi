@@ -118,6 +118,7 @@ public class TaipeiOpenDataService extends OpenDataService {
 	}
 
 	public List<UBikeInfo> getNearbyUBikeStations(Double userLatitude, Double userLongitude) {
+		logger.info(">>>>> Prepare to get nearby UBike stations at Taipei with lat: {}, lng: {}", userLatitude, userLongitude);
 		return super.getNearbyUBikeStations(UBIKE_INFO_URL, new TaipeiUBikeAllInfoDeserializer(), userLatitude, userLongitude);
 	}
 }

@@ -28,7 +28,16 @@ public enum UBikeCity {
 	}
 	
 	public static boolean isSupportedAddress(String address) {
-		return isSupportedCity(address);
+		for (UBikeCity ubikeCity : UBikeCity.values()) {
+			List<String> cityNames = ubikeCity.getCityName();
+			
+			for (String cityName : cityNames) {
+				if (address.contains(cityName)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	public static UBikeCity convertByCityName(String cityName) {

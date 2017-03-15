@@ -188,6 +188,8 @@ public class LineMsgHandler {
 
         boolean isSupportedAddress = UBikeCity.isSupportedAddress(address);
         if (isSupportedAddress) {
+        	logger.info("-----> The adderss is supported: {}", address);
+        	
         	List<UBikeInfo> nearbyUbikeInfos = null;
         	
         	UBikeCity ubikeCity = UBikeCity.convertByAddress(address);
@@ -210,6 +212,9 @@ public class LineMsgHandler {
         	else {
         		reply(event.getReplyToken(), new TextMessage("查詢失敗"));
         	}
+        }
+        else {
+        	reply(event.getReplyToken(), new TextMessage("你所在位置不支援"));
         }
     }
     
