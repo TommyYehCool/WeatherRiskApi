@@ -1,16 +1,25 @@
 package com.weatherrisk.api.line;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.model.ReplyMessage;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
+import com.linecorp.bot.model.event.message.LocationMessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
+import com.linecorp.bot.model.message.LocationMessage;
+import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import com.weatherrisk.api.cnst.CurrencyCnst;
@@ -20,6 +29,8 @@ import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.ParkingLotService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
+
+import lombok.NonNull;
 
 /**
  * <pre>
@@ -39,6 +50,9 @@ public class LineMsgHandler {
 	private static final Logger logger = LoggerFactory.getLogger(LineMsgHandler.class);
 	
 	private final int LINE_MAXIMUM_REAPLY_MSG_LENGTH = 2000;
+	
+	@Autowired
+    private LineMessagingClient lineMessagingClient;
 	
 	@Autowired
 	private CwbService cwbService;
@@ -63,7 +77,12 @@ public class LineMsgHandler {
 			"去簽看看樂透會不會中獎"
 		};
 	
-    @EventMapping
+    private String getRandomMsg() {
+		Random random = new Random();
+		return String.valueOf(templateMsgs[random.nextInt(templateMsgs.length)]);
+	}
+
+	@EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
     	logger.info(">>>>> handle text message event, event: {}", event);
 
@@ -154,14 +173,36 @@ public class LineMsgHandler {
     		return new TextMessage(getRandomMsg());
     	}
     }
-    
-    private String getRandomMsg() {
-    	Random random = new Random();
-    	return String.valueOf(templateMsgs[random.nextInt(templateMsgs.length)]);
+	
+	@EventMapping
+    public void handleLocationMessageEvent(MessageEvent<LocationMessageContent> event) {
+        LocationMessageContent locationMessage = event.getMessage();
+        reply(event.getReplyToken(), new LocationMessage(
+                locationMessage.getTitle(),
+                locationMessage.getAddress(),
+                locationMessage.getLatitude(),
+                locationMessage.getLongitude()
+        ));
     }
-
+    
     @EventMapping
     public void handleDefaultMessageEvent(Event event) {
         logger.info(">>>>> handle default message event, event: {}", event);
+    }
+    
+    private void reply(@NonNull String replyToken, @NonNull Message message) {
+        reply(replyToken, Collections.singletonList(message));
+    }
+
+    private void reply(@NonNull String replyToken, @NonNull List<Message> messages) {
+        try {
+            BotApiResponse apiResponse 
+            	= lineMessagingClient
+                    .replyMessage(new ReplyMessage(replyToken, messages))
+                    .get();
+            logger.info("Sent messages: {}", apiResponse);
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error("Expcetion raised while tring to reply", e);
+        }
     }
 }
