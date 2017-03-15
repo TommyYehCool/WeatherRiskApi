@@ -14,8 +14,8 @@ import com.weatherrisk.api.model.ParkingLotAvailableRepository;
 import com.weatherrisk.api.model.ParkingLotInfo;
 import com.weatherrisk.api.model.ParkingLotInfoRepository;
 import com.weatherrisk.api.util.HttpUtil;
-import com.weatherrisk.api.vo.json.ParkingLotAvailableDetail;
-import com.weatherrisk.api.vo.json.ParkingLotInfoDetail;
+import com.weatherrisk.api.vo.json.tpeopendata.ParkingLotAvailableDetail;
+import com.weatherrisk.api.vo.json.tpeopendata.ParkingLotInfoDetail;
 
 @Service
 public class OpenDataService {

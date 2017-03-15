@@ -1,4 +1,4 @@
-package com.weatherrisk.api.vo.json;
+package com.weatherrisk.api.vo.json.tpeopendata;
 
 import java.util.ArrayList;
 import java.util.List;
