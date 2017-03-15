@@ -18,9 +18,9 @@ import com.weatherrisk.api.vo.json.tpeopendata.parkinglot.ParkingLotAvailableDet
 import com.weatherrisk.api.vo.json.tpeopendata.parkinglot.ParkingLotInfoDetail;
 
 @Service
-public class OpenDataService {
+public class TaipeiOpenDataService {
 	
-	private Logger logger = LoggerFactory.getLogger(OpenDataService.class);
+	private Logger logger = LoggerFactory.getLogger(TaipeiOpenDataService.class);
 	
 	private final String PARKING_LOT_INFO_URL = "https://tcgbusfs.blob.core.windows.net/blobtcmsv/TCMSV_alldesc.gz";
 	

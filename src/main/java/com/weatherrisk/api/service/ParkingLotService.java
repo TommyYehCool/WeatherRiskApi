@@ -17,7 +17,7 @@ import com.weatherrisk.api.model.ParkingLotInfoRepository;
 public class ParkingLotService {
 	
 	@Autowired
-	private OpenDataService openDataService;
+	private TaipeiOpenDataService taipeiOpenDataService;
 
 	@Autowired
 	private ParkingLotInfoRepository parkingLotInfoRepo;
@@ -27,7 +27,7 @@ public class ParkingLotService {
 	
 	public String findByName(String name) {
 		// 取得最新資料
-		openDataService.getNewestParkingLotAvailable();
+		taipeiOpenDataService.getNewestParkingLotAvailable();
 		
 		ParkingLotInfo info = parkingLotInfoRepo.findByName(name);
 		if (info != null) {
@@ -62,7 +62,7 @@ public class ParkingLotService {
 	 */
 	public String findByNameLike(String name) {
 		// 取得最新資料
-		openDataService.getNewestParkingLotAvailable();
+		taipeiOpenDataService.getNewestParkingLotAvailable();
 		
 		List<ParkingLotInfo> infos = parkingLotInfoRepo.findByNameLike(name);
 		
