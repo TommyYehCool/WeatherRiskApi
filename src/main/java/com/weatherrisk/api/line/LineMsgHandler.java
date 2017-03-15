@@ -23,6 +23,8 @@ import com.weatherrisk.api.service.TaipeiOpenDataService;
 public class LineMsgHandler {
 	private static final Logger logger = LoggerFactory.getLogger(LineMsgHandler.class);
 	
+	private final int LINE_MAXIMUM_REAPLY_MSG_LENGTH = 2000;
+	
 	@Autowired
 	private CwbService cwbService;
 	
@@ -49,40 +51,35 @@ public class LineMsgHandler {
 
     	String inputMsg = event.getMessage().getText();
     	
+    	String queryResult = null;
+    	
     	// 停車場_精準搜尋
     	if (inputMsg.startsWith("#")) {
     		String name = inputMsg.substring(1, inputMsg.length());
-    		String queryResult = parkingLotService.findByName(name);
-    		return new TextMessage(queryResult);
+    		queryResult = parkingLotService.findByName(name);
     	}
     	// 停車場_模糊搜尋
     	else if (inputMsg.startsWith("@")) {
     		String name = inputMsg.substring(1, inputMsg.length());
-    		String queryResult = parkingLotService.findByNameLike(name);
-    		return new TextMessage(queryResult);
+    		queryResult = parkingLotService.findByNameLike(name);
     	}
     	// UBike_台北市行政區搜尋
     	else if (inputMsg.endsWith("ubike")) {
     		String area = inputMsg.substring(0, inputMsg.indexOf("ubike")).trim();
-			String queryResult = taipeiOpenDataSerivce.getNewestUBikeInfoByArea(area);
-			return new TextMessage(queryResult);
+			queryResult = taipeiOpenDataSerivce.getNewestUBikeInfoByArea(area);
     	}
     	// 天氣_城市小幫手
     	else if (inputMsg.endsWith("天氣")) {
     		String city = inputMsg.substring(0, inputMsg.length() - 2);
-    		String queryResult = cwbService.getWeatherLitteleHelperByCity(city);
-    		return new TextMessage(queryResult);
+    		queryResult = cwbService.getWeatherLitteleHelperByCity(city);
     	}
     	// 天氣_一周資訊
     	else if (inputMsg.endsWith("一週") || inputMsg.endsWith("一周")) {
     		String region = inputMsg.substring(0, inputMsg.length() - 2);
-    		String queryResult = cwbService.getOneWeekWeatherPrediction(region);
-    		return new TextMessage(queryResult);
+    		queryResult = cwbService.getOneWeekWeatherPrediction(region);
     	}
     	// 貨幣匯率
     	else if (CurrencyCnst.isSupportedCurrency(inputMsg)) {
-    		String queryResult = "";
-
     		CurrencyCnst currency = CurrencyCnst.convert(inputMsg);
     		
     		// 虛擬貨幣
@@ -90,11 +87,11 @@ public class LineMsgHandler {
     			switch (currency) {
 					case BTC:
 						queryResult = bitcoinService.getPriceFromExchanges(CurrencyPair.BTC_USD);
-			    		return new TextMessage(queryResult);
-
+						break;
+						
 					case ETH:
 						queryResult = bitcoinService.getPriceFromExchanges(CurrencyPair.ETH_USD);
-			    		return new TextMessage(queryResult);
+			    		break;
 
 					default:
 						break;
@@ -103,10 +100,18 @@ public class LineMsgHandler {
     		// 真實貨幣
     		else if (CurrencyCnst.isRealCurrency(inputMsg)) {
     			queryResult = bitcoinService.getRealCurrencyRatesFromTaiwanBank(currency);
-    			return new TextMessage(queryResult);
     		}
     	}
-    	return new TextMessage(getRandomMsg());
+    	if (queryResult != null) {
+    		if (queryResult.length() > LINE_MAXIMUM_REAPLY_MSG_LENGTH) {
+    			logger.warn("!!!!! Prepare to reply message length: <{}> excceed LINE maximum reply message length: <{}>", queryResult.length(), LINE_MAXIMUM_REAPLY_MSG_LENGTH);
+    			return new TextMessage("資料量太多(" + queryResult.length() + "), 無法回覆");
+    		}
+    		return new TextMessage(queryResult);
+    	}
+    	else {
+    		return new TextMessage(getRandomMsg());
+    	}
     }
     
     private String getRandomMsg() {
