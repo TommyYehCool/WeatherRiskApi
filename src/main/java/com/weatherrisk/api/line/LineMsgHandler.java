@@ -51,7 +51,7 @@ import lombok.NonNull;
 public class LineMsgHandler {
 	private static final Logger logger = LoggerFactory.getLogger(LineMsgHandler.class);
 	
-	private final int LINE_MAXIMUM_REAPLY_MSG_LENGTH = 2000;
+	private final int LINE_MAXIMUM_REAPLY_TEXT_MSG_LENGTH = 2000;
 	private final int LINE_MAXIMUM_REAPLY_MSG_SIZE = 5;
 	
 	@Autowired
@@ -76,8 +76,8 @@ public class LineMsgHandler {
 		= new String[] {
 			"你好呀, 吃飽沒?",
 			"今天有沒有打扮得很美呀?",
-			"我愛你",
-			"去簽看看樂透會不會中獎"
+			"我愛你!",
+			"去簽看看樂透會不會中獎!"
 		};
 	
     private String getRandomMsg() {
@@ -166,8 +166,8 @@ public class LineMsgHandler {
     		}
     	}
     	if (queryResult != null) {
-    		if (queryResult.length() > LINE_MAXIMUM_REAPLY_MSG_LENGTH) {
-    			logger.warn("!!!!! Prepare to reply message length: <{}> excceed LINE maximum reply message length: <{}>", queryResult.length(), LINE_MAXIMUM_REAPLY_MSG_LENGTH);
+    		if (queryResult.length() > LINE_MAXIMUM_REAPLY_TEXT_MSG_LENGTH) {
+    			logger.warn("!!!!! Prepare to reply message length: <{}> excceed LINE maximum reply message length: <{}>", queryResult.length(), LINE_MAXIMUM_REAPLY_TEXT_MSG_LENGTH);
     			return new TextMessage("資料量太多(" + queryResult.length() + "), 無法回覆");
     		}
     		return new TextMessage(queryResult);
@@ -220,9 +220,18 @@ public class LineMsgHandler {
     }
     
     private List<Message> constructLocationMessages(List<UBikeInfo> nearbyUbikeInfos) {
+    	int i = 1;
+    	
     	List<Message> msgs = new ArrayList<>();
     	for (UBikeInfo ubikeInfo : nearbyUbikeInfos) {
-    		String title = ubikeInfo.getSna();
+    		String title = null;
+    		if (i == 1) {
+    			title = "最近的 UBike 租借站: " + ubikeInfo.getSna();
+    		}
+    		else {
+    			title = "第" + i + "近的 UBike 租借站: " + ubikeInfo.getSna(); 
+    		}
+    		i++;
 			String address = ubikeInfo.getAr();
 			double latitude = ubikeInfo.getLat();
 			double longitude = ubikeInfo.getLng();
@@ -240,8 +249,8 @@ public class LineMsgHandler {
 	private String constructBicycleInfoMessage(UBikeInfo ubikeInfo) {
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("總停車格: ").append(ubikeInfo.getTot()).append("\n");
-		buffer.append("目前車輛數量: ").append(ubikeInfo.getSbi()).append("\n");
-		buffer.append("空位數: ").append(ubikeInfo.getBemp());
+		buffer.append("可租借車輛數量: ").append(ubikeInfo.getSbi()).append("\n");
+		buffer.append("剩餘空位數: ").append(ubikeInfo.getBemp());
 		return buffer.toString();
 	}
 
