@@ -17,6 +17,7 @@ import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.service.BitcoinService;
 import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.ParkingLotService;
+import com.weatherrisk.api.service.TaipeiOpenDataService;
 
 @LineMessageHandler
 public class LineMsgHandler {
@@ -30,6 +31,9 @@ public class LineMsgHandler {
 	
 	@Autowired
 	private BitcoinService bitcoinService;
+	
+	@Autowired
+	private TaipeiOpenDataService taipeiOpenDataSerivce;
 	
 	private final String[] templateMsgs 
 		= new String[] {
@@ -56,6 +60,12 @@ public class LineMsgHandler {
     		String name = inputMsg.substring(1, inputMsg.length());
     		String queryResult = parkingLotService.findByNameLike(name);
     		return new TextMessage(queryResult);
+    	}
+    	// UBike_台北市行政區搜尋
+    	else if (inputMsg.endsWith("ubike")) {
+    		String area = inputMsg.substring(0, inputMsg.indexOf("ubike")).trim();
+			String queryResult = taipeiOpenDataSerivce.getNewestUBikeInfoByArea(area);
+			return new TextMessage(queryResult);
     	}
     	// 天氣_城市小幫手
     	else if (inputMsg.endsWith("天氣")) {

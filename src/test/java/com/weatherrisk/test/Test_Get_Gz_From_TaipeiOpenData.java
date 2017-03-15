@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
@@ -16,11 +17,17 @@ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.util.EntityUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.util.StringUtils;
 
-public class Test_Get_Gz_From_Internet {
+public class Test_Get_Gz_From_TaipeiOpenData {
 	
 	private final String PARKING_LOT_INFO_URL = "https://tcgbusfs.blob.core.windows.net/blobtcmsv/TCMSV_alldesc.gz";
 	
@@ -30,7 +37,30 @@ public class Test_Get_Gz_From_Internet {
 	
 	private final String PARKING_LOT_AVAILABLE_FILE_LOCATION = "D://ParkingLotAvailable.gz";
 	
+	private final String UBIKE_INFO_URL = "http://data.taipei/youbike";
+	
 	@Test
+	public void testGetUBike() {
+		HttpClient client 
+			= HttpClientBuilder.create()
+				.setRedirectStrategy(new LaxRedirectStrategy()).build();
+		
+		HttpGet get = new HttpGet(UBIKE_INFO_URL);
+		
+		try {
+			HttpResponse response = client.execute(get);
+			
+			String responseData = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+			
+			System.out.println(responseData);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	@Ignore
 	public void testReadGzFromInternet() {
 		readGzFromInternet(PARKING_LOT_INFO_URL);
 		readGzFromInternet(PARKING_LOT_AVAILABLE_URL);

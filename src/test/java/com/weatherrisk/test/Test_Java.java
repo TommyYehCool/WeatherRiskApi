@@ -37,6 +37,10 @@ public class Test_Java {
 		inputMsg = "桃園市中壢區一周";
 		String taoyuanRegion = inputMsg.substring(3, inputMsg.length() - 2);
 		System.out.println(taoyuanRegion);
+		
+		inputMsg = "台北市 ubike";
+		String area = inputMsg.substring(0, inputMsg.indexOf("ubike"));
+		System.out.println(area);
 	}
 	
 	@Test

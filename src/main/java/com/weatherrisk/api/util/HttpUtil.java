@@ -10,6 +10,7 @@ import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -18,6 +19,20 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.util.StringUtils;
 
 public class HttpUtil {
+	
+	public static String getJsonContentFromOpenData(String url) throws IOException {
+		HttpClient client 
+			= HttpClientBuilder.create()
+				.setRedirectStrategy(new LaxRedirectStrategy()).build();
+		
+		HttpGet get = new HttpGet(url);
+		
+		HttpResponse response = client.execute(get);
+		
+		String responseData = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+		
+		return responseData;
+	}
 
 	public static String getGzContentFromOpenData(String url) throws IOException {
 		URL objUrl = null;
@@ -28,9 +43,9 @@ public class HttpUtil {
 			inStream = objUrl.openStream();
 			
 			br = new BufferedReader(new InputStreamReader(new GZIPInputStream(inStream), "MS950"));
-				
+
 			StringBuilder buffer = new StringBuilder();
-				
+			
 			String line;
 			while ((line = br.readLine()) != null) {
 				if (!StringUtils.isEmpty(line)) {

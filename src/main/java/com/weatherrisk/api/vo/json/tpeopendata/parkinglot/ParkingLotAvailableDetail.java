@@ -10,8 +10,8 @@ import com.weatherrisk.api.vo.json.deserializer.ParkingLotAvailableDetailDeseria
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @JsonDeserialize(using = ParkingLotAvailableDetailDeserializer.class)
+@Data
 @NoArgsConstructor
 public class ParkingLotAvailableDetail {
 

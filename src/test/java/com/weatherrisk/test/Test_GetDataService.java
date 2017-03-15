@@ -1,7 +1,6 @@
 package com.weatherrisk.test;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
@@ -18,8 +17,7 @@ import com.weatherrisk.api.Application;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.service.BitcoinService;
 import com.weatherrisk.api.service.CwbService;
-
-import ch.qos.logback.core.net.SyslogOutputStream;
+import com.weatherrisk.api.service.TaipeiOpenDataService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -34,6 +32,9 @@ public class Test_GetDataService {
 	
 	@Autowired
 	private BitcoinService bitcoinService;
+	
+	@Autowired
+	private TaipeiOpenDataService taipeiOpenDataService;
 
 	@Test
 	@Ignore
@@ -43,6 +44,7 @@ public class Test_GetDataService {
 	}
 	
 	@Test
+	@Ignore
 	public void test_2_CwbService_getOneWeekWeatherPrediction() {
 		String data = cwbService.getOneWeekWeatherPrediction("臺北市");
 		System.out.println(data);
@@ -75,6 +77,12 @@ public class Test_GetDataService {
 		System.out.println(data);
 		
 		data = bitcoinService.getRealCurrencyRatesFromTaiwanBank(CurrencyCnst.JPY);
+		System.out.println(data);
+	}
+	
+	@Test
+	public void test_6_TaipeiOpenDataService_getNewestUBikeInfo() {
+		String data = taipeiOpenDataService.getNewestUBikeInfoByArea("北投區");
 		System.out.println(data);
 	}
 }
