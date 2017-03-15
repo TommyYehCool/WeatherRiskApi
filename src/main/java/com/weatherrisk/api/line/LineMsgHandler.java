@@ -176,6 +176,8 @@ public class LineMsgHandler {
 	
 	@EventMapping
     public void handleLocationMessageEvent(MessageEvent<LocationMessageContent> event) {
+		logger.info(">>>>> handle location message event, event: {}", event);
+		
         LocationMessageContent locationMessage = event.getMessage();
         reply(event.getReplyToken(), new LocationMessage(
                 locationMessage.getTitle(),
