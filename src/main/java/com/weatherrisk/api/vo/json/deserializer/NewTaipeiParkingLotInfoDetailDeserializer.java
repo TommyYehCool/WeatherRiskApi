@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.weatherrisk.api.model.ParkingLotInfo;
 import com.weatherrisk.api.vo.json.tpeopendata.parkinglot.ParkingLotInfoDetail;
 
-public class ParkingLotInfoDetailDeserializer extends JsonDeserializer<ParkingLotInfoDetail> {
+public class NewTaipeiParkingLotInfoDetailDeserializer extends JsonDeserializer<ParkingLotInfoDetail> {
 
 	@Override
 	public ParkingLotInfoDetail deserialize(JsonParser jp, DeserializationContext ctxt) 
@@ -22,25 +22,20 @@ public class ParkingLotInfoDetailDeserializer extends JsonDeserializer<ParkingLo
 		ObjectCodec oc = jp.getCodec();
 	    JsonNode rootNode = oc.readTree(jp);
 		
-	    JsonNode dataNode = rootNode.get("data");
-	    
-	    String updateTime = dataNode.get("UPDATETIME").asText();
-	    result.setUpdateTime(updateTime);
-	    
-	    Iterator<JsonNode> parks = dataNode.path("park").elements();
+	    Iterator<JsonNode> parks = rootNode.elements();
 	    while (parks.hasNext()) {
 	    	JsonNode park = parks.next();
-	    	String id = park.get("id").asText();
-	    	String area = park.get("area").asText();
-	    	String name = park.get("name").asText();
-	    	String summary = park.get("summary").asText();
-	    	String address = park.get("address").asText();
-	    	String tel = park.get("tel").asText();
-	    	String payex = park.get("payex").asText();
-	    	String serviceTime = park.get("servicetime").asText();
-	    	int totalCar = park.get("totalcar").asInt();
-	    	int totalMotor = park.get("totalmotor").asInt();
-	    	int totalBike = park.get("totalbike").asInt();
+	    	String id = park.get("ID").asText();
+	    	String area = park.get("AREA").asText();
+	    	String name = park.get("NAME").asText();
+	    	String summary = park.get("SUMMARY").asText();
+	    	String address = park.get("ADDRESS").asText();
+	    	String tel = park.get("TEL").asText();
+	    	String payex = park.get("PAYEX").asText();
+	    	String serviceTime = park.get("SERVICETIME").asText();
+	    	int totalCar = park.get("TOTALCAR").asInt();
+	    	int totalMotor = park.get("TOTALMOTOR").asInt();
+	    	int totalBike = park.get("TOTALBIKE").asInt();
 	    	
 	    	ParkingLotInfo parkingLotInfo 
 	    		= new ParkingLotInfo(id, area, name, summary, address, tel, payex, serviceTime, totalCar, totalMotor, totalBike);

@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.weatherrisk.api.model.ParkingLotAvailable;
 import com.weatherrisk.api.vo.json.tpeopendata.parkinglot.ParkingLotAvailableDetail;
 
-public class ParkingLotAvailableDetailDeserializer extends JsonDeserializer<ParkingLotAvailableDetail> {
+public class TaipeiParkingLotAvailableDetailDeserializer extends JsonDeserializer<ParkingLotAvailableDetail> {
 
 	@Override
 	public ParkingLotAvailableDetail deserialize(JsonParser jp, DeserializationContext ctxt)

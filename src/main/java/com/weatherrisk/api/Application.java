@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
+import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
 
 /**
@@ -23,6 +24,9 @@ public class Application extends SpringBootServletInitializer {
 	
 	@Autowired
 	private TaipeiOpenDataService taipeiOpenDataService;
+
+	@Autowired
+	private NewTaipeiOpenDataService newTaipeiOpenDataService;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -36,5 +40,6 @@ public class Application extends SpringBootServletInitializer {
 	@PostConstruct
 	public void postConstruct() {
 		taipeiOpenDataService.getNewestParkingLotInfos();
+		newTaipeiOpenDataService.getNewestParkingLotInfos();
 	}
 }

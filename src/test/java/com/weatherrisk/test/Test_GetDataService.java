@@ -19,7 +19,10 @@ import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.service.CurrencyService;
 import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
+import com.weatherrisk.api.service.OpenDataService;
+import com.weatherrisk.api.service.ParkingLotService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
+import com.weatherrisk.api.vo.json.deserializer.NewTaipeiParkingLotAvailableDetailDeserializer;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
 @RunWith(SpringRunner.class)
@@ -41,7 +44,10 @@ public class Test_GetDataService {
 	
 	@Autowired
 	private NewTaipeiOpenDataService newTaipeiOpenDataService;
-
+	
+	@Autowired
+	private ParkingLotService parkingLotService;
+	
 	@Test
 	@Ignore
 	public void test_1_CwbService_getWeatherLittleHelperByCity() {
@@ -101,10 +107,23 @@ public class Test_GetDataService {
 	}
 	
 	@Test
+	@Ignore
 	public void test_8_TaipeiOpenDataService_getNearbyUBikeStations() {
 		double userLatitude = 25.041861;
 		double userLongitude = 121.554212;
 		List<UBikeInfo> nearbyUBikeStations = taipeiOpenDataService.getNearbyUBikeStations(userLatitude, userLongitude);
 		nearbyUBikeStations.stream().forEach(System.out::println);
+	}
+	
+	@Test
+	@Ignore
+	public void test_9_ParkingLotService_findByName() {
+		String result = parkingLotService.findByNameLike("洛陽");
+		System.out.println(result);
+	}
+	
+	@Test
+	public void test_10_NewTaipeiOpenDataService_getNewestParkingLotAvailable() {
+		newTaipeiOpenDataService.getNewestParkingLotAvailable();
 	}
 }
