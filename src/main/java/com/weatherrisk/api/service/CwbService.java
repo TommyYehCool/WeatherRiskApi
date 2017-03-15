@@ -1,7 +1,6 @@
 package com.weatherrisk.api.service;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -17,15 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.weatherrisk.api.config.CwbConfig;
-import com.weatherrisk.api.util.HttpUtil;
 import com.weatherrisk.api.vo.xml.cwb.CwbOpenData;
 import com.weatherrisk.api.vo.xml.cwb.Dataset;
-import com.weatherrisk.api.vo.xml.cwb.ElementValue;
 import com.weatherrisk.api.vo.xml.cwb.Location;
-import com.weatherrisk.api.vo.xml.cwb.Locations;
 import com.weatherrisk.api.vo.xml.cwb.Parameter;
 import com.weatherrisk.api.vo.xml.cwb.ParameterSet;
 import com.weatherrisk.api.vo.xml.cwb.Time;
@@ -108,43 +103,6 @@ public class CwbService {
 		}
 	}
 
-	public String getOneWeekWeatherPredictionProvided() {
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(CwbOpenData.class);
-			
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			
-			String url = cwbConfig.getOneWeekWeatherPredictionUrl();
-			
-			logger.info("----> Prepare to get one week weather prediction from url: <{}>", url);
-			
-			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new URL(url));
-			
-			Dataset dataset = data.getDataset();
-			if (dataset == null) {
-				return "不好意思, 程式寫太爛, 壞掉啦!";
-			}
-			
-			List<Location> locations = dataset.getLocation();
-			
-			List<String> providedLocationNames = locations.stream().map(Location::getLocationName).collect(Collectors.toList());
-			
-			StringBuilder buffer = new StringBuilder();
-			buffer.append("一週天氣資訊, 提供下列地區:\n");
-			String result = StringUtils.collectionToCommaDelimitedString(providedLocationNames);
-			buffer.append(result);
-			
-			return buffer.toString();
-			
-		} catch (IOException e) {
-			logger.error("IOException raised while trying to get weather information", e);
-			return "抓取資料發生錯誤";
-		} catch (JAXBException e) {
-			logger.error("IOException raised while trying to get weather information", e);
-			return "抓取資料發生錯誤";
-		} 
-	}
-
 	public String getOneWeekWeatherPrediction(String region) {
 		try {
 			final String regionModified = checkCityName(region);
@@ -193,15 +151,20 @@ public class CwbService {
 						times = weatherElement.getTime();
 						for (Time time : times) {
 							String startTime = time.getStartTime();
-							startTime = startTime.substring(0, startTime.indexOf("T"));
+							startTime = startTime.substring(0, startTime.indexOf("T")) + " " + startTime.substring(startTime.indexOf("T") + 1, startTime.indexOf("+"));
+							
+							String endTime = time.getEndTime();
+							endTime = endTime.substring(0, endTime.indexOf("T")) + " " + endTime.substring(endTime.indexOf("T") + 1, endTime.indexOf("+"));
+							
+							String strTime = startTime + " ~ " + endTime;
 
 							String desc = time.getParameter().getParameterName();
-							
+
 							oneDayWeather = new OneDayWeather();
-							oneDayWeather.setTime(startTime);
+							oneDayWeather.setTime(strTime);
 							oneDayWeather.setDesc(desc);
 							
-							tempMap.put(startTime, oneDayWeather);
+							tempMap.put(strTime, oneDayWeather);
 						}
 						break;
 						
@@ -210,13 +173,18 @@ public class CwbService {
 						times = weatherElement.getTime();
 						for (Time time : times) {
 							String startTime = time.getStartTime();
-							startTime = startTime.substring(0, startTime.indexOf("T"));
+							startTime = startTime.substring(0, startTime.indexOf("T")) + " " + startTime.substring(startTime.indexOf("T") + 1, startTime.indexOf("+"));
+							
+							String endTime = time.getEndTime();
+							endTime = endTime.substring(0, endTime.indexOf("T")) + " " + endTime.substring(endTime.indexOf("T") + 1, endTime.indexOf("+"));
+							
+							String strTime = startTime + " ~ " + endTime;
 							
 							Parameter parameter = time.getParameter();
 							String temperatureVal = parameter.getParameterName();
 							String temperatureUnit = parameter.getParameterUnit();
 							
-							oneDayWeather = tempMap.get(startTime);
+							oneDayWeather = tempMap.get(strTime);
 							
 							if (elementName.equals("MaxT")) {
 								oneDayWeather.setMaxT(temperatureVal + temperatureUnit);
@@ -235,7 +203,7 @@ public class CwbService {
 				String time = keys.next();
 				OneDayWeather oneDayWeather = tempMap.get(time);
 				
-				buffer.append("日期: ").append(oneDayWeather.getTime()).append("     ");
+				buffer.append("時間: ").append(oneDayWeather.getTime()).append("     ");
 				buffer.append("溫度: ").append(oneDayWeather.getMinT()).append(" ~ ");
 				buffer.append(oneDayWeather.getMaxT()).append("     ");
 				buffer.append("簡述: ").append(oneDayWeather.getDesc()).append("\n");
@@ -253,121 +221,6 @@ public class CwbService {
 		} 
 	}
 	
-	public String getTaoyuanOneWeekWeatherPrediction(String taoyuanRegion) {
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(CwbOpenData.class);
-			
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			
-			String url = cwbConfig.getTaoyuanOneWeekWeatherPredictionUrl();
-			
-			logger.info("----> Prepare to get Taoyuan one week weather prediction from url: <{}>", url);
-			
-			// 因回傳資料很多亂掉需先行經過整理
-//			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new URL(url));
-			
-			// 直接索取 xml content 並解析方法
-			String xmlContent = HttpUtil.getWeatherContentFromCwb(url);
-			xmlContent = xmlContent.replaceAll("\n", "");
-			logger.info("<---- Got response, xml content: {}", xmlContent);
-
-			StringReader reader = new StringReader(xmlContent);
-			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(reader);
-			
-			Dataset dataset = data.getDataset();
-			if (dataset == null) {
-				return "不好意思, 程式寫太爛, 壞掉啦!";
-			}
-			
-			Locations locations = dataset.getLocations();
-			List<Location> location = locations.getLocation();
-			List<Location> regionLocs = location.stream().filter(l -> l.getLocationName().contains(taoyuanRegion)).collect(Collectors.toList());
-			if (regionLocs.isEmpty() || regionLocs.size() != 1) {
-				return "找不到對應一週資訊, 請確認輸入為 '桃園市xx區一週";
-			}
-
-			// 用來暫存資訊
-			Map<String, OneDayWeather> tempMap = new LinkedHashMap<>();
-			
-			// 用來組出回傳訊息
-			StringBuilder buffer = new StringBuilder();
-
-			Location regionLoc = regionLocs.get(0);
-			
-			buffer.append("桃園市").append(regionLoc.getLocationName().trim()).append(" 一週天氣資訊:\n");
-			
-			List<WeatherElement> weatherElements = regionLoc.getWeatherElement();
-			
-			for (WeatherElement weatherElement : weatherElements) {
-				OneDayWeather oneDayWeather = null;
-				
-				String elementName = weatherElement.getElementName().trim();
-				List<Time> times = null;
-				switch (elementName) {
-					case "Wx":
-						times = weatherElement.getTime();
-						for (Time time : times) {
-							String startTime = time.getStartTime().trim();
-							startTime = startTime.substring(0, startTime.indexOf("T"));
-
-							String desc = time.getElementValue().getValue().trim();
-							
-							oneDayWeather = new OneDayWeather();
-							oneDayWeather.setTime(startTime);
-							oneDayWeather.setDesc(desc);
-							
-							tempMap.put(startTime, oneDayWeather);
-						}
-						break;
-						
-					case "MaxT":
-					case "MinT":
-						times = weatherElement.getTime();
-						for (Time time : times) {
-							String startTime = time.getStartTime().trim();
-							startTime = startTime.substring(0, startTime.indexOf("T"));
-							
-							ElementValue elemVal = time.getElementValue();
-							String temperatureVal = elemVal.getValue().trim();
-							String temperatureUnit = elemVal.getMeasures().trim();
-							
-							oneDayWeather = tempMap.get(startTime);
-							
-							if (elementName.equals("MaxT")) {
-								oneDayWeather.setMaxT(temperatureVal + temperatureUnit);
-							}
-							else {
-								oneDayWeather.setMinT(temperatureVal + temperatureUnit);
-							}
-						}
-						break;
-				}
-			}
-			
-			// ------ 從 Map 中取出整理好的資訊, 組出要回傳的訊息 ------
-			Iterator<String> keys = tempMap.keySet().iterator();
-			while (keys.hasNext()) {
-				String time = keys.next();
-				OneDayWeather oneDayWeather = tempMap.get(time);
-				
-				buffer.append("日期: ").append(oneDayWeather.getTime()).append("     ");
-				buffer.append("溫度: ").append(oneDayWeather.getMinT()).append(" ~ ");
-				buffer.append(oneDayWeather.getMaxT()).append("     ");
-				buffer.append("簡述: ").append(oneDayWeather.getDesc()).append("\n");
-				
-			}
-			
-			return buffer.toString();
-			
-		} catch (IOException e) {
-			logger.error("IOException raised while trying to get Taoyuan weather information", e);
-			return "抓取資料發生錯誤";
-		} catch (JAXBException e) {
-			logger.error("IOException raised while trying to get Taoyuan weather information", e);
-			return "抓取資料發生錯誤";
-		}
-	}
-
 	@Data
 	@NoArgsConstructor
 	private class OneDayWeather {
@@ -375,6 +228,16 @@ public class CwbService {
 		private String desc;
 		private String maxT;
 		private String minT;
+		
+		public String getTime() {
+			String date = time.substring(0, "yyyy-MM-dd".length());
+			if (time.indexOf("06:00:00") < time.indexOf("18:00:00")) {
+				return date + " 早";
+			}
+			else {
+				return date + " 晚";
+			}
+		}
 	}
 	
 	private String checkCityName(String city) {

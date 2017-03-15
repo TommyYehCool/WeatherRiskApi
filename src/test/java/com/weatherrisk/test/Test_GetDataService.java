@@ -43,29 +43,24 @@ public class Test_GetDataService {
 	}
 	
 	@Test
-	@Ignore
 	public void test_2_CwbService_getOneWeekWeatherPrediction() {
 		String data = cwbService.getOneWeekWeatherPrediction("臺北市");
 		System.out.println(data);
-	}
-	
-	@Test
-	@Ignore
-	public void test_3_CwbService_getOneWeekWeatherPredictionProvided() {
-		String data = cwbService.getOneWeekWeatherPredictionProvided();
+		
+		data = cwbService.getOneWeekWeatherPrediction("桃園市");
 		System.out.println(data);
 	}
 	
 	@Test
 	@Ignore
-	public void test_4_BitcoinService_getBitcoinPriceFromWinkdex() {
+	public void test_3_BitcoinService_getBitcoinPriceFromWinkdex() {
 		String data = bitcoinService.getBitcoinPriceFromWinkdex();
 		System.out.println(data);
 	}
 	
 	@Test
 	@Ignore
-	public void test_5_BitcoinService_getPriceFromExchanges() {
+	public void test_4_BitcoinService_getPriceFromExchanges() {
 		String data = bitcoinService.getPriceFromExchanges(CurrencyPair.BTC_USD);
 		System.out.println(data);
 		
@@ -74,18 +69,12 @@ public class Test_GetDataService {
 	}
 	
 	@Test
-	public void test_6_BitcoinService_getRatesFromTaiwanBank() throws IOException {
+	@Ignore
+	public void test_5_BitcoinService_getRatesFromTaiwanBank() throws IOException {
 		String data = bitcoinService.getRealCurrencyRatesFromTaiwanBank(CurrencyCnst.USD);
 		System.out.println(data);
 		
 		data = bitcoinService.getRealCurrencyRatesFromTaiwanBank(CurrencyCnst.JPY);
-		System.out.println(data);
-	}
-	
-	@Test
-	@Ignore
-	public void test_7_CwbService_getTaoyuanOneWeekWeatherPrediction() throws IOException {
-		String data = cwbService.getTaoyuanOneWeekWeatherPrediction("中壢區");
 		System.out.println(data);
 	}
 }

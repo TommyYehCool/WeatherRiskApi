@@ -21,7 +21,7 @@ public class CwbConfig {
 	
 	@Autowired
 	public CwbConfig(@Value("${cwb.apikey}") String apiKey) {
-		oneWeekWeatherPredictionUrl = MessageFormat.format(BASE_URL, apiKey, "F-C0032-003");
+		oneWeekWeatherPredictionUrl = MessageFormat.format(BASE_URL, apiKey, "F-C0032-005");
 		
 		taoyuanOneWeekWeatherPredictionUrl = MessageFormat.format(BASE_URL, apiKey, "F-D0047-007");
 		
