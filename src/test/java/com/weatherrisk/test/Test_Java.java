@@ -42,6 +42,11 @@ public class Test_Java {
 		inputMsg = "台北市士林ubike";
 		String name = inputMsg.substring(inputMsg.indexOf("台北市") + "台北市".length(), inputMsg.indexOf("ubike"));
 		System.out.println(name);
+		
+		inputMsg = "信義威秀金剛";
+		String chineseName = "信義威秀";
+		String filmName = inputMsg.substring(chineseName.length(), inputMsg.length());
+		System.out.println(filmName);
 	}
 	
 	@Test
