@@ -10,6 +10,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
+import com.weatherrisk.api.service.ViewshowMovieService;
 
 /**
  * <pre>
@@ -28,6 +29,9 @@ public class Application extends SpringBootServletInitializer {
 	@Autowired
 	private NewTaipeiOpenDataService newTaipeiOpenDataService;
 	
+	@Autowired
+	private ViewshowMovieService viewshowMovieService;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
     }
@@ -41,5 +45,7 @@ public class Application extends SpringBootServletInitializer {
 	public void postConstruct() {
 		taipeiOpenDataService.getNewestParkingLotInfos();
 		newTaipeiOpenDataService.getNewestParkingLotInfos();
+		
+		viewshowMovieService.refreshMovieTimes();
 	}
 }

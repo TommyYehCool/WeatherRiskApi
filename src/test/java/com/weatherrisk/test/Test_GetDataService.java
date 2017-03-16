@@ -21,6 +21,7 @@ import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.ParkingLotService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
+import com.weatherrisk.api.service.ViewshowMovieService;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
 @RunWith(SpringRunner.class)
@@ -45,6 +46,9 @@ public class Test_GetDataService {
 	
 	@Autowired
 	private ParkingLotService parkingLotService;
+	
+	@Autowired
+	private ViewshowMovieService viewshowMoviceService;
 	
 	@Test
 	@Ignore
@@ -121,7 +125,13 @@ public class Test_GetDataService {
 	}
 	
 	@Test
+	@Ignore
 	public void test_10_NewTaipeiOpenDataService_getNewestParkingLotAvailable() {
 		newTaipeiOpenDataService.getNewestParkingLotAvailable();
+	}
+	
+	@Test
+	public void test_11_ViewshowMovieService_getXinyiMovieTimes() {
+		System.out.println("Check the system init log");
 	}
 }

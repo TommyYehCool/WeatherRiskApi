@@ -16,6 +16,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.util.EntityUtils;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.util.StringUtils;
 
 public class HttpUtil {
@@ -72,5 +75,16 @@ public class HttpUtil {
 		String responseData = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
 		
 		return responseData;
+	}
+	
+	private static final int CONNECTION_TIMEOUT = 5 * 1000;
+	private static final String CONNECTION_USER_AGENT = "Mozilla/5.0";
+	
+	public static Document getDocument(String url) throws Exception {
+		Connection connection = Jsoup.connect(url);
+		connection.timeout(CONNECTION_TIMEOUT);
+		connection.userAgent(CONNECTION_USER_AGENT);
+		Document doc = connection.get();
+		return doc;
 	}
 }
