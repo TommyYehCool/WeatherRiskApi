@@ -62,10 +62,10 @@ public class LineMsgHandler {
     private LineMessagingClient lineMessagingClient;
 	
 	@Autowired
-	private CwbService cwbService;
+	private ParkingLotService parkingLotService;
 	
 	@Autowired
-	private ParkingLotService parkingLotService;
+	private CwbService cwbService;
 	
 	@Autowired
 	private CurrencyService bitcoinService;
