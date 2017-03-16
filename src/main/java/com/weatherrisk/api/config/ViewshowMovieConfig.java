@@ -4,7 +4,7 @@ import java.text.MessageFormat;
 
 import org.springframework.context.annotation.Configuration;
 
-import com.weatherrisk.api.cnst.ViewshowTheather;
+import com.weatherrisk.api.cnst.ViewshowTheater;
 
 @Configuration
 public class ViewshowMovieConfig {
@@ -24,9 +24,9 @@ public class ViewshowMovieConfig {
 	private String SunViewshowUrl;
 	
 	public ViewshowMovieConfig() {
-		XinyiViewshowUrl = MessageFormat.format(BASE_URL, ViewshowTheather.XINYI.getCid());
-		QSquareViewshowUrl = MessageFormat.format(BASE_URL, ViewshowTheather.QSQUARE.getCid());
-		SunViewshowUrl = MessageFormat.format(BASE_URL, ViewshowTheather.SUN.getCid());
+		XinyiViewshowUrl = MessageFormat.format(BASE_URL, ViewshowTheater.XINYI.getCid());
+		QSquareViewshowUrl = MessageFormat.format(BASE_URL, ViewshowTheater.QSQUARE.getCid());
+		SunViewshowUrl = MessageFormat.format(BASE_URL, ViewshowTheater.SUN.getCid());
 	}
 
 	public String getXinyiViewshowUrl() {

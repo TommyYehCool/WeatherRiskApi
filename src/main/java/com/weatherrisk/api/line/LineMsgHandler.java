@@ -11,6 +11,7 @@ import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.ReplyMessage;
@@ -26,11 +27,13 @@ import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.cnst.UBikeCity;
+import com.weatherrisk.api.cnst.ViewshowTheater;
 import com.weatherrisk.api.service.CurrencyService;
 import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.ParkingLotService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
+import com.weatherrisk.api.service.ViewshowMovieService;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
 import lombok.NonNull;
@@ -72,6 +75,9 @@ public class LineMsgHandler {
 	
 	@Autowired
 	private NewTaipeiOpenDataService newTaipeiOpenDataService;
+	
+	@Autowired
+	private ViewshowMovieService viewshowMovieService;
 	
 	private final String[] templateMsgs 
 		= new String[] {
@@ -166,6 +172,21 @@ public class LineMsgHandler {
     			queryResult = bitcoinService.getRealCurrencyRatesFromTaiwanBank(currency);
     		}
     	}
+    	// 威秀電影時刻
+    	else if (ViewshowTheater.isSupportedTheater(inputMsg)) {
+    		ViewshowTheater theather = ViewshowTheater.convertByInputMsg(inputMsg);
+    		
+    		String filmName = inputMsg.substring(inputMsg.indexOf(theather.getChineseName()), inputMsg.length());
+    		
+    		if (StringUtils.isEmpty(filmName)) {
+    			queryResult = "請輸入欲查詢電影名稱";
+    		}
+    		else {
+    			queryResult = viewshowMovieService.queryByTheaterNameAndFilmNameLike(theather.getChineseName(), filmName);
+    		}
+    	}
+    	
+    	// 回傳查詢結果
     	if (queryResult != null) {
     		if (queryResult.length() > LINE_MAXIMUM_REAPLY_TEXT_MSG_LENGTH) {
     			logger.warn("!!!!! Prepare to reply message length: <{}> excceed LINE maximum reply message length: <{}>", queryResult.length(), LINE_MAXIMUM_REAPLY_TEXT_MSG_LENGTH);

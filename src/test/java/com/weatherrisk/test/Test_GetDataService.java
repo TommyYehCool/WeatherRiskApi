@@ -131,7 +131,14 @@ public class Test_GetDataService {
 	}
 	
 	@Test
+	@Ignore
 	public void test_11_ViewshowMovieService_getXinyiMovieTimes() {
 		System.out.println("Check the system init log");
+	}
+	
+	@Test
+	public void test_12_ViewshowMovieService_queryByTheaterNameAndFilmNameLike() {
+		String queryResult = viewshowMoviceService.queryByTheaterNameAndFilmNameLike("信義威秀", "羅根");
+		System.out.println(queryResult);
 	}
 }

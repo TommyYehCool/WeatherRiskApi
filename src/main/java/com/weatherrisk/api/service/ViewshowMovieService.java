@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.weatherrisk.api.cnst.ViewshowTheather;
+import com.weatherrisk.api.cnst.ViewshowTheater;
 import com.weatherrisk.api.config.ViewshowMovieConfig;
 import com.weatherrisk.api.model.MovieDateTime;
 import com.weatherrisk.api.model.ViewShowMovie;
@@ -45,19 +45,19 @@ public class ViewshowMovieService {
 	
 	private void getXinyiMovieTimes() {
 		String url = viewShowMovieConfig.getXinyiViewshowUrl();
-		String theaterName = ViewshowTheather.XINYI.getChineseName();
+		String theaterName = ViewshowTheater.XINYI.getChineseName();
 		getViewshowMovieTimes(url, theaterName);
 	}
 	
 	private void getQSquareMovieTimes() {
 		String url = viewShowMovieConfig.getQSquareViewshowUrl();
-		String theaterName = ViewshowTheather.QSQUARE.getChineseName();
+		String theaterName = ViewshowTheater.QSQUARE.getChineseName();
 		getViewshowMovieTimes(url, theaterName);
 	}
 	
 	private void getSunMovieTimes() {
 		String url = viewShowMovieConfig.getSunViewshowUrl();
-		String theaterName = ViewshowTheather.SUN.getChineseName();
+		String theaterName = ViewshowTheater.SUN.getChineseName();
 		getViewshowMovieTimes(url, theaterName);
 	}
 
@@ -130,5 +130,31 @@ public class ViewshowMovieService {
 		} catch (Exception e) {
 			logger.error("Exception raised while trying to get {} viewshow movie times", theaterName, e);
 		}
+	}
+
+	public String queryByTheaterNameAndFilmNameLike(String chineseName, String filmName) {
+		logger.info(">>>>> Prepare to query movie time by theater: {}, filmName: {}", chineseName, filmName);
+		List<ViewShowMovie> viewShowMovies = viewShowMovieRepo.findByTheaterNameAndFilmNameLike(chineseName, filmName);
+		logger.info("<<<<< Query by theaterName: {}, filmName: {} succeed, content: {}", chineseName, filmName, viewShowMovies);
+		return constructQueryResult(viewShowMovies);
+	}
+
+	private String constructQueryResult(List<ViewShowMovie> viewShowMovies) {
+		StringBuilder buffer = new StringBuilder();
+		for (ViewShowMovie viewShowMovie : viewShowMovies) {
+			buffer.append(viewShowMovie.getFilmName()).append("\n");
+			
+			MovieDateTime movieDateTime = viewShowMovie.getMovieDateTimes().get(0);
+			buffer.append("日期: ").append(movieDateTime.getDate()).append("\n");
+			buffer.append("場次: ").append(movieDateTime.getSession());
+			
+			// 回傳全部
+//			List<MovieDateTime> movieDateTimes = viewShowMovie.getMovieDateTimes();
+//			for (MovieDateTime movieDateTime : movieDateTimes) {
+//				buffer.append("日期: ").append(movieDateTime.getDate()).append("\n");
+//				buffer.append("場次: ").append(movieDateTime.getSession()).append("\n");
+//			}
+		}
+		return buffer.toString();
 	}
 }
