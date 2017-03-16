@@ -174,15 +174,19 @@ public class LineMsgHandler {
     	}
     	// 威秀電影時刻
     	else if (ViewshowTheater.isSupportedTheater(inputMsg)) {
-    		ViewshowTheater theather = ViewshowTheater.convertByInputMsg(inputMsg);
+    		ViewshowTheater theater = ViewshowTheater.convertByInputMsg(inputMsg);
     		
-    		String filmName = inputMsg.substring(theather.getChineseName().length(), inputMsg.length()).trim();
+    		String command = inputMsg.substring(theater.getChineseName().length(), inputMsg.length()).trim();
     		
-    		if (StringUtils.isEmpty(filmName)) {
-    			queryResult = "請輸入欲查詢電影名稱";
+    		if (StringUtils.isEmpty(command)) {
+    			queryResult = "請輸入欲查詢電影名稱或'上映'";
+    		}
+    		else if (command.equals("上映")) {
+    			queryResult = viewshowMovieService.queryNowPlayingByTheaterName(theater.getChineseName());
     		}
     		else {
-    			queryResult = viewshowMovieService.queryByTheaterNameAndFilmNameLike(theather.getChineseName(), filmName);
+    			String filmName = command;
+    			queryResult = viewshowMovieService.queryByTheaterNameAndFilmNameLike(theater.getChineseName(), filmName);
     		}
     	}
     	// 更新威秀電影時刻

@@ -3,6 +3,7 @@ package com.weatherrisk.api.service;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -132,20 +133,20 @@ public class ViewshowMovieService {
 		}
 	}
 
-	public String queryByTheaterNameAndFilmNameLike(String chineseName, String filmName) {
-		logger.info(">>>>> Prepare to query movie time by theater: {}, filmName: {}", chineseName, filmName);
-		List<ViewShowMovie> viewShowMovies = viewShowMovieRepo.findByTheaterNameAndFilmNameLike(chineseName, filmName);
+	public String queryByTheaterNameAndFilmNameLike(String theaterName, String filmName) {
+		logger.info(">>>>> Prepare to query movie time by theater: {}, filmName: {}", theaterName, filmName);
+		List<ViewShowMovie> viewShowMovies = viewShowMovieRepo.findByTheaterNameAndFilmNameLike(theaterName, filmName);
 		if (!viewShowMovies.isEmpty()) {
-			logger.info("<<<<< Query by theaterName: {}, filmName: {} succeed, content: {}", chineseName, filmName, viewShowMovies);
-			return constructQueryResult(viewShowMovies);
+			logger.info("<<<<< Query by theaterName: {}, filmName: {} succeed, content: {}", theaterName, filmName, viewShowMovies);
+			return constructQueryMovieTimesResult(viewShowMovies);
 		}
 		else {
-			logger.info("<<<<< Query by theaterName: {}, filmName: {} succeed, content is empty", chineseName, filmName, viewShowMovies);
+			logger.info("<<<<< Query by theaterName: {}, filmName: {} succeed, content is empty", theaterName, filmName, viewShowMovies);
 			return "查不到對應電影資料";
 		}
 	}
 
-	private String constructQueryResult(List<ViewShowMovie> viewShowMovies) {
+	private String constructQueryMovieTimesResult(List<ViewShowMovie> viewShowMovies) {
 		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < viewShowMovies.size(); i++) {
 			ViewShowMovie viewShowMovie = viewShowMovies.get(i);
@@ -158,8 +159,31 @@ public class ViewshowMovieService {
 			
 			if (i != viewShowMovies.size() - 1) {
 				buffer.append("\n");
+				buffer.append("----------------");
 			}
 		}
 		return buffer.toString();
+	}
+
+	public String queryNowPlayingByTheaterName(String theaterName) {
+		logger.info(">>>>> Prepare to query now playing by theater: {}", theaterName);
+		List<ViewShowMovie> viewShowMoives = viewShowMovieRepo.findByTheaterName(theaterName);
+		if (!viewShowMoives.isEmpty()) {
+			logger.info("<<<<< Query by theaterName: {}, content: {}", viewShowMoives);
+			
+			List<String> filmNames = viewShowMoives.stream().map(ViewShowMovie::getFilmName).collect(Collectors.toList());
+			
+			StringBuilder buffer = new StringBuilder();
+			
+			buffer.append(theaterName).append("上映電影如下:\n");
+			for (String filmName : filmNames) {
+				buffer.append(filmName).append("\n");
+			}
+			return buffer.toString();
+		}
+		else {
+			logger.info("<<<<< Query by theaterName: {}, content is empty", theaterName);
+			return "查不到對應資料";
+		}
 	}
 }
