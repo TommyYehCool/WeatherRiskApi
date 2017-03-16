@@ -39,10 +39,10 @@ public class ViewshowMovieService {
 	}
 	
 	private void deleteAllMovieTimes() {
-		logger.info(">>>>> Prepare to delete all movie times...");
+		logger.info(">>>>> Prepare to delete all view show movie times...");
 		long startTime = System.currentTimeMillis();
 		viewShowMovieRepo.deleteAll();
-		logger.info("<<<<< Delete all movie times done, time-spent: <{} ms>", System.currentTimeMillis() - startTime);
+		logger.info("<<<<< Delete all view show movie times done, time-spent: <{} ms>", System.currentTimeMillis() - startTime);
 	}
 	
 	private void getXinyiMovieTimes() {
