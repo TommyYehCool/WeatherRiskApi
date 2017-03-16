@@ -39,10 +39,16 @@ public class TaipeiOpenDataService extends OpenDataService {
 		super.getNewestParkingLotAvailable(isGZipFormat, PARKING_LOT_AVAILABLE_URL, new TaipeiParkingLotAvailableDetailDeserializer());
 	}
 	
+	/**
+	 * 從台北市政府 Open Data 查詢對應 UBike 場站資訊 
+	 */
 	public String getNewestUBikeInfoByNameLike(String name) {
 		return super.getNewestUBikeInfoByNameLike(UBIKE_INFO_URL, new TaipeiUBikeAllInfoDeserializer(), name);
 	}
 
+	/**
+	 * 從台北市政府 Open Data 查詢最近兩個 UBike 場站資訊 
+	 */
 	public List<UBikeInfo> getNearbyUBikeStations(Double userLatitude, Double userLongitude) {
 		logger.info(">>>>> Prepare to get nearby UBike stations at Taipei with lat: {}, lng: {}", userLatitude, userLongitude);
 		return super.getNearbyUBikeStations(UBIKE_INFO_URL, new TaipeiUBikeAllInfoDeserializer(), userLatitude, userLongitude);

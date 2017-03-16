@@ -171,16 +171,16 @@ public class OpenDataService {
 			
 			List<UBikeInfo> ubikeInfos = ubikeAllInfo.getUbikeInfos();
 			
-			List<UBikeInfo> specificAreaUBikeInfos = ubikeInfos.stream().filter(ubike -> ubike.getSna().contains(name)).collect(Collectors.toList());
+			List<UBikeInfo> specificSnaUBikeInfos = ubikeInfos.stream().filter(ubike -> ubike.getSna().contains(name)).collect(Collectors.toList());
 			
-			if (specificAreaUBikeInfos.isEmpty()) {
+			if (specificSnaUBikeInfos.isEmpty()) {
 				return "請嘗試其他關鍵字";
 			}
 			
 			StringBuilder buffer = new StringBuilder();
 			buffer.append(name).append(" UBike 資訊如下:\n");
 			buffer.append("---------------------------------\n");
-			for (UBikeInfo ubikeInfo : specificAreaUBikeInfos) {
+			for (UBikeInfo ubikeInfo : specificSnaUBikeInfos) {
 				buffer.append("場站名稱: ").append(ubikeInfo.getSna()).append("\n");
 				buffer.append("大概位置: ").append(ubikeInfo.getAr()).append("\n");
 				buffer.append("總停車格: ").append(ubikeInfo.getTot()).append("\n");
@@ -201,7 +201,7 @@ public class OpenDataService {
 	}
 
 	/**
-	 * 從台北市或新北市政府 Open Data 取得 UBike 資料, 並取出最近的五個場站
+	 * 從台北市或新北市政府 Open Data 取得 UBike 資料, 並取出最近的兩個場站
 	 */
 	protected List<UBikeInfo> getNearbyUBikeStations(String ubikeInfoUrl, JsonDeserializer<UBikeAllInfo> deserializer, Double userLatitude, Double userLongitude) {
 		try {
