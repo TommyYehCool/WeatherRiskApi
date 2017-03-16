@@ -133,7 +133,7 @@ public class ViewshowMovieService {
 		}
 	}
 
-	public String queryByTheaterNameAndFilmNameLike(String theaterName, String filmName) {
+	public String queryMovieTimesByTheaterNameAndFilmNameLike(String theaterName, String filmName) {
 		logger.info(">>>>> Prepare to query movie time by theater: {}, filmName: {}", theaterName, filmName);
 		List<ViewShowMovie> viewShowMovies = viewShowMovieRepo.findByTheaterNameAndFilmNameLike(theaterName, filmName);
 		if (!viewShowMovies.isEmpty()) {
@@ -152,14 +152,18 @@ public class ViewshowMovieService {
 			ViewShowMovie viewShowMovie = viewShowMovies.get(i);
 			
 			buffer.append(viewShowMovie.getFilmName()).append("\n");
+			buffer.append("\n");
 			
-			MovieDateTime movieDateTime = viewShowMovie.getMovieDateTimes().get(0);
-			buffer.append("日期: ").append(movieDateTime.getDate()).append("\n");
-			buffer.append("場次: ").append(movieDateTime.getSession());
-			
+			for (int j = 0; j < viewShowMovie.getMovieDateTimes().size(); j++) {
+				MovieDateTime movieDateTime = viewShowMovie.getMovieDateTimes().get(j);
+				buffer.append("日期: ").append(movieDateTime.getDate()).append("\n");
+				buffer.append("場次: ").append(movieDateTime.getSession()).append("\n");
+				if (j != viewShowMovie.getMovieDateTimes().size() - 1) {
+					buffer.append("----------------\n");
+				}
+			}
 			if (i != viewShowMovies.size() - 1) {
-				buffer.append("\n");
-				buffer.append("----------------");
+				buffer.append("=====================\n");
 			}
 		}
 		return buffer.toString();

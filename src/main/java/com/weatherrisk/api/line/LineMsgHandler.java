@@ -186,7 +186,7 @@ public class LineMsgHandler {
     		}
     		else {
     			String filmName = command;
-    			queryResult = viewshowMovieService.queryByTheaterNameAndFilmNameLike(theater.getChineseName(), filmName);
+    			queryResult = viewshowMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theater.getChineseName(), filmName);
     		}
     	}
     	// 更新威秀電影時刻

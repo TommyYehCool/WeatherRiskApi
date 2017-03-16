@@ -48,7 +48,7 @@ public class Test_GetDataService {
 	private ParkingLotService parkingLotService;
 	
 	@Autowired
-	private ViewshowMovieService viewshowMoviceService;
+	private ViewshowMovieService viewshowMovieService;
 	
 	@Test
 	@Ignore
@@ -138,7 +138,7 @@ public class Test_GetDataService {
 	
 	@Test
 	public void test_12_ViewshowMovieService_queryByTheaterNameAndFilmNameLike() {
-		String queryResult = viewshowMoviceService.queryByTheaterNameAndFilmNameLike("信義威秀", "羅根");
+		String queryResult = viewshowMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("信義威秀", "金剛");
 		System.out.println(queryResult);
 	}
 }
