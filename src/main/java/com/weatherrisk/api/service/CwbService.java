@@ -126,7 +126,7 @@ public class CwbService {
 			
 			List<Location> regionLocs = locations.stream().filter(l -> l.getLocationName().equals(regionModified)).collect(Collectors.toList());
 			if (regionLocs.isEmpty() || regionLocs.size() != 1) {
-				return "找不到對應一週資訊, 請確認輸入為 'xxxx一週";
+				return "找不到對應一週資訊, 請確認輸入為 '台灣縣市名稱' + 一週/一周";
 			}
 			
 			// 用來暫存資訊
