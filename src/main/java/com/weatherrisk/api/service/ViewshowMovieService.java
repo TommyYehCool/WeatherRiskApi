@@ -35,6 +35,7 @@ public class ViewshowMovieService {
 		getXinyiMovieTimes();
 		getQSquareMovieTimes();
 		getSunMovieTimes();
+		getMegaCityMovieTimes();
 	}
 	
 	private void deleteAllMovieTimes() {
@@ -59,6 +60,12 @@ public class ViewshowMovieService {
 	private void getSunMovieTimes() {
 		String url = viewShowMovieConfig.getSunViewshowUrl();
 		String theaterName = ViewshowTheater.SUN.getChineseName();
+		getViewshowMovieTimes(url, theaterName);
+	}
+	
+	private void getMegaCityMovieTimes() {
+		String url = viewShowMovieConfig.getMegaCityViewshowUrl();
+		String theaterName = ViewshowTheater.MEGA_CITY.getChineseName();
 		getViewshowMovieTimes(url, theaterName);
 	}
 

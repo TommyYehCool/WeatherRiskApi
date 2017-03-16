@@ -5,7 +5,9 @@ public enum ViewshowTheater {
 	
 	QSQUARE("京站威秀", "QS"),
 	
-	SUN("日新威秀", "XM");
+	SUN("日新威秀", "XM"),
+	
+	MEGA_CITY("板橋大遠百威秀", "BQ");
 	
 	private String chineseName;
 	private String cid;
