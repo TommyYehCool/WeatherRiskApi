@@ -176,7 +176,7 @@ public class LineMsgHandler {
     	else if (ViewshowTheater.isSupportedTheater(inputMsg)) {
     		ViewshowTheater theather = ViewshowTheater.convertByInputMsg(inputMsg);
     		
-    		String filmName = inputMsg.substring(inputMsg.indexOf(theather.getChineseName()), inputMsg.length());
+    		String filmName = inputMsg.substring(inputMsg.indexOf(theather.getChineseName()) + 1, inputMsg.length());
     		
     		if (StringUtils.isEmpty(filmName)) {
     			queryResult = "請輸入欲查詢電影名稱";

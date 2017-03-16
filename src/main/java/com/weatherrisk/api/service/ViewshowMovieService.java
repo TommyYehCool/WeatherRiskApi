@@ -135,8 +135,14 @@ public class ViewshowMovieService {
 	public String queryByTheaterNameAndFilmNameLike(String chineseName, String filmName) {
 		logger.info(">>>>> Prepare to query movie time by theater: {}, filmName: {}", chineseName, filmName);
 		List<ViewShowMovie> viewShowMovies = viewShowMovieRepo.findByTheaterNameAndFilmNameLike(chineseName, filmName);
-		logger.info("<<<<< Query by theaterName: {}, filmName: {} succeed, content: {}", chineseName, filmName, viewShowMovies);
-		return constructQueryResult(viewShowMovies);
+		if (!viewShowMovies.isEmpty()) {
+			logger.info("<<<<< Query by theaterName: {}, filmName: {} succeed, content: {}", chineseName, filmName, viewShowMovies);
+			return constructQueryResult(viewShowMovies);
+		}
+		else {
+			logger.info("<<<<< Query by theaterName: {}, filmName: {} succeed, content is empty", chineseName, filmName, viewShowMovies);
+			return "查不到對應電影資料";
+		}
 	}
 
 	private String constructQueryResult(List<ViewShowMovie> viewShowMovies) {
