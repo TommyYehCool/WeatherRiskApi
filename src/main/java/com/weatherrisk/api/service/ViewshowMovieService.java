@@ -147,19 +147,18 @@ public class ViewshowMovieService {
 
 	private String constructQueryResult(List<ViewShowMovie> viewShowMovies) {
 		StringBuilder buffer = new StringBuilder();
-		for (ViewShowMovie viewShowMovie : viewShowMovies) {
+		for (int i = 0; i < viewShowMovies.size(); i++) {
+			ViewShowMovie viewShowMovie = viewShowMovies.get(i);
+			
 			buffer.append(viewShowMovie.getFilmName()).append("\n");
 			
 			MovieDateTime movieDateTime = viewShowMovie.getMovieDateTimes().get(0);
 			buffer.append("日期: ").append(movieDateTime.getDate()).append("\n");
 			buffer.append("場次: ").append(movieDateTime.getSession());
 			
-			// 回傳全部
-//			List<MovieDateTime> movieDateTimes = viewShowMovie.getMovieDateTimes();
-//			for (MovieDateTime movieDateTime : movieDateTimes) {
-//				buffer.append("日期: ").append(movieDateTime.getDate()).append("\n");
-//				buffer.append("場次: ").append(movieDateTime.getSession()).append("\n");
-//			}
+			if (i != viewShowMovies.size() - 1) {
+				buffer.append("\n");
+			}
 		}
 		return buffer.toString();
 	}
