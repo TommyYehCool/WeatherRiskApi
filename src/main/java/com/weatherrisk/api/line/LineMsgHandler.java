@@ -185,6 +185,11 @@ public class LineMsgHandler {
     			queryResult = viewshowMovieService.queryByTheaterNameAndFilmNameLike(theather.getChineseName(), filmName);
     		}
     	}
+    	// 更新威秀電影時刻
+    	else if (inputMsg.equals("更新電影時刻表")) {
+    		viewshowMovieService.refreshMovieTimes();
+    		queryResult = "更新成功";
+    	}
     	
     	// 回傳查詢結果
     	if (queryResult != null) {
