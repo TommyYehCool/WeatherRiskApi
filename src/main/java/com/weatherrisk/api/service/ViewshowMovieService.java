@@ -128,10 +128,8 @@ public class ViewshowMovieService {
 				}
 			}
 			
-			long startTime = 0;
-			
 			logger.info(">>>>> Prepare to insert all {} movie times, data-size: <{}>...", theaterName, viewShowMovies.size());
-			startTime = System.currentTimeMillis();
+			long startTime = System.currentTimeMillis();
 			viewShowMovieRepo.insert(viewShowMovies);
 			logger.info("<<<<< Insert all {} movie times done, data-size: <{}>, time-spent: <{} ms>", theaterName, viewShowMovies.size(), System.currentTimeMillis() - startTime);
 			
