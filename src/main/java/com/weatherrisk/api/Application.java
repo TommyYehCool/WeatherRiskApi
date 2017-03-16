@@ -9,6 +9,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
+import com.weatherrisk.api.service.ShowTimeMovieService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
 import com.weatherrisk.api.service.ViewshowMovieService;
 
@@ -32,6 +33,9 @@ public class Application extends SpringBootServletInitializer {
 	@Autowired
 	private ViewshowMovieService viewshowMovieService;
 	
+	@Autowired
+	private ShowTimeMovieService showTimeMovieService;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
     }
@@ -47,5 +51,7 @@ public class Application extends SpringBootServletInitializer {
 		newTaipeiOpenDataService.getNewestParkingLotInfos();
 		
 		viewshowMovieService.refreshMovieTimes();
+		
+		showTimeMovieService.refreshMovieTimes();
 	}
 }
