@@ -79,18 +79,63 @@ public class LineMsgHandler {
 	@Autowired
 	private ViewshowMovieService viewshowMovieService;
 	
+	private final String[] helpTemplateMsgs
+		= new String[] {
+				"支援功能",
+				"你能幹嘛",
+				"What can you do"
+		  };
+	
 	private final String[] templateMsgs 
 		= new String[] {
-			"你好呀, 吃飽沒?",
-			"今天有沒有打扮得很美呀?",
-			"我愛你!",
-			"去簽看看樂透會不會中獎!"
-		};
+				"你好呀, 吃飽沒?",
+				"今天有沒有打扮得很美呀?",
+				"我愛你!",
+				"去簽看看樂透會不會中獎!"
+		  };
 	
     private String getRandomMsg() {
 		Random random = new Random();
 		return String.valueOf(templateMsgs[random.nextInt(templateMsgs.length)]);
 	}
+    
+    private String constructHelpMsg() {
+    	StringBuilder buffer = new StringBuilder();
+    	buffer.append("我能做到下列事情:").append("\n");
+    	buffer.append("-----------------------").append("\n");
+    	buffer.append("<查詢台北市及新北市停車場資訊>").append("\n");
+    	buffer.append("模糊搜尋: Ex: @士林").append("\n");
+    	buffer.append("停車場名稱搜尋: Ex: #停車場名稱").append("\n");
+    	buffer.append("-----------------------").append("\n");
+    	buffer.append("<查詢天氣>").append("\n");
+    	buffer.append("查詢天氣小幫手: 格式: 縣市名稱 + 天氣, Ex: 台北市天氣").append("\n");
+    	buffer.append("查詢一周天氣: 格式: 縣市名稱 + 一周, Ex: 台北市一周").append("\n");
+    	buffer.append("-----------------------").append("\n");
+    	buffer.append("<查詢虛擬貨幣及真實貨幣匯率>").append("\n");
+    	buffer.append("Ex: btc, eth, usd, jpy, krw...等").append("\n");
+    	buffer.append("-----------------------").append("\n");
+    	buffer.append("<查詢 UBike 場站資訊>").append("\n");
+    	buffer.append("格式: 縣市名稱 + 關鍵字 + ubike, Ex: 台北市天母ubike, 新北市三重ubike").append("\n");
+    	buffer.append("-----------------------").append("\n");
+    	buffer.append("<查詢最近的兩個 UBike 場站資訊>").append("\n");
+    	buffer.append("傳送您目前的位置資訊即可").append("\n");
+    	buffer.append("-----------------------").append("\n");
+    	buffer.append("<電影相關> 目前支援: 信義威秀, 京站威秀, 日新威秀, 板橋大遠百威秀").append("\n");
+    	buffer.append("請系統更新電影時刻表: Ex: 更新電影時刻表").append("\n");
+    	buffer.append("查詢某一家影城上映電影: 格式: 戲院名稱 + 上映, Ex: 信義威秀上映").append("\n");
+    	buffer.append("查詢某一部電影今日時刻表: 格式: 戲院名稱 + 關鍵字, Ex: 信義威秀羅根").append("\n");
+    	
+    	return buffer.toString();
+	}
+
+	private boolean isQueryFunctionMsg(String inputMsg) { 
+    	for (String helpTemplateMsg : helpTemplateMsgs) {
+    		if (inputMsg.contains(helpTemplateMsg)) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 
 	@EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
@@ -100,6 +145,10 @@ public class LineMsgHandler {
     	
     	String queryResult = null;
     	
+    	// 功能查詢
+    	if (isQueryFunctionMsg(inputMsg)) {
+    		queryResult = constructHelpMsg();
+    	}
     	// 停車場_精準搜尋
     	if (inputMsg.startsWith("#")) {
     		String name = inputMsg.substring(1, inputMsg.length());
@@ -109,34 +158,6 @@ public class LineMsgHandler {
     	else if (inputMsg.startsWith("@")) {
     		String name = inputMsg.substring(1, inputMsg.length());
     		queryResult = parkingLotService.findByNameLike(name);
-    	}
-    	// UBike_場站名稱模糊搜尋
-    	else if (inputMsg.endsWith("ubike")) {
-    		final int cityNameLen = 3;
-    		
-    		String cityName = inputMsg.substring(0, cityNameLen);
-
-    		boolean isSupportedCity = UBikeCity.isSupportedCity(cityName);
-    		if (isSupportedCity) {
-    			String name = inputMsg.substring(inputMsg.indexOf(cityName) + cityName.length(), inputMsg.indexOf("ubike"));
-    			if (name.isEmpty()) {
-    				return new TextMessage("請輸入查詢關建字");
-    			}
-
-    			UBikeCity ubikeCity = UBikeCity.convertByCityName(cityName);
-				switch (ubikeCity) {
-	    			case TAIPEI:
-	    				queryResult = taipeiOpenDataService.getNewestUBikeInfoByNameLike(name);
-	    				break;
-
-					case NEW_TAIPEI_CITY:
-						queryResult = newTaipeiOpenDataService.getNewestUBikeInfoByNameLike(name);
-						break;
-    			}
-    		}
-    		else {
-    			queryResult = "目前只援台北市及新北市, 搜尋範例: 台北市 + 關鍵字 + ubike";
-    		}
     	}
     	// 天氣_城市小幫手
     	else if (inputMsg.endsWith("天氣")) {
@@ -170,6 +191,34 @@ public class LineMsgHandler {
     		// 真實貨幣
     		else if (CurrencyCnst.isRealCurrency(inputMsg)) {
     			queryResult = bitcoinService.getRealCurrencyRatesFromTaiwanBank(currency);
+    		}
+    	}
+    	// UBike_場站名稱模糊搜尋
+    	else if (inputMsg.endsWith("ubike")) {
+    		final int cityNameLen = 3;
+    		
+    		String cityName = inputMsg.substring(0, cityNameLen);
+
+    		boolean isSupportedCity = UBikeCity.isSupportedCity(cityName);
+    		if (isSupportedCity) {
+    			String name = inputMsg.substring(inputMsg.indexOf(cityName) + cityName.length(), inputMsg.indexOf("ubike"));
+    			if (name.isEmpty()) {
+    				return new TextMessage("請輸入查詢關建字");
+    			}
+
+    			UBikeCity ubikeCity = UBikeCity.convertByCityName(cityName);
+				switch (ubikeCity) {
+	    			case TAIPEI:
+	    				queryResult = taipeiOpenDataService.getNewestUBikeInfoByNameLike(name);
+	    				break;
+
+					case NEW_TAIPEI_CITY:
+						queryResult = newTaipeiOpenDataService.getNewestUBikeInfoByNameLike(name);
+						break;
+    			}
+    		}
+    		else {
+    			queryResult = "目前只援台北市及新北市, 搜尋範例: 台北市 + 關鍵字 + ubike";
     		}
     	}
     	// 威秀電影時刻
