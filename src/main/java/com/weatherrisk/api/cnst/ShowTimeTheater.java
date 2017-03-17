@@ -2,8 +2,11 @@ package com.weatherrisk.api.cnst;
 
 public enum ShowTimeTheater {
 	STARSTAR("欣欣秀泰", "2"),
+
 	TODAY("今日秀泰", "4"),
+
 	BANQIAO("板橋秀泰", "6"),
+
 	SOUTHEAST("東南亞秀泰", "8");
 	
 	private String chineseName;

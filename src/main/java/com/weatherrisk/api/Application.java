@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
+import com.weatherrisk.api.service.MiramarMovieService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.ShowTimeMovieService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
@@ -36,6 +37,9 @@ public class Application extends SpringBootServletInitializer {
 	@Autowired
 	private ShowTimeMovieService showTimeMovieService;
 	
+	@Autowired
+	private MiramarMovieService miramarMovieService;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
     }
@@ -47,11 +51,21 @@ public class Application extends SpringBootServletInitializer {
 	
 	@PostConstruct
 	public void postConstruct() {
-		taipeiOpenDataService.getNewestParkingLotInfos();
-		newTaipeiOpenDataService.getNewestParkingLotInfos();
+		new Thread(() -> {
+			taipeiOpenDataService.getNewestParkingLotInfos();
+			newTaipeiOpenDataService.getNewestParkingLotInfos();
+		}).start();
+
+		new Thread(() -> {
+			viewshowMovieService.refreshMovieTimes();
+		}).start();
 		
-		viewshowMovieService.refreshMovieTimes();
+		new Thread(() -> {
+			showTimeMovieService.refreshMovieTimes();
+		}).start();
 		
-		showTimeMovieService.refreshMovieTimes();
+		new Thread(() -> {
+			miramarMovieService.refreshMovieTimes();
+		}).start();
 	}
 }

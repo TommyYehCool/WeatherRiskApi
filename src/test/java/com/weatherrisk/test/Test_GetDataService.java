@@ -18,6 +18,7 @@ import com.weatherrisk.api.Application;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.service.CurrencyService;
 import com.weatherrisk.api.service.CwbService;
+import com.weatherrisk.api.service.MiramarMovieService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.ParkingLotService;
 import com.weatherrisk.api.service.ShowTimeMovieService;
@@ -53,6 +54,9 @@ public class Test_GetDataService {
 	
 	@Autowired
 	private ShowTimeMovieService showTimeMovieService;
+	
+	@Autowired
+	private MiramarMovieService miramarMovieService;
 	
 	@Test
 	@Ignore
@@ -142,15 +146,15 @@ public class Test_GetDataService {
 	
 	@Test
 	@Ignore
-	public void test_12_ShowTimeMovieService_getBanqiaoShowTimeMovieTimes() {
-		System.out.println("Check the system init log");
+	public void test_12_ViewshowMovieService_queryByTheaterNameAndFilmNameLike() {
+		String queryResult = viewshowMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("板橋大遠百威秀", "金剛");
+		System.out.println(queryResult);
 	}
 	
 	@Test
 	@Ignore
-	public void test_13_ViewshowMovieService_queryByTheaterNameAndFilmNameLike() {
-		String queryResult = viewshowMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("板橋大遠百威秀", "金剛");
-		System.out.println(queryResult);
+	public void test_13_ShowTimeMovieService_getBanqiaoShowTimeMovieTimes() {
+		System.out.println("Check the system init log");
 	}
 	
 	@Test
@@ -161,6 +165,7 @@ public class Test_GetDataService {
 	}
 	
 	@Test
+	@Ignore
 	public void test_15_ShowTimeMoviceService_queryByTheaterNameAndFilmNameLike() {
 		String queryResult = showTimeMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("板橋秀泰", "她其實");
 		System.out.println(queryResult);
@@ -172,4 +177,15 @@ public class Test_GetDataService {
 		System.out.println(queryResult);
 	}
 	
+	@Test
+	@Ignore
+	public void test_16_MiramarMovieService_getTachihMovieTimes() {
+		System.out.println("Check the system init log");
+	}
+
+	@Test
+	public void test_17_MiramarMovieService_queryByTheaterNameAndFilmNameLike() {
+		String queryResult = miramarMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("大直美麗華", "她其實");
+		System.out.println(queryResult);
+	}
 }
