@@ -1,9 +1,13 @@
 package com.weatherrisk.api.vo.json.deserializer;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TimeZone;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,6 +28,8 @@ public class ShowTimeAllMovieTimesInfoDeserializer extends JsonDeserializer<Show
 		
 		ObjectCodec oc = jp.getCodec();
 	    JsonNode rootNode = oc.readTree(jp);
+	    
+//	    System.out.println(rootNode);
 	    
 	    JsonNode payloadNode = rootNode.get("payload");
 	    
@@ -64,20 +70,9 @@ public class ShowTimeAllMovieTimesInfoDeserializer extends JsonDeserializer<Show
 	    		showTimeMovieMap.put(programId, showTimeMovie);
 	    	}
 	    	
-	    	String externalUrl = eventNode.get("meta").get("externalUrl").asText();
-	    	String dataToExtract = externalUrl.substring(externalUrl.indexOf("?") + 1, externalUrl.length());
-	    	String[] datas = dataToExtract.split("&");
-	    	
-	    	String date = "";
-	    	String time = "";
-	    	for (String data : datas) {
-	    		if (data.contains("selShowDate")) {
-	    			date = data.substring(data.indexOf("=") + 1, data.length());
-	    		}
-	    		else if (data.contains("selShowTime")) {
-	    			time = data.substring(data.indexOf("=") + 1, data.length());
-	    		}
-	    	}
+	    	String startedAt = eventNode.get("startedAt").asText();
+	    	String date = startedAt.substring(0, startedAt.indexOf("T"));
+	    	String time = convertToGmt8(startedAt.substring(startedAt.indexOf("T") + 1, startedAt.indexOf(".")));
 	    	
 	    	showTimeMovie.addMovieDateTime(new MovieDateTime(date, time));
 	    }
@@ -86,5 +81,19 @@ public class ShowTimeAllMovieTimesInfoDeserializer extends JsonDeserializer<Show
 	    	result.addShowTimeMovie(showTimeMovieMapVals);
 	    }
 		return result;
+	}
+
+	private String convertToGmt8(String gmtZero) {
+		SimpleDateFormat gmtTimeFormat = new SimpleDateFormat("HH:mm:ss");
+		gmtTimeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		
+		SimpleDateFormat gmtAdd8TimeFormat = new SimpleDateFormat("HH:mm");
+		gmtAdd8TimeFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+		try {
+			Date gmtDate = gmtTimeFormat.parse(gmtZero);
+			return gmtAdd8TimeFormat.format(gmtDate);
+		} catch (ParseException e) {
+			return "??:??";
+		}
 	}
 }

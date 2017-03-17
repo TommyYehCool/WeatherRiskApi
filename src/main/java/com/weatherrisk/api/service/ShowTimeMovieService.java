@@ -38,22 +38,38 @@ public class ShowTimeMovieService {
 	public void refreshMovieTimes() {
 		try {
 			deleteAllMovieTimes();
+			getStarStarShowTimeMovieTimes();
+			getTodayShowTimeMovieTimes();
 			getBanqiaoShowTimeMovieTimes();
 		}
 		catch (Exception e) {
-			logger.error("Exception raised while refresh show time movie times", e);
+			logger.error("Exception raised while refresh Show Time movie times", e);
 		}
 	}
 
 	private void deleteAllMovieTimes() {
-		logger.info(">>>>> Prepare to delete all show time movie times...");
+		logger.info(">>>>> Prepare to delete all Show Time movie times...");
 		long startTime = System.currentTimeMillis();
 		showTimeMovieRepo.deleteAll();
-		logger.info("<<<<< Delete all show time movie times done, time-spent: <{} ms>", System.currentTimeMillis() - startTime);
+		logger.info("<<<<< Delete all Show Time movie times done, time-spent: <{} ms>", System.currentTimeMillis() - startTime);
+	}
+	
+	private void getStarStarShowTimeMovieTimes() throws Exception {
+		String url = showTimeMovieConfig.getStarStarShowTimeUrl();
+		url += getTodayStr();
+		String theaterName = ShowTimeTheater.STARSTAR.getChineseName();
+		getShowTimeMovieTimes(url, theaterName);
+	}
+	
+	private void getTodayShowTimeMovieTimes() throws Exception {
+		String url = showTimeMovieConfig.getTodayShowTimeUrl();
+		url += getTodayStr();
+		String theaterName = ShowTimeTheater.TODAY.getChineseName();
+		getShowTimeMovieTimes(url, theaterName);
 	}
 	
 	private void getBanqiaoShowTimeMovieTimes() throws Exception {
-		String url = showTimeMovieConfig.getMovieInfo_BanqiaoShowTimeUrl();
+		String url = showTimeMovieConfig.getBanqiaoShowTimeUrl();
 		url += getTodayStr();
 		String theaterName = ShowTimeTheater.BANQIAO.getChineseName();
 		getShowTimeMovieTimes(url, theaterName);
@@ -65,13 +81,13 @@ public class ShowTimeMovieService {
 	}
 	
 	private void getShowTimeMovieTimes(String url, String theaterName) throws Exception {
-		logger.info(">>>>> Prepare to get show time movie times from url: <{}>", url);
+		logger.info(">>>>> Prepare to get Show Time movie times from url: <{}>", url);
 		
 		long startTime = System.currentTimeMillis();
 		
 		String jsonData = HttpUtil.getJsonContentFromOpenData(url);
 		
-		logger.info("<<<<< Get show time movie times from url: <{}> done, time-spent: <{} ms>", url, System.currentTimeMillis() - startTime);
+		logger.info("<<<<< Get Show Time movie times from url: <{}> done, time-spent: <{} ms>", url, System.currentTimeMillis() - startTime);
 
 		ObjectMapper mapper = new ObjectMapper();
 		
@@ -81,21 +97,21 @@ public class ShowTimeMovieService {
 		
 		showTimeMoviesInfo.stream().forEach(showTimeMoive -> showTimeMoive.setTheaterName(theaterName));
 
-		logger.info(">>>>> Prepare to insert all {} movie times, data-size: <{}>...", theaterName, showTimeMoviesInfo.size());
+		logger.info(">>>>> Prepare to insert all {} Show Time movie times, data-size: <{}>...", theaterName, showTimeMoviesInfo.size());
 		startTime = System.currentTimeMillis();
 		showTimeMovieRepo.insert(showTimeMoviesInfo);
-		logger.info("<<<<< Insert all {} movie times done, data-size: <{}>, time-spent: <{} ms>", theaterName, showTimeMoviesInfo.size(), System.currentTimeMillis() - startTime);
+		logger.info("<<<<< Insert all {} Show Time movie times done, data-size: <{}>, time-spent: <{} ms>", theaterName, showTimeMoviesInfo.size(), System.currentTimeMillis() - startTime);
 	}
 
 	public String queryMovieTimesByTheaterNameAndFilmNameLike(String theaterName, String filmName) {
-		logger.info(">>>>> Prepare to query movie time by theater: {}, filmName: {}", theaterName, filmName);
+		logger.info(">>>>> Prepare to query Show Time movie time by theater: {}, filmName: {}", theaterName, filmName);
 		List<ShowTimeMovie> showTimeMovies = showTimeMovieRepo.findByTheaterNameAndFilmNameLike(theaterName, filmName);
 		if (!showTimeMovies.isEmpty()) {
-			logger.info("<<<<< Query by theaterName: {}, filmName: {} succeed, content: {}", theaterName, filmName, showTimeMovies);
+			logger.info("<<<<< Query Show Time movie time by theaterName: {}, filmName: {} succeed, content: {}", theaterName, filmName, showTimeMovies);
 			return constructQueryMovieTimesResult(showTimeMovies);
 		}
 		else {
-			logger.info("<<<<< Query by theaterName: {}, filmName: {} succeed, content is empty", theaterName, filmName, showTimeMovies);
+			logger.info("<<<<< Query Show Time movie time by theaterName: {}, filmName: {} succeed, content is empty", theaterName, filmName, showTimeMovies);
 			return "查不到對應電影資料";
 		}
 	}
@@ -150,10 +166,10 @@ public class ShowTimeMovieService {
 	}
 	
 	public String queryNowPlayingByTheaterName(String theaterName) {
-		logger.info(">>>>> Prepare to query now playing by theater: {}", theaterName);
+		logger.info(">>>>> Prepare to query Show Time now playing by theater: {}", theaterName);
 		List<ShowTimeMovie> showTimeMoives = showTimeMovieRepo.findByTheaterName(theaterName);
 		if (!showTimeMoives.isEmpty()) {
-			logger.info("<<<<< Query by theaterName: {}, content: {}", showTimeMoives);
+			logger.info("<<<<< Query Show Time now playing by theaterName: {}, content: {}", showTimeMoives);
 			
 			List<String> filmNames = showTimeMoives.stream().map(ShowTimeMovie::getFilmName).collect(Collectors.toList());
 			
@@ -166,7 +182,7 @@ public class ShowTimeMovieService {
 			return buffer.toString();
 		}
 		else {
-			logger.info("<<<<< Query by theaterName: {}, content is empty", theaterName);
+			logger.info("<<<<< Query Show Time now playing by theaterName: {}, content is empty", theaterName);
 			return "查不到對應資料";
 		}
 	}

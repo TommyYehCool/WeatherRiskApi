@@ -124,7 +124,8 @@ public class LineMsgHandler {
     	buffer.append("查詢最近的兩個 UBike 場站資訊: 傳送您目前的位置資訊即可").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("<電影>").append("\n");
-    	buffer.append("<支援影城: 信義威秀, 京站威秀, 日新威秀, 板橋大遠百威秀, 板橋秀泰>").append("\n");
+    	buffer.append("<支援威秀影城: 信義威秀, 京站威秀, 日新威秀, 板橋大遠百威秀>").append("\n");
+    	buffer.append("<支援秀泰影城: 欣欣秀泰, 今日秀泰, 板橋秀泰>").append("\n");
     	buffer.append("請系統更新電影時刻表: Ex: 更新電影時刻表").append("\n");
     	buffer.append("查詢某一家影城上映電影: 格式: 戲院名稱 + 上映, Ex: 信義威秀上映").append("\n");
     	buffer.append("查詢某一部電影今日時刻表: 格式: 戲院名稱 + 關鍵字, Ex: 信義威秀羅根").append("\n");

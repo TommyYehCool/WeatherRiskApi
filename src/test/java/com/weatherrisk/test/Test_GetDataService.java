@@ -167,6 +167,9 @@ public class Test_GetDataService {
 		
 		queryResult = showTimeMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("欣欣秀泰", "她其實");
 		System.out.println(queryResult);
+		
+		queryResult = showTimeMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("今日秀泰", "攻敵");
+		System.out.println(queryResult);
 	}
 	
 }
