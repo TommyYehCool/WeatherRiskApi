@@ -17,7 +17,10 @@ import org.jsoup.select.Elements;
  *
  */
 public class Test_GoogleSearchWithJSoup {
-	public static final String GOOGLE_SEARCH_URL = "https://www.google.com/search";
+
+	private static final String GOOGLE_SEARCH_URL = "https://www.google.com/search";
+
+	private static final String PREFIX = "/url?q=";
 
 	public static void main(String[] args) throws IOException {
 		// Taking search term input from console
@@ -40,9 +43,10 @@ public class Test_GoogleSearchWithJSoup {
 		Elements results = doc.select("h3.r > a");
 
 		for (Element result : results) {
-			String linkHref = result.attr("href");
 			String linkText = result.text();
-			System.out.println("Text::" + linkText + ", URL::" + linkHref.substring(6, linkHref.indexOf("&")));
+			String linkHref = result.attr("href");
+			System.out.println("文字: " + linkText); 
+			System.out.println("URL: " + linkHref.substring(linkHref.indexOf(PREFIX) + PREFIX.length(), linkHref.indexOf("&")));
 		}
 	}
 }
