@@ -87,7 +87,7 @@ public class LineMsgHandler {
 	private final String[] helpTemplateMsgs
 		= new String[] {
 				"支援功能",
-				"你能幹嘛",
+				"幹嘛",
 				"What can you do"
 		  };
 	
