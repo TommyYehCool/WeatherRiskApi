@@ -18,6 +18,7 @@ ext {
 	apacheCommonsIoVersion = '2.5'
 	apacheCommonsCompressVersion = '1.13'
 	apacheHttpClientVersion = '4.5.2'
+	zxingVersion = '3.3.0'
 	
 	junitVersion = '4.+'
 }
@@ -100,7 +101,10 @@ dependencies {
 	compile "org.apache.httpcomponents:httpclient:${apacheHttpClientVersion}"
 	
 	// --------- google customsearch (不知道怎麼用, 先留著, 好研究怎麼用) ---------
-	compile 'com.google.apis:google-api-services-customsearch:v1-rev53-1.22.0'
+	compile "com.google.apis:google-api-services-customsearch:v1-rev53-1.22.0"
+	
+	// --------- QR Code Generator ---------
+	compile "com.google.zxing:core:${zxingVersion}"
 	
 	// --------- JUnit --------- 
     testCompile "junit:junit:${junitVersion}"
