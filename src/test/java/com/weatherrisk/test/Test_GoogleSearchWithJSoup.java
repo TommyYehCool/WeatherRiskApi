@@ -16,7 +16,7 @@ import org.jsoup.select.Elements;
  * @author tommy.feng
  *
  */
-public class Test_GoogleSearch {
+public class Test_GoogleSearchWithJSoup {
 	public static final String GOOGLE_SEARCH_URL = "https://www.google.com/search";
 
 	public static void main(String[] args) throws IOException {
