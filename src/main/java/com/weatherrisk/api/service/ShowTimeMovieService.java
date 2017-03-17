@@ -41,6 +41,7 @@ public class ShowTimeMovieService {
 			getStarStarShowTimeMovieTimes();
 			getTodayShowTimeMovieTimes();
 			getBanqiaoShowTimeMovieTimes();
+			getSoutheastShowTimeMovieTimes();
 		}
 		catch (Exception e) {
 			logger.error("Exception raised while refresh Show Time movie times", e);
@@ -72,6 +73,13 @@ public class ShowTimeMovieService {
 		String url = showTimeMovieConfig.getBanqiaoShowTimeUrl();
 		url += getTodayStr();
 		String theaterName = ShowTimeTheater.BANQIAO.getChineseName();
+		getShowTimeMovieTimes(url, theaterName);
+	}
+	
+	private void getSoutheastShowTimeMovieTimes() throws Exception {
+		String url = showTimeMovieConfig.getSoutheastShowTimeUrl();
+		url += getTodayStr();
+		String theaterName = ShowTimeTheater.SOUTHEAST.getChineseName();
 		getShowTimeMovieTimes(url, theaterName);
 	}
 	

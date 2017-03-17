@@ -26,11 +26,16 @@ public class ShowTimeMovieConfig {
 	 * 板橋秀泰
 	 */
 	private String BanqiaoShowTimeUrl;
+	/**
+	 * 東南亞秀泰
+	 */
+	private String SoutheastShowTimeUrl;
 	
 	public ShowTimeMovieConfig() {
 		StarStarShowTimeUrl = MessageFormat.format(MOVIE_TIMES_URL, ShowTimeTheater.STARSTAR.getCropId());
 		TodayShowTimeUrl = MessageFormat.format(MOVIE_TIMES_URL, ShowTimeTheater.TODAY.getCropId());
 		BanqiaoShowTimeUrl = MessageFormat.format(MOVIE_TIMES_URL, ShowTimeTheater.BANQIAO.getCropId());
+		SoutheastShowTimeUrl = MessageFormat.format(MOVIE_TIMES_URL, ShowTimeTheater.SOUTHEAST.getCropId());
 	}
 	
 	public String getStarStarShowTimeUrl() {
@@ -43,6 +48,10 @@ public class ShowTimeMovieConfig {
 
 	public String getBanqiaoShowTimeUrl() {
 		return BanqiaoShowTimeUrl;
+	}
+
+	public String getSoutheastShowTimeUrl() {
+		return SoutheastShowTimeUrl;
 	}
 
 }
