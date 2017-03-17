@@ -117,7 +117,8 @@ public class LineMsgHandler {
     	buffer.append("查詢一周天氣: 格式: 縣市名稱 + 一周, Ex: 台北市一周").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("<查詢虛擬貨幣及真實貨幣匯率>").append("\n");
-    	buffer.append("查詢匯率: Ex: btc, eth, usd, jpy, krw...等").append("\n");
+    	buffer.append("查詢虛擬貨幣匯率(目前支援: btc, eth): Ex: btc, eth").append("\n");
+    	buffer.append("查詢真實貨幣匯率: Ex: usd, jpy,...等").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("<UBike>").append("\n");
     	buffer.append("關鍵字查詢: ").append("格式: 縣市名稱 + 關鍵字 + ubike, Ex: 台北市天母ubike, 新北市三重ubike").append("\n");
