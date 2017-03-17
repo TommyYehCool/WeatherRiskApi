@@ -147,6 +147,7 @@ public class Test_GetDataService {
 	}
 	
 	@Test
+	@Ignore
 	public void test_13_ViewshowMovieService_queryByTheaterNameAndFilmNameLike() {
 		String queryResult = viewshowMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("板橋大遠百威秀", "金剛");
 		System.out.println(queryResult);
@@ -161,7 +162,11 @@ public class Test_GetDataService {
 	
 	@Test
 	public void test_15_ShowTimeMoviceService_queryByTheaterNameAndFilmNameLike() {
-		String queryResult = showTimeMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("板橋秀泰", "金剛");
+		String queryResult = showTimeMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("板橋秀泰", "她其實");
+		System.out.println(queryResult);
+		
+		queryResult = showTimeMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("欣欣秀泰", "她其實");
 		System.out.println(queryResult);
 	}
+	
 }
