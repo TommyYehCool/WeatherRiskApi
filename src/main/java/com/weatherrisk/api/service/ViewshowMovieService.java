@@ -31,122 +31,121 @@ public class ViewshowMovieService {
 	private ViewShowMovieRepository viewShowMovieRepo;
 	
 	public void refreshMovieTimes() {
-		deleteAllMovieTimes();
-		getXinyiMovieTimes();
-		getQSquareMovieTimes();
-		getSunMovieTimes();
-		getMegaCityMovieTimes();
+		try {
+			deleteAllMovieTimes();
+			getXinyiMovieTimes();
+			getQSquareMovieTimes();
+			getSunMovieTimes();
+			getMegaCityMovieTimes();
+		} catch (Exception e) {
+			logger.error("Exception raised while refresh View Show movie times", e);
+		}
 	}
 	
 	private void deleteAllMovieTimes() {
-		logger.info(">>>>> Prepare to delete all view show movie times...");
+		logger.info(">>>>> Prepare to delete all View Show movie times...");
 		long startTime = System.currentTimeMillis();
 		viewShowMovieRepo.deleteAll();
-		logger.info("<<<<< Delete all view show movie times done, time-spent: <{} ms>", System.currentTimeMillis() - startTime);
+		logger.info("<<<<< Delete all View Show movie times done, time-spent: <{} ms>", System.currentTimeMillis() - startTime);
 	}
 	
-	private void getXinyiMovieTimes() {
+	private void getXinyiMovieTimes() throws Exception {
 		String url = viewShowMovieConfig.getXinyiViewshowUrl();
 		String theaterName = ViewshowTheater.XINYI.getChineseName();
 		getViewshowMovieTimes(url, theaterName);
 	}
 	
-	private void getQSquareMovieTimes() {
+	private void getQSquareMovieTimes() throws Exception {
 		String url = viewShowMovieConfig.getQSquareViewshowUrl();
 		String theaterName = ViewshowTheater.QSQUARE.getChineseName();
 		getViewshowMovieTimes(url, theaterName);
 	}
 	
-	private void getSunMovieTimes() {
+	private void getSunMovieTimes() throws Exception {
 		String url = viewShowMovieConfig.getSunViewshowUrl();
 		String theaterName = ViewshowTheater.SUN.getChineseName();
 		getViewshowMovieTimes(url, theaterName);
 	}
 	
-	private void getMegaCityMovieTimes() {
+	private void getMegaCityMovieTimes() throws Exception {
 		String url = viewShowMovieConfig.getMegaCityViewshowUrl();
 		String theaterName = ViewshowTheater.MEGA_CITY.getChineseName();
 		getViewshowMovieTimes(url, theaterName);
 	}
 
-	private void getViewshowMovieTimes(String url, String theaterName) {
-		try {
-			Document document = HttpUtil.getDocument(url);
+	private void getViewshowMovieTimes(String url, String theaterName) throws Exception {
+		Document document = HttpUtil.getDocument(url);
+		
+		Element elmDataTable = document.select("div > table").first();
+		
+		Element elmDataTableFiratTBody = elmDataTable.select("tbody").first();
+		
+		Iterator<Element> itElmFirstTbodyTables = elmDataTableFiratTBody.select("table").iterator();
+		
+		// 儲存每場電影資訊
+		List<ViewShowMovie> viewShowMovies = new ArrayList<>();
+		
+		boolean isSessionDuringTable = true;
+		while (itElmFirstTbodyTables.hasNext()) {
+			Element elmTable = itElmFirstTbodyTables.next();
 			
-			Element elmDataTable = document.select("div > table").first();
-			
-			Element elmDataTableFiratTBody = elmDataTable.select("tbody").first();
-			
-			Iterator<Element> itElmFirstTbodyTables = elmDataTableFiratTBody.select("table").iterator();
-			
-			// 儲存每場電影資訊
-			List<ViewShowMovie> viewShowMovies = new ArrayList<>();
-			
-			boolean isSessionDuringTable = true;
-			while (itElmFirstTbodyTables.hasNext()) {
-				Element elmTable = itElmFirstTbodyTables.next();
+			// 過濾掉場次時間表區間
+			if (isSessionDuringTable) {
+				isSessionDuringTable = false;
+				continue;
+			}
+			else {
+				ViewShowMovie movie = new ViewShowMovie();
 				
-				// 過濾掉場次時間表區間
-				if (isSessionDuringTable) {
-					isSessionDuringTable = false;
-					continue;
-				}
-				else {
-					ViewShowMovie movie = new ViewShowMovie();
+				movie.setTheaterName(theaterName);
+				
+				Iterator<Element> itElmTrs = elmTable.select("tbody > tr").iterator();
+				while (itElmTrs.hasNext()) {
+					Element elmTr = itElmTrs.next();
 					
-					movie.setTheaterName(theaterName);
+					Element elmFilmName = elmTr.select("td.PrintShowTimesFilm").first();
+					if (elmFilmName != null) {
+						movie.setFilmName(elmFilmName.text());
+						continue;
+					}
 					
-					Iterator<Element> itElmTrs = elmTable.select("tbody > tr").iterator();
-					while (itElmTrs.hasNext()) {
-						Element elmTr = itElmTrs.next();
+					Element elmShowTimesDay = elmTr.select("td.PrintShowTimesDay").first();
+					if (elmShowTimesDay != null) {
+						Element elmShowTimesSession = elmTr.select("td.PrintShowTimesSession").first();
 						
-						Element elmFilmName = elmTr.select("td.PrintShowTimesFilm").first();
-						if (elmFilmName != null) {
-							movie.setFilmName(elmFilmName.text());
-							continue;
-						}
-						
-						Element elmShowTimesDay = elmTr.select("td.PrintShowTimesDay").first();
-						if (elmShowTimesDay != null) {
-							Element elmShowTimesSession = elmTr.select("td.PrintShowTimesSession").first();
-							
-							MovieDateTime movieDateTime = new MovieDateTime();
-							movieDateTime.setDate(elmShowTimesDay.text());
-							movieDateTime.setSession(elmShowTimesSession.text());
+						MovieDateTime movieDateTime = new MovieDateTime();
+						movieDateTime.setDate(elmShowTimesDay.text());
+						movieDateTime.setSession(elmShowTimesSession.text());
 
-							movie.addMovieDateTime(movieDateTime);
-							continue;
-						}
+						movie.addMovieDateTime(movieDateTime);
+						continue;
+					}
+					
+					if (elmFilmName == null && elmShowTimesDay == null) {
+						viewShowMovies.add(movie);
 						
-						if (elmFilmName == null && elmShowTimesDay == null) {
-							viewShowMovies.add(movie);
-							
-							// 準備抓下一檔電影
-							movie = new ViewShowMovie();
-						}
+						// 準備抓下一檔電影
+						movie = new ViewShowMovie();
 					}
 				}
 			}
-			
-			logger.info(">>>>> Prepare to insert all {} movie times, data-size: <{}>...", theaterName, viewShowMovies.size());
-			long startTime = System.currentTimeMillis();
-			viewShowMovieRepo.insert(viewShowMovies);
-			logger.info("<<<<< Insert all {} movie times done, data-size: <{}>, time-spent: <{} ms>", theaterName, viewShowMovies.size(), System.currentTimeMillis() - startTime);
-			
-		} catch (Exception e) {
-			logger.error("Exception raised while trying to get {} viewshow movie times", theaterName, e);
 		}
+		
+		logger.info(">>>>> Prepare to insert all {} View Show movie times, data-size: <{}>...", theaterName, viewShowMovies.size());
+		long startTime = System.currentTimeMillis();
+		viewShowMovieRepo.insert(viewShowMovies);
+		logger.info("<<<<< Insert all {} View Show movie times done, data-size: <{}>, time-spent: <{} ms>", theaterName, viewShowMovies.size(), System.currentTimeMillis() - startTime);
 	}
 
 	public String queryMovieTimesByTheaterNameAndFilmNameLike(String theaterName, String filmName) {
-		logger.info(">>>>> Prepare to query movie time by theater: {}, filmName: {}", theaterName, filmName);
+		logger.info(">>>>> Prepare to query View Show movie time by theater: {}, filmName: {}", theaterName, filmName);
 		List<ViewShowMovie> viewShowMovies = viewShowMovieRepo.findByTheaterNameAndFilmNameLike(theaterName, filmName);
 		if (!viewShowMovies.isEmpty()) {
-			logger.info("<<<<< Query by theaterName: {}, filmName: {} succeed, content: {}", theaterName, filmName, viewShowMovies);
+			logger.info("<<<<< Query View Show movie time by theaterName: {}, filmName: {} succeed, content: {}", theaterName, filmName, viewShowMovies);
 			return constructQueryMovieTimesResult(viewShowMovies);
 		}
 		else {
-			logger.info("<<<<< Query by theaterName: {}, filmName: {} succeed, content is empty", theaterName, filmName, viewShowMovies);
+			logger.info("<<<<< Query View Show movie time by theaterName: {}, filmName: {} succeed, content is empty", theaterName, filmName, viewShowMovies);
 			return "查不到對應電影資料";
 		}
 	}
@@ -175,10 +174,10 @@ public class ViewshowMovieService {
 	}
 
 	public String queryNowPlayingByTheaterName(String theaterName) {
-		logger.info(">>>>> Prepare to query now playing by theater: {}", theaterName);
+		logger.info(">>>>> Prepare to query View Show now playing by theater: {}", theaterName);
 		List<ViewShowMovie> viewShowMoives = viewShowMovieRepo.findByTheaterName(theaterName);
 		if (!viewShowMoives.isEmpty()) {
-			logger.info("<<<<< Query by theaterName: {}, content: {}", viewShowMoives);
+			logger.info("<<<<< Query View Show now playing by theaterName: {}, content: {}", viewShowMoives);
 			
 			List<String> filmNames = viewShowMoives.stream().map(ViewShowMovie::getFilmName).collect(Collectors.toList());
 			
@@ -191,7 +190,7 @@ public class ViewshowMovieService {
 			return buffer.toString();
 		}
 		else {
-			logger.info("<<<<< Query by theaterName: {}, content is empty", theaterName);
+			logger.info("<<<<< Query View Show now playing by theaterName: {}, content is empty", theaterName);
 			return "查不到對應資料";
 		}
 	}
