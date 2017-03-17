@@ -122,7 +122,7 @@ public class LineMsgHandler {
     	buffer.append("查詢一周天氣: 格式: 縣市名稱 + 一周, Ex: 台北市一周").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("<查詢虛擬貨幣及真實貨幣匯率>").append("\n");
-    	buffer.append("查詢虛擬貨幣匯率(目前支援: btc, eth): Ex: btc, eth").append("\n");
+    	buffer.append("查詢虛擬貨幣匯率(目前支援: btc, eth, ltc): Ex: btc, eth, ltc").append("\n");
     	buffer.append("查詢真實貨幣匯率: Ex: usd, jpy,...等").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("<UBike>").append("\n");
@@ -195,7 +195,11 @@ public class LineMsgHandler {
 					case ETH:
 						queryResult = bitcoinService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.ETH_USD);
 			    		break;
-
+			    		
+					case LTC:
+						queryResult = bitcoinService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.LTC_USD);
+						break;
+						
 					default:
 						break;
     			}

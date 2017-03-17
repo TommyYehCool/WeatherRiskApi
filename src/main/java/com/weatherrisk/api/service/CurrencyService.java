@@ -56,6 +56,9 @@ public class CurrencyService {
 			else if (currencyPair.equals(CurrencyPair.ETH_USD)) {
 				getCryptoCurrencyPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), CurrencyCnst.ETH, currencyPair, usdTwdRate);
 			}
+			else if (currencyPair.equals(CurrencyPair.LTC_USD)) {
+				getCryptoCurrencyPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), CurrencyCnst.LTC, currencyPair, usdTwdRate);
+			}
 			
 			return buffer.toString();
 		} catch (IOException e) {
