@@ -1,7 +1,12 @@
 package com.weatherrisk.test;
 
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.weatherrisk.api.cnst.CurrencyCnst;
@@ -10,6 +15,7 @@ import com.weatherrisk.api.cnst.UBikeCity;
 public class Test_Java {
 	
 	@Test
+	@Ignore
 	public void test_1_testStr() {
 		String inputMsg = "#大安森林公園地下停車場";
 		String searchStr = inputMsg.substring(1, inputMsg.length());
@@ -17,6 +23,7 @@ public class Test_Java {
 	}
 	
 	@Test
+	@Ignore
 	public void test_2_message_format() {
 		String CWB_URL = "http://opendata.cwb.gov.tw/opendataapi?dataid={0}&authorizationkey={1}";
 		
@@ -30,6 +37,7 @@ public class Test_Java {
 	}
 	
 	@Test
+	@Ignore
 	public void test_3_testSubstring() {
 		String inputMsg = "台北市天氣";
 		String city = inputMsg.substring(0, inputMsg.length() - 2);
@@ -50,6 +58,7 @@ public class Test_Java {
 	}
 	
 	@Test
+	@Ignore
 	public void test_4_testEnumSet() {
 		System.out.println(">>>>> Starting to test_4_testEnumSet");
 		String code = "Btc";
@@ -61,9 +70,26 @@ public class Test_Java {
 	}
 	
 	@Test
+	@Ignore
 	public void test_5_testUBikeCity() {
 		String address = "106台灣台北市大安區延吉街70巷5弄10號";
 		boolean result = UBikeCity.isSupportedAddress(address);
 		System.out.println("test5 --> " + result);
+	}
+	
+	@Test
+	public void test_6_testGMT() {
+		String gmtTime = "10:30:00";
+		SimpleDateFormat gmtTimeFormat = new SimpleDateFormat("HH:mm:ss");
+		gmtTimeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		
+		SimpleDateFormat gmtAdd8TimeFormat = new SimpleDateFormat("HH:mm:ss");
+		gmtAdd8TimeFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+		try {
+			Date srcDate = gmtTimeFormat.parse(gmtTime);
+			System.out.println(gmtAdd8TimeFormat.format(srcDate));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
 }
