@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
+import com.weatherrisk.api.concurrent.CountDownLatchHandler;
 import com.weatherrisk.api.service.MiramarMovieService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.ShowTimeMovieService;
@@ -40,6 +41,8 @@ public class Application extends SpringBootServletInitializer {
 	@Autowired
 	private MiramarMovieService miramarMovieService;
 	
+	private CountDownLatchHandler countDownHandler = CountDownLatchHandler.getInstance();
+	
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
     }
@@ -51,21 +54,33 @@ public class Application extends SpringBootServletInitializer {
 	
 	@PostConstruct
 	public void postConstruct() {
+		countDownHandler.setLatchForParkingLot(1);
 		new Thread(() -> {
 			taipeiOpenDataService.getNewestParkingLotInfos();
 			newTaipeiOpenDataService.getNewestParkingLotInfos();
+			
+			countDownHandler.getLatchForParkingLot().countDown();
 		}).start();
 
+		countDownHandler.setLatchForViewShowMovie(1);
 		new Thread(() -> {
 			viewshowMovieService.refreshMovieTimes();
+			
+			countDownHandler.getLatchForViewShowMovie().countDown();
 		}).start();
 		
+		countDownHandler.setLatchForShowTimeMovie(1);
 		new Thread(() -> {
 			showTimeMovieService.refreshMovieTimes();
+			
+			countDownHandler.getLatchForShowTimeMovie().countDown();
 		}).start();
 		
+		countDownHandler.setLatchForMiramarMovie(1);
 		new Thread(() -> {
 			miramarMovieService.refreshMovieTimes();
+			
+			countDownHandler.getLatchForMiramarMovie().countDown();
 		}).start();
 	}
 }

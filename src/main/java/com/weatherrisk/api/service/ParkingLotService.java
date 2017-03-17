@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.weatherrisk.api.concurrent.CountDownLatchHandler;
 import com.weatherrisk.api.model.ParkingLotAvailable;
 import com.weatherrisk.api.model.ParkingLotAvailableRepository;
 import com.weatherrisk.api.model.ParkingLotInfo;
@@ -15,6 +16,8 @@ import com.weatherrisk.api.model.ParkingLotInfoRepository;
 
 @Service
 public class ParkingLotService {
+	
+	private CountDownLatchHandler countDownHandler = CountDownLatchHandler.getInstance();
 	
 	@Autowired
 	private TaipeiOpenDataService taipeiOpenDataService;
@@ -37,6 +40,8 @@ public class ParkingLotService {
 	}
 	
 	public String findByName(String name) {
+		waitForCreateDatasThreadComplete();
+		
 		refreshNewestParkingLotAvailable();
 		
 		ParkingLotInfo info = parkingLotInfoRepo.findByName(name);
@@ -68,6 +73,8 @@ public class ParkingLotService {
 	}
 	
 	public String findByNameLike(String name) {
+		waitForCreateDatasThreadComplete();
+		
 		refreshNewestParkingLotAvailable();
 		
 		List<ParkingLotInfo> infos = parkingLotInfoRepo.findByNameLike(name);
@@ -99,5 +106,12 @@ public class ParkingLotService {
 			return "您輸入的停車場名稱, 找不到對應資料";
 		}
 	}
-	
+
+	private void waitForCreateDatasThreadComplete() {
+		// 等待建立資料的 thread 處理完才進行查詢
+		try {
+			countDownHandler.getLatchForParkingLot().await();
+		} catch (InterruptedException e) {}
+	}
+
 }

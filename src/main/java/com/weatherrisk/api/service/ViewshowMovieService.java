@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.weatherrisk.api.cnst.ViewshowTheater;
+import com.weatherrisk.api.concurrent.CountDownLatchHandler;
 import com.weatherrisk.api.config.ViewshowMovieConfig;
 import com.weatherrisk.api.model.MovieDateTime;
 import com.weatherrisk.api.model.ViewShowMovie;
@@ -23,6 +24,8 @@ import com.weatherrisk.api.util.HttpUtil;
 public class ViewshowMovieService {
 	
 	private Logger logger = LoggerFactory.getLogger(ViewshowMovieService.class);
+	
+	private CountDownLatchHandler countDownHandler = CountDownLatchHandler.getInstance();
 
 	@Autowired
 	private ViewshowMovieConfig viewShowMovieConfig;
@@ -138,6 +141,8 @@ public class ViewshowMovieService {
 	}
 
 	public String queryMovieTimesByTheaterNameAndFilmNameLike(String theaterName, String filmName) {
+		waitForCreateDatasThreadComplete();
+		
 		logger.info(">>>>> Prepare to query View Show movie time by theater: {}, filmName: {}", theaterName, filmName);
 		List<ViewShowMovie> viewShowMovies = viewShowMovieRepo.findByTheaterNameAndFilmNameLike(theaterName, filmName);
 		if (!viewShowMovies.isEmpty()) {
@@ -174,6 +179,8 @@ public class ViewshowMovieService {
 	}
 
 	public String queryNowPlayingByTheaterName(String theaterName) {
+		waitForCreateDatasThreadComplete();
+		
 		logger.info(">>>>> Prepare to query View Show now playing by theater: {}", theaterName);
 		List<ViewShowMovie> viewShowMoives = viewShowMovieRepo.findByTheaterName(theaterName);
 		if (!viewShowMoives.isEmpty()) {
@@ -193,5 +200,12 @@ public class ViewshowMovieService {
 			logger.info("<<<<< Query View Show now playing by theaterName: {}, content is empty", theaterName);
 			return "查不到對應資料";
 		}
+	}
+	
+	private void waitForCreateDatasThreadComplete() {
+		// 等待建立資料的 thread 處理完才進行查詢
+		try {
+			countDownHandler.getLatchForViewShowMovie().await();
+		} catch (InterruptedException e) {}
 	}
 }

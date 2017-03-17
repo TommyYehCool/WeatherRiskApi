@@ -145,9 +145,11 @@ public class Test_GetDataService {
 	}
 	
 	@Test
-	@Ignore
 	public void test_12_ViewshowMovieService_queryByTheaterNameAndFilmNameLike() {
-		String queryResult = viewshowMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("板橋大遠百威秀", "金剛");
+		String queryResult = viewshowMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("京站威秀", "金剛");
+		System.out.println(queryResult);
+
+		queryResult = viewshowMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("板橋大遠百威秀", "金剛");
 		System.out.println(queryResult);
 	}
 	
@@ -184,6 +186,7 @@ public class Test_GetDataService {
 	}
 
 	@Test
+	@Ignore
 	public void test_17_MiramarMovieService_queryByTheaterNameAndFilmNameLike() {
 		String queryResult = miramarMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("大直美麗華", "她其實");
 		System.out.println(queryResult);

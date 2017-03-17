@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.weatherrisk.api.cnst.MiramarTheater;
+import com.weatherrisk.api.concurrent.CountDownLatchHandler;
 import com.weatherrisk.api.config.MiramarMovieConfig;
 import com.weatherrisk.api.model.MiramarMovie;
 import com.weatherrisk.api.model.MiramarMovieRepository;
@@ -27,6 +28,8 @@ import com.weatherrisk.api.util.HttpUtil;
 public class MiramarMovieService {
 
 	private Logger logger = LoggerFactory.getLogger(MiramarMovieService.class);
+
+	private CountDownLatchHandler countDownHandler = CountDownLatchHandler.getInstance();
 
 	@Autowired
 	private MiramarMovieConfig miramarMovieConfig;
@@ -119,6 +122,8 @@ public class MiramarMovieService {
 	}
 	
 	public String queryMovieTimesByTheaterNameAndFilmNameLike(String theaterName, String filmName) {
+		waitForCreateDatasThreadComplete();
+		
 		logger.info(">>>>> Prepare to query Miramar movie time by theater: {}, filmName: {}", theaterName, filmName);
 		List<MiramarMovie> miramarMovies = miramarMovieRepo.findByTheaterNameAndFilmNameLike(theaterName, filmName);
 		if (!miramarMovies.isEmpty()) {
@@ -155,6 +160,8 @@ public class MiramarMovieService {
 	}
 
 	public String queryNowPlayingByTheaterName(String theaterName) {
+		waitForCreateDatasThreadComplete();
+		
 		logger.info(">>>>> Prepare to query Miramar now playing by theater: {}", theaterName);
 		List<MiramarMovie> miramarMoives = miramarMovieRepo.findByTheaterName(theaterName);
 		if (!miramarMoives.isEmpty()) {
@@ -174,5 +181,12 @@ public class MiramarMovieService {
 			logger.info("<<<<< Query Miramar now playing by theaterName: {}, content is empty", theaterName);
 			return "查不到對應資料";
 		}
+	}
+	
+	private void waitForCreateDatasThreadComplete() {
+		// 等待建立資料的 thread 處理完才進行查詢
+		try {
+			countDownHandler.getLatchForMiramarMovie().await();
+		} catch (InterruptedException e) {}
 	}
 }
