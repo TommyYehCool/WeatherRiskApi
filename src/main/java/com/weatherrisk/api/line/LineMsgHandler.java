@@ -26,11 +26,13 @@ import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import com.weatherrisk.api.cnst.CurrencyCnst;
+import com.weatherrisk.api.cnst.MiramarTheater;
 import com.weatherrisk.api.cnst.ShowTimeTheater;
 import com.weatherrisk.api.cnst.UBikeCity;
 import com.weatherrisk.api.cnst.ViewshowTheater;
 import com.weatherrisk.api.service.CurrencyService;
 import com.weatherrisk.api.service.CwbService;
+import com.weatherrisk.api.service.MiramarMovieService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.ParkingLotService;
 import com.weatherrisk.api.service.ShowTimeMovieService;
@@ -83,6 +85,9 @@ public class LineMsgHandler {
 	
 	@Autowired
 	private ShowTimeMovieService showTimeMovieService;
+	
+	@Autowired
+	private MiramarMovieService miramarMovieService;
 	
 	private final String[] helpTemplateMsgs
 		= new String[] {
@@ -260,6 +265,23 @@ public class LineMsgHandler {
     		else {
     			String filmName = command;
     			queryResult = showTimeMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theater.getChineseName(), filmName);
+    		}
+    	}
+    	// 美麗華電影
+    	else if (MiramarTheater.isSupportedTheater(inputMsg)) {
+    		MiramarTheater theater = MiramarTheater.convertByInputMsg(inputMsg);
+    		
+    		String command = inputMsg.substring(theater.getChineseName().length(), inputMsg.length()).trim();
+    		
+    		if (StringUtils.isEmpty(command)) {
+    			queryResult = "請輸入欲查詢電影名稱或'上映'";
+    		}
+    		else if (command.equals("上映")) {
+    			queryResult = miramarMovieService.queryNowPlayingByTheaterName(theater.getChineseName());
+    		}
+    		else {
+    			String filmName = command;
+    			queryResult = miramarMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theater.getChineseName(), filmName);
     		}
     	}
     	// 更新電影時刻
