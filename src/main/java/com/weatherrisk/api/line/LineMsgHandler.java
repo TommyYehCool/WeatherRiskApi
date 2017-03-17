@@ -26,12 +26,14 @@ import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import com.weatherrisk.api.cnst.CurrencyCnst;
+import com.weatherrisk.api.cnst.ShowTimeTheater;
 import com.weatherrisk.api.cnst.UBikeCity;
 import com.weatherrisk.api.cnst.ViewshowTheater;
 import com.weatherrisk.api.service.CurrencyService;
 import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.ParkingLotService;
+import com.weatherrisk.api.service.ShowTimeMovieService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
 import com.weatherrisk.api.service.ViewshowMovieService;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
@@ -79,6 +81,9 @@ public class LineMsgHandler {
 	@Autowired
 	private ViewshowMovieService viewshowMovieService;
 	
+	@Autowired
+	private ShowTimeMovieService showTimeMovieService;
+	
 	private final String[] helpTemplateMsgs
 		= new String[] {
 				"支援功能",
@@ -112,15 +117,14 @@ public class LineMsgHandler {
     	buffer.append("查詢一周天氣: 格式: 縣市名稱 + 一周, Ex: 台北市一周").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("<查詢虛擬貨幣及真實貨幣匯率>").append("\n");
-    	buffer.append("Ex: btc, eth, usd, jpy, krw...等").append("\n");
+    	buffer.append("查詢匯率: Ex: btc, eth, usd, jpy, krw...等").append("\n");
     	buffer.append("-----------------------").append("\n");
-    	buffer.append("<查詢 UBike 場站資訊>").append("\n");
-    	buffer.append("格式: 縣市名稱 + 關鍵字 + ubike, Ex: 台北市天母ubike, 新北市三重ubike").append("\n");
+    	buffer.append("<UBike>").append("\n");
+    	buffer.append("關鍵字查詢: ").append("格式: 縣市名稱 + 關鍵字 + ubike, Ex: 台北市天母ubike, 新北市三重ubike").append("\n");
+    	buffer.append("查詢最近的兩個 UBike 場站資訊: 傳送您目前的位置資訊即可").append("\n");
     	buffer.append("-----------------------").append("\n");
-    	buffer.append("<查詢最近的兩個 UBike 場站資訊>").append("\n");
-    	buffer.append("傳送您目前的位置資訊即可").append("\n");
-    	buffer.append("-----------------------").append("\n");
-    	buffer.append("<電影相關> 目前支援: 信義威秀, 京站威秀, 日新威秀, 板橋大遠百威秀").append("\n");
+    	buffer.append("<電影>").append("\n");
+    	buffer.append("<支援影城: 信義威秀, 京站威秀, 日新威秀, 板橋大遠百威秀, 板橋秀泰>").append("\n");
     	buffer.append("請系統更新電影時刻表: Ex: 更新電影時刻表").append("\n");
     	buffer.append("查詢某一家影城上映電影: 格式: 戲院名稱 + 上映, Ex: 信義威秀上映").append("\n");
     	buffer.append("查詢某一部電影今日時刻表: 格式: 戲院名稱 + 關鍵字, Ex: 信義威秀羅根").append("\n");
@@ -193,7 +197,7 @@ public class LineMsgHandler {
     			queryResult = bitcoinService.getRealCurrencyRatesFromTaiwanBank(currency);
     		}
     	}
-    	// UBike_場站名稱模糊搜尋
+    	// UBike 場站名稱模糊搜尋
     	else if (inputMsg.endsWith("ubike")) {
     		final int cityNameLen = 3;
     		
@@ -221,7 +225,7 @@ public class LineMsgHandler {
     			queryResult = "目前只援台北市及新北市, 搜尋範例: 台北市 + 關鍵字 + ubike";
     		}
     	}
-    	// 威秀電影時刻
+    	// 威秀電影
     	else if (ViewshowTheater.isSupportedTheater(inputMsg)) {
     		ViewshowTheater theater = ViewshowTheater.convertByInputMsg(inputMsg);
     		
@@ -238,13 +242,31 @@ public class LineMsgHandler {
     			queryResult = viewshowMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theater.getChineseName(), filmName);
     		}
     	}
-    	// 更新威秀電影時刻
+    	// 秀泰電影
+    	else if (ShowTimeTheater.isSupportedTheater(inputMsg)) {
+    		ShowTimeTheater theater = ShowTimeTheater.convertByInputMsg(inputMsg);
+    		
+    		String command = inputMsg.substring(theater.getChineseName().length(), inputMsg.length()).trim();
+    		
+    		if (StringUtils.isEmpty(command)) {
+    			queryResult = "請輸入欲查詢電影名稱或'上映'";
+    		}
+    		else if (command.equals("上映")) {
+    			queryResult = showTimeMovieService.queryNowPlayingByTheaterName(theater.getChineseName());
+    		}
+    		else {
+    			String filmName = command;
+    			queryResult = showTimeMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theater.getChineseName(), filmName);
+    		}
+    	}
+    	// 更新電影時刻
     	else if (inputMsg.equals("更新電影時刻表")) {
     		viewshowMovieService.refreshMovieTimes();
+    		showTimeMovieService.refreshMovieTimes();
     		queryResult = "更新成功";
     	}
     	
-    	// 回傳查詢結果
+    	// ----- 回傳查詢結果 -----
     	if (queryResult != null) {
     		if (queryResult.length() > LINE_MAXIMUM_REAPLY_TEXT_MSG_LENGTH) {
     			logger.warn("!!!!! Prepare to reply message length: <{}> excceed LINE maximum reply message length: <{}>", queryResult.length(), LINE_MAXIMUM_REAPLY_TEXT_MSG_LENGTH);

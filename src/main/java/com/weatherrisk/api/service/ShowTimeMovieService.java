@@ -2,8 +2,14 @@ package com.weatherrisk.api.service;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherrisk.api.cnst.ShowTimeTheater;
 import com.weatherrisk.api.config.ShowTimeMovieConfig;
+import com.weatherrisk.api.model.MovieDateTime;
 import com.weatherrisk.api.model.ShowTimeMovie;
 import com.weatherrisk.api.model.ShowTimeMovieRepository;
 import com.weatherrisk.api.util.HttpUtil;
@@ -78,5 +85,89 @@ public class ShowTimeMovieService {
 		startTime = System.currentTimeMillis();
 		showTimeMovieRepo.insert(showTimeMoviesInfo);
 		logger.info("<<<<< Insert all {} movie times done, data-size: <{}>, time-spent: <{} ms>", theaterName, showTimeMoviesInfo.size(), System.currentTimeMillis() - startTime);
+	}
+
+	public String queryMovieTimesByTheaterNameAndFilmNameLike(String theaterName, String filmName) {
+		logger.info(">>>>> Prepare to query movie time by theater: {}, filmName: {}", theaterName, filmName);
+		List<ShowTimeMovie> showTimeMovies = showTimeMovieRepo.findByTheaterNameAndFilmNameLike(theaterName, filmName);
+		if (!showTimeMovies.isEmpty()) {
+			logger.info("<<<<< Query by theaterName: {}, filmName: {} succeed, content: {}", theaterName, filmName, showTimeMovies);
+			return constructQueryMovieTimesResult(showTimeMovies);
+		}
+		else {
+			logger.info("<<<<< Query by theaterName: {}, filmName: {} succeed, content is empty", theaterName, filmName, showTimeMovies);
+			return "查不到對應電影資料";
+		}
+	}
+	
+	private String constructQueryMovieTimesResult(List<ShowTimeMovie> showTimeMovies) {
+		StringBuilder buffer = new StringBuilder();
+		for (int i = 0; i < showTimeMovies.size(); i++) {
+			ShowTimeMovie showTimeMovie = showTimeMovies.get(i);
+			
+			buffer.append(showTimeMovie.getFilmName()).append("\n");
+			buffer.append("\n");
+			
+			Map<String, LinkedList<String>> timesMap = new HashMap<>();
+			
+			for (int j = 0; j < showTimeMovie.getMovieDateTimes().size(); j++) {
+				MovieDateTime movieDateTime = showTimeMovie.getMovieDateTimes().get(j);
+				String date = movieDateTime.getDate();
+				String time = movieDateTime.getSession();
+				
+				LinkedList<String> times;
+				if (!timesMap.containsKey(date)) {
+					times = new LinkedList<>();
+					timesMap.put(date, times);
+				}
+				else {
+					times = timesMap.get(date);
+				}
+				times.add(time);
+			}
+			
+			String[] dates = timesMap.keySet().toArray(new String[0]);
+			for (String date : dates) {
+				LinkedList<String> times = timesMap.get(date);
+
+				Collections.sort(times);
+				
+				if (times.get(0).startsWith("00")) {
+					String first = times.get(0);
+					times.removeFirst();
+					times.addLast(first);
+				}
+				
+				buffer.append("日期: ").append(date).append("\n");
+				buffer.append("場次: ").append(StringUtils.join(times, ", "));
+			}
+			
+			if (i != showTimeMovies.size() - 1) {
+				buffer.append("=====================\n");
+			}
+		}
+		return buffer.toString();
+	}
+	
+	public String queryNowPlayingByTheaterName(String theaterName) {
+		logger.info(">>>>> Prepare to query now playing by theater: {}", theaterName);
+		List<ShowTimeMovie> showTimeMoives = showTimeMovieRepo.findByTheaterName(theaterName);
+		if (!showTimeMoives.isEmpty()) {
+			logger.info("<<<<< Query by theaterName: {}, content: {}", showTimeMoives);
+			
+			List<String> filmNames = showTimeMoives.stream().map(ShowTimeMovie::getFilmName).collect(Collectors.toList());
+			
+			StringBuilder buffer = new StringBuilder();
+			
+			buffer.append(theaterName).append("上映電影如下:\n");
+			for (String filmName : filmNames) {
+				buffer.append(filmName).append("\n");
+			}
+			return buffer.toString();
+		}
+		else {
+			logger.info("<<<<< Query by theaterName: {}, content is empty", theaterName);
+			return "查不到對應資料";
+		}
 	}
 }

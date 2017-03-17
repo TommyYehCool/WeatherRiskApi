@@ -20,6 +20,7 @@ import com.weatherrisk.api.service.CurrencyService;
 import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.ParkingLotService;
+import com.weatherrisk.api.service.ShowTimeMovieService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
 import com.weatherrisk.api.service.ViewshowMovieService;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
@@ -49,6 +50,9 @@ public class Test_GetDataService {
 	
 	@Autowired
 	private ViewshowMovieService viewshowMovieService;
+	
+	@Autowired
+	private ShowTimeMovieService showTimeMovieService;
 	
 	@Test
 	@Ignore
@@ -138,13 +142,26 @@ public class Test_GetDataService {
 	
 	@Test
 	@Ignore
-	public void test_12_ViewshowMovieService_queryByTheaterNameAndFilmNameLike() {
+	public void test_12_ShowTimeMovieService_getBanqiaoShowTimeMovieTimes() {
+		System.out.println("Check the system init log");
+	}
+	
+	@Test
+	public void test_13_ViewshowMovieService_queryByTheaterNameAndFilmNameLike() {
 		String queryResult = viewshowMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("板橋大遠百威秀", "金剛");
 		System.out.println(queryResult);
 	}
 	
 	@Test
-	public void test_13_ShowTimeMovieService_getBanqiaoShowTimeMovieTimes() {
-		System.out.println("Check the system init log");
+	@Ignore
+	public void test_14_ShowTimeMoviceService_queryNowPlayingByTheaterName() {
+		String queryResult = showTimeMovieService.queryNowPlayingByTheaterName("板橋秀泰");
+		System.out.println(queryResult);
+	}
+	
+	@Test
+	public void test_15_ShowTimeMoviceService_queryByTheaterNameAndFilmNameLike() {
+		String queryResult = showTimeMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("板橋秀泰", "金剛");
+		System.out.println(queryResult);
 	}
 }
