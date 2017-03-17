@@ -99,6 +99,9 @@ dependencies {
 	// --------- Apache httpclient ----------
 	compile "org.apache.httpcomponents:httpclient:${apacheHttpClientVersion}"
 	
+	// --------- google customsearch (不知道怎麼用, 先留著, 好研究怎麼用) ---------
+	compile 'com.google.apis:google-api-services-customsearch:v1-rev53-1.22.0'
+	
 	// --------- JUnit --------- 
     testCompile "junit:junit:${junitVersion}"
 }
