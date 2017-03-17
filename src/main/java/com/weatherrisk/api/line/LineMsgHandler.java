@@ -275,6 +275,7 @@ public class LineMsgHandler {
     		}
     		return new TextMessage(queryResult);
     	}
+    	// ----- 不支援的指令, 回傳灌頭訊息 -----
     	else {
     		return new TextMessage(getRandomMsg());
     	}
