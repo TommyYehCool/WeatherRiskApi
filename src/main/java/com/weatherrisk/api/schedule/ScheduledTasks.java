@@ -9,9 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.linecorp.bot.client.LineMessagingClient;
-import com.linecorp.bot.model.PushMessage;
-import com.linecorp.bot.model.message.TextMessage;
 import com.weatherrisk.api.service.CurrencyService;
 
 /**
@@ -42,22 +39,28 @@ public class ScheduledTasks {
     @Autowired
     private CurrencyService currencyService;
     
-    @Autowired
-    private LineMessagingClient lineMessagingClient;
+//    @Autowired
+//    private LineMessagingClient lineMessagingClient;
 
     @Scheduled(cron = "0 5 * * * *")
     public void getETHPrice() {
     	try {
     		logger.info(">>>>> Prepare to get ETH price from BTC-E...");
 			BigDecimal ethLastPrice = currencyService.getCryptoLastPriceFromBtcE(CurrencyPair.ETH_USD);
-			if (ethLastPrice.doubleValue() >= 50 || ethLastPrice.doubleValue() <= 40) {
-				lineMessagingClient.pushMessage(new PushMessage(null, new TextMessage("ETH/USD: " + ethLastPrice.doubleValue())));
+			if (ethLastPrice.doubleValue() >= 50) {
+				logger.info("~~~~~ 該賣出囉 ~~~~~");
+			}
+			else if (ethLastPrice.doubleValue() <= 40) {
+				logger.info("~~~~~ 該買進囉 ~~~~~");
 			}
 			
 			logger.info("<<<<< Get ETH price from BTC-E done, price: <{}>", ethLastPrice);
 		} catch (Exception e) {
 			logger.info("Exception raised while getting ETH price from BTC-E", e);
 		}
+    	
+    	// 放棄, 看來要付月費才能發送 PUSH
+//		lineMessagingClient.pushMessage(new PushMessage(null, new TextMessage("ETH/USD: " + ethLastPrice.doubleValue())));
     }
     
 }
