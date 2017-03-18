@@ -96,6 +96,23 @@ public class CurrencyService {
 	}
 	
 	/**
+	 * 從 BTC E 取得某一檔虛擬貨幣的價格
+	 * 
+	 * @param currencyPair
+	 * @return
+	 * @throws Exception
+	 */
+	public BigDecimal getCryptoLastPriceFromBtcE(CurrencyPair currencyPair) throws Exception {
+		Exchange exchange = ExchangeFactory.INSTANCE.createExchange(BTCEExchange.class.getName());
+
+		MarketDataService marketDataService = exchange.getMarketDataService();
+		
+		Ticker ticker = marketDataService.getTicker(currencyPair);
+		
+		return ticker.getLast();
+	}
+	
+	/**
      * <pre>
      * 從台灣銀行取得外幣對台幣匯率
      * </pre>

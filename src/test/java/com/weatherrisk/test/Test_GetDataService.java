@@ -83,7 +83,6 @@ public class Test_GetDataService {
 	}
 	
 	@Test
-	@Ignore
 	public void test_4_BitcoinService_getPriceFromExchanges() {
 		String data = bitcoinService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.BTC_USD);
 		System.out.println(data);
