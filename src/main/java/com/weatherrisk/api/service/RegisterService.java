@@ -30,6 +30,16 @@ public class RegisterService {
 		}
 		else {
 			pricesReached = this.cryptoRegisterMap.get(userId);
+
+			// 移除已經存在的幣別價格區間
+			Iterator<PriceReached> it = pricesReached.iterator();
+			while (it.hasNext()) {
+				PriceReached existedPriceReached = it.next();
+				if (existedPriceReached.getCurrency().equals(priceReached.getCurrency())) {
+					it.remove();
+				}
+			}
+			
 			pricesReached.add(priceReached);
 		}
 		
