@@ -13,6 +13,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class PriceReached {
 	private CurrencyCnst currency;
-	private BigDecimal upperPrice;
 	private BigDecimal lowerPrice;
+	private BigDecimal upperPrice;
 }

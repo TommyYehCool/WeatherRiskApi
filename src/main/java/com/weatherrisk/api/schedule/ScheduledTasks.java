@@ -1,6 +1,8 @@
 package com.weatherrisk.api.schedule;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
@@ -9,7 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.model.PushMessage;
+import com.linecorp.bot.model.message.TextMessage;
+import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.service.CurrencyService;
+import com.weatherrisk.api.service.RegisterService;
+import com.weatherrisk.api.vo.PriceReached;
 
 /**
  * <pre>
@@ -39,28 +47,51 @@ public class ScheduledTasks {
     @Autowired
     private CurrencyService currencyService;
     
-//    @Autowired
-//    private LineMessagingClient lineMessagingClient;
+    @Autowired
+    private RegisterService registerService;
+    
+    @Autowired
+    private LineMessagingClient lineMessagingClient;
 
     @Scheduled(cron = "0 5 * * * *")
     public void getETHPrice() {
     	try {
     		logger.info(">>>>> Prepare to get ETH price from BTC-E...");
 			BigDecimal ethLastPrice = currencyService.getCryptoLastPriceFromBtcE(CurrencyPair.ETH_USD);
-			if (ethLastPrice.doubleValue() >= 50) {
-				logger.info("~~~~~ 該賣出囉 ~~~~~");
-			}
-			else if (ethLastPrice.doubleValue() <= 40) {
-				logger.info("~~~~~ 該買進囉 ~~~~~");
-			}
+			logger.info("<<<<< Get ETH price from BTC-E done, price: {}", ethLastPrice);
+
+			checkPriceAndSendPushMessage(CurrencyCnst.ETH, CurrencyPair.ETH_USD, ethLastPrice);
 			
-			logger.info("<<<<< Get ETH price from BTC-E done, price: <{}>", ethLastPrice);
 		} catch (Exception e) {
 			logger.info("Exception raised while getting ETH price from BTC-E", e);
 		}
-    	
-    	// 放棄, 看來要付月費才能發送 PUSH
-//		lineMessagingClient.pushMessage(new PushMessage(null, new TextMessage("ETH/USD: " + ethLastPrice.doubleValue())));
     }
+
+	private void checkPriceAndSendPushMessage(CurrencyCnst baseCurrency, CurrencyPair currencyPair, BigDecimal lastPrice) {
+		Map<String, List<PriceReached>> registerInfos = registerService.getRegisterInfos();
+		
+		String[] userIds = registerInfos.keySet().toArray(new String[0]);
+		for (String userId : userIds) {
+			List<PriceReached> pricesReached = registerInfos.get(userId);
+			for (PriceReached priceReached : pricesReached) {
+				if (priceReached.getCurrency().equals(baseCurrency)) {
+					BigDecimal lowerPrice = priceReached.getLowerPrice();
+					BigDecimal upperPrice = priceReached.getUpperPrice();
+					if (lastPrice.doubleValue() <= lowerPrice.doubleValue()) {
+						String pushMsg = currencyPair.toString() + " 小於 " + lowerPrice.doubleValue() + " 該買進囉!!";
+						lineMessagingClient.pushMessage(new PushMessage(userId, new TextMessage(pushMsg)));
+						logger.info(">>>> Send push msg: <{}> to userId: <{}> done", pushMsg, userId);
+						break;
+					}
+					else if (lastPrice.doubleValue() >= upperPrice.doubleValue()) {
+						String pushMsg = currencyPair.toString() + " 大於 " + upperPrice.doubleValue() + " 該賣出囉!!";
+						lineMessagingClient.pushMessage(new PushMessage(userId, new TextMessage(pushMsg)));
+						logger.info(">>>> Send push msg: <{}> to userId: <{}> done", pushMsg, userId);
+						break;
+					}
+				}
+			}
+		}
+	}
     
 }

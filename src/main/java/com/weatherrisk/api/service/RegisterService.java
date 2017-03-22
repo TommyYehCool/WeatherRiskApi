@@ -1,6 +1,7 @@
 package com.weatherrisk.api.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +19,7 @@ public class RegisterService {
 	
 	private Logger logger = LoggerFactory.getLogger(RegisterService.class);
 
-	private Map<String, List<PriceReached>> cryptoRegisterMap = new HashMap<>();
+	private Map<String, List<PriceReached>> cryptoRegisterMap = Collections.synchronizedMap(new HashMap<>());
 	
 	public void register(String userId, PriceReached priceReached) {
 		List<PriceReached> pricesReached;
@@ -65,5 +66,9 @@ public class RegisterService {
 		else {
 			return false;
 		}
+	}
+	
+	public Map<String, List<PriceReached>> getRegisterInfos() {
+		return this.cryptoRegisterMap;
 	}
 }
