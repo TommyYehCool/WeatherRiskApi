@@ -46,6 +46,7 @@ public class RegisterService {
 			}
 		}
 		if (pricesReached.size() == 0) {
+			this.cryptoRegisterMap.remove(userId);
 			logger.info("UserId: <{}>, 取消所有到價通知", userId);
 		}
 		else {
