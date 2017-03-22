@@ -183,22 +183,22 @@ public class LineMsgHandler {
     	if (isQueryFunctionMsg(inputMsg)) {
     		queryResult = constructHelpMsg();
     	}
-    	// 停車場_精準搜尋
+    	// 停車場-精準搜尋
     	if (inputMsg.startsWith("#")) {
     		String name = inputMsg.substring(1, inputMsg.length());
     		queryResult = parkingLotService.findByName(name);
     	}
-    	// 停車場_模糊搜尋
+    	// 停車場-模糊搜尋
     	else if (inputMsg.startsWith("@")) {
     		String name = inputMsg.substring(1, inputMsg.length());
     		queryResult = parkingLotService.findByNameLike(name);
     	}
-    	// 天氣_城市小幫手
+    	// 天氣-城市小幫手
     	else if (inputMsg.endsWith("天氣")) {
     		String city = inputMsg.substring(0, inputMsg.length() - 2);
     		queryResult = cwbService.getWeatherLitteleHelperByCity(city);
     	}
-    	// 天氣_一周資訊
+    	// 天氣-一周資訊
     	else if (inputMsg.endsWith("一週") || inputMsg.endsWith("一周")) {
     		String region = inputMsg.substring(0, inputMsg.length() - 2);
     		queryResult = cwbService.getOneWeekWeatherPrediction(region);
