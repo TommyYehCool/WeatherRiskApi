@@ -247,7 +247,7 @@ public class LineMsgHandler {
     	}
     	// 取消虛擬貨幣匯率到價通知
     	else if (inputMsg.startsWith("取消")) {
-    		String cryptoCurrency = inputMsg.substring(inputMsg.indexOf("註冊") + "註冊".length(), inputMsg.length()).trim();
+    		String cryptoCurrency = inputMsg.substring(inputMsg.indexOf("取消") + "取消".length(), inputMsg.length()).trim();
     		boolean isCryptoCurrency = CurrencyCnst.isCryptoCurrency(cryptoCurrency);
 			if (!isCryptoCurrency) {
 				queryResult = "目前只支援 BTC, ETH, LTC";

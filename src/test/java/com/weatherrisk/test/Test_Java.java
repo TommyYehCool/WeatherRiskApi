@@ -58,6 +58,10 @@ public class Test_Java {
 		inputMsg = "註冊eth 50 40";
 		String cryptoCurrency = inputMsg.substring(inputMsg.indexOf("註冊") + "註冊".length(), inputMsg.length());
 		System.out.println(cryptoCurrency);
+		
+		inputMsg = "取消eth";
+		cryptoCurrency = inputMsg.substring(inputMsg.indexOf("取消") + "取消".length(), inputMsg.length());
+		System.out.println(cryptoCurrency);
 	}
 	
 	@Test
