@@ -1,5 +1,6 @@
 package com.weatherrisk.api.line;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,6 +32,7 @@ import com.weatherrisk.api.cnst.ShowTimeTheater;
 import com.weatherrisk.api.cnst.UBikeCity;
 import com.weatherrisk.api.cnst.ViewshowTheater;
 import com.weatherrisk.api.service.CurrencyService;
+import com.weatherrisk.api.service.RegisterService;
 import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.MiramarMovieService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
@@ -38,6 +40,7 @@ import com.weatherrisk.api.service.ParkingLotService;
 import com.weatherrisk.api.service.ShowTimeMovieService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
 import com.weatherrisk.api.service.ViewshowMovieService;
+import com.weatherrisk.api.vo.PriceReached;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
 import lombok.NonNull;
@@ -73,6 +76,9 @@ public class LineMsgHandler {
 	
 	@Autowired
 	private CurrencyService bitcoinService;
+	
+	@Autowired
+	private RegisterService registerService;
 	
 	@Autowired
 	private TaipeiOpenDataService taipeiOpenDataService;
@@ -152,6 +158,8 @@ public class LineMsgHandler {
 	@EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
     	logger.info(">>>>> handle text message event, event: {}", event);
+    	
+    	String userId = event.getSource().getUserId();
 
     	String inputMsg = event.getMessage().getText();
     	
@@ -208,6 +216,40 @@ public class LineMsgHandler {
     		else if (CurrencyCnst.isRealCurrency(inputMsg)) {
     			queryResult = bitcoinService.getRealCurrencyRatesFromTaiwanBank(currency);
     		}
+    	}
+    	// 註冊虛擬貨幣匯率到價通知
+    	else if (inputMsg.startsWith("註冊")) {
+    		String cryptoCurrencyAndPrice = inputMsg.substring(inputMsg.indexOf("註冊") + "註冊".length(), inputMsg.length()).trim();
+    		String[] split = cryptoCurrencyAndPrice.split(" ");
+    		if (split.length != 3) {
+    			queryResult = "格式範例, 註冊eth 40 50";
+    		}
+    		else {
+    			String code = split[0].trim();
+    			boolean isCryptoCurrency = CurrencyCnst.isCryptoCurrency(code);
+    			if (!isCryptoCurrency) {
+    				queryResult = "目前只支援 BTC, ETH, LTC";
+    			}
+    			else {
+    				try {
+    					CurrencyCnst currency = CurrencyCnst.convert(code);
+    					BigDecimal lowerPrice = new BigDecimal(Double.parseDouble(split[1]));
+    					BigDecimal upperPrice = new BigDecimal(Double.parseDouble(split[2]));
+    					PriceReached priceReached = new PriceReached(currency, upperPrice, lowerPrice);
+						registerService.register(userId, priceReached);
+						queryResult = "註冊" + currency + "成功, 價格: " + lowerPrice.doubleValue() + " ~ " + upperPrice.doubleValue();
+    				}
+    				catch (Exception e) {
+    					queryResult = "格式範例, 註冊eth 40 50"; 
+    				}
+    			}
+    		}
+    	}
+    	// 取消虛擬貨幣匯率到價通知
+    	else if (inputMsg.startsWith("取消")) {
+    		String cryptoCurrency = inputMsg.substring(inputMsg.indexOf("註冊") + "註冊".length(), inputMsg.length()).trim();
+    		
+    		// TODO
     	}
     	// UBike 場站名稱模糊搜尋
     	else if (inputMsg.endsWith("ubike")) {

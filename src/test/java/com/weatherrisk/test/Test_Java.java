@@ -37,7 +37,6 @@ public class Test_Java {
 	}
 	
 	@Test
-	@Ignore
 	public void test_3_testSubstring() {
 		String inputMsg = "台北市天氣";
 		String city = inputMsg.substring(0, inputMsg.length() - 2);
@@ -55,6 +54,10 @@ public class Test_Java {
 		String chineseName = "信義威秀";
 		String filmName = inputMsg.substring(chineseName.length(), inputMsg.length());
 		System.out.println(filmName);
+		
+		inputMsg = "註冊eth 50 40";
+		String cryptoCurrency = inputMsg.substring(inputMsg.indexOf("註冊") + "註冊".length(), inputMsg.length());
+		System.out.println(cryptoCurrency);
 	}
 	
 	@Test
