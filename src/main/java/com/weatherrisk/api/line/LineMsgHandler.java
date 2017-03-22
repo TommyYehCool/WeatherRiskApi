@@ -248,8 +248,21 @@ public class LineMsgHandler {
     	// 取消虛擬貨幣匯率到價通知
     	else if (inputMsg.startsWith("取消")) {
     		String cryptoCurrency = inputMsg.substring(inputMsg.indexOf("註冊") + "註冊".length(), inputMsg.length()).trim();
-    		
-    		// TODO
+    		boolean isCryptoCurrency = CurrencyCnst.isCryptoCurrency(cryptoCurrency);
+			if (!isCryptoCurrency) {
+				queryResult = "目前只支援 BTC, ETH, LTC";
+			}
+			else {
+				CurrencyCnst currency = CurrencyCnst.convert(cryptoCurrency);
+				boolean hasRegistered = registerService.hasRegistered(userId, currency);
+				if (hasRegistered) {
+					registerService.unregister(userId, currency);
+					queryResult = "取消註冊 " + currency + " 成功";
+				}
+				else {
+					queryResult = "您未註冊 " + currency + " 到價通知";
+				}
+			}
     	}
     	// UBike 場站名稱模糊搜尋
     	else if (inputMsg.endsWith("ubike")) {
