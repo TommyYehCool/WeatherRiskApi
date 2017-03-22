@@ -53,7 +53,8 @@ public class ScheduledTasks {
     @Autowired
     private LineMessagingClient lineMessagingClient;
 
-    @Scheduled(cron = "0 5 * * * *")
+//    @Scheduled(cron = "0 5 * * * *")
+    @Scheduled(cron = "10 * * * * *")
     public void getETHPrice() {
     	try {
     		logger.info(">>>>> Prepare to get ETH price from BTC-E...");
