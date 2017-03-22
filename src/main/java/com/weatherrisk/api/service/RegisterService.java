@@ -53,6 +53,15 @@ public class RegisterService {
 		}
 	}
 	
+	public boolean hasRegistered(String userId) {
+		if (this.cryptoRegisterMap.containsKey(userId)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	public boolean hasRegistered(String userId, CurrencyCnst currency) {
 		if (this.cryptoRegisterMap.containsKey(userId)) {
 			List<PriceReached> pricesReached = this.cryptoRegisterMap.get(userId);
@@ -66,6 +75,17 @@ public class RegisterService {
 		else {
 			return false;
 		}
+	}
+	
+	public String getPricesReachedInfos(String userId) {
+		List<PriceReached> pricesReached = this.cryptoRegisterMap.get(userId);
+		StringBuilder buffer = new StringBuilder();
+		for (PriceReached priceReached : pricesReached) {
+			buffer.append("貨幣: ").append(priceReached.getCurrency()).append(" => ");
+			buffer.append(priceReached.getLowerPrice()).append(" ~ ").append(priceReached.getUpperPrice());
+			buffer.append("\n");
+		}
+		return buffer.toString();
 	}
 	
 	public Map<String, List<PriceReached>> getRegisterInfos() {

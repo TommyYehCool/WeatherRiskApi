@@ -108,13 +108,13 @@ public class ScheduledTasks {
 					BigDecimal lowerPrice = priceReached.getLowerPrice();
 					BigDecimal upperPrice = priceReached.getUpperPrice();
 					if (lastPrice.doubleValue() <= lowerPrice.doubleValue()) {
-						String pushMsg = currencyPair.toString() + " 小於 " + lowerPrice.doubleValue() + " 該買進囉!!";
+						String pushMsg = currencyPair.toString() + " 目前價格: " + lastPrice.doubleValue() + " 小於 " + lowerPrice.doubleValue() + " 該買進囉!!";
 						lineMessagingClient.pushMessage(new PushMessage(userId, new TextMessage(pushMsg)));
 						logger.info(">>>> Send push msg: <{}> to userId: <{}> done", pushMsg, userId);
 						break;
 					}
 					else if (lastPrice.doubleValue() >= upperPrice.doubleValue()) {
-						String pushMsg = currencyPair.toString() + " 大於 " + upperPrice.doubleValue() + " 該賣出囉!!";
+						String pushMsg = currencyPair.toString() + " 目前價格: " + lastPrice.doubleValue() + " 大於 " + upperPrice.doubleValue() + " 該賣出囉!!";
 						lineMessagingClient.pushMessage(new PushMessage(userId, new TextMessage(pushMsg)));
 						logger.info(">>>> Send push msg: <{}> to userId: <{}> done", pushMsg, userId);
 						break;

@@ -276,6 +276,16 @@ public class LineMsgHandler {
 				}
 			}
     	}
+    	// 查詢註冊虛擬貨幣匯率到價通知
+    	else if (inputMsg.equals("查詢註冊")) {
+    		boolean hasRegistered = registerService.hasRegistered(userId);
+    		if (hasRegistered) {
+    			queryResult = registerService.getPricesReachedInfos(userId);
+    		}
+    		else {
+    			queryResult = "您未註冊任何到價通知";
+    		}
+    	}
     	// UBike 場站名稱模糊搜尋
     	else if (inputMsg.endsWith("ubike")) {
     		final int cityNameLen = 3;
