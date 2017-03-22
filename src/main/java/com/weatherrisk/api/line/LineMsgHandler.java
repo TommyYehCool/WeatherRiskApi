@@ -237,7 +237,7 @@ public class LineMsgHandler {
     					BigDecimal upperPrice = new BigDecimal(Double.parseDouble(split[2]));
     					PriceReached priceReached = new PriceReached(currency, upperPrice, lowerPrice);
 						registerService.register(userId, priceReached);
-						queryResult = "註冊" + currency + "成功, 價格: " + lowerPrice.doubleValue() + " ~ " + upperPrice.doubleValue();
+						queryResult = "註冊 " + currency + " 到價通知成功, 價格: " + lowerPrice.doubleValue() + " ~ " + upperPrice.doubleValue();
     				}
     				catch (Exception e) {
     					queryResult = "格式範例, 註冊eth 40 50"; 
