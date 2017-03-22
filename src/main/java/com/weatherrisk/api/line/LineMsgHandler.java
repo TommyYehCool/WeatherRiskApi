@@ -235,7 +235,7 @@ public class LineMsgHandler {
     					CurrencyCnst currency = CurrencyCnst.convert(code);
     					BigDecimal lowerPrice = new BigDecimal(Double.parseDouble(split[1]));
     					BigDecimal upperPrice = new BigDecimal(Double.parseDouble(split[2]));
-    					PriceReached priceReached = new PriceReached(currency, upperPrice, lowerPrice);
+    					PriceReached priceReached = new PriceReached(currency, lowerPrice, upperPrice);
 						registerService.register(userId, priceReached);
 						queryResult = "註冊 " + currency + " 到價通知成功, 價格: " + lowerPrice.doubleValue() + " ~ " + upperPrice.doubleValue();
     				}
