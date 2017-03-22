@@ -139,6 +139,8 @@ public class LineMsgHandler {
     	buffer.append("註冊虛擬貨幣到價通知 => Ex: 註冊eth 40 50").append("\n");
     	buffer.append("\n");
     	buffer.append("取消虛擬貨幣到價通知 => Ex: 取消eth").append("\n");
+    	buffer.append("\n");
+    	buffer.append("查詢註冊虛擬貨幣到價通知資訊 => Ex: 查詢註冊").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("<UBike>").append("\n");
     	buffer.append("關鍵字查詢 => 格式: 縣市名稱 + 關鍵字 + ubike, Ex: 台北市天母ubike, 新北市三重ubike").append("\n");
