@@ -43,6 +43,8 @@ import com.weatherrisk.api.vo.PriceReached;
 public class ScheduledTasks {
 	
 	private Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
+	
+	private final String CRON_SCHEDULED = "* 5 * * * *";
 
     @Autowired
     private CurrencyService currencyService;
@@ -52,8 +54,22 @@ public class ScheduledTasks {
     
     @Autowired
     private LineMessagingClient lineMessagingClient;
+    
+    @Scheduled(cron = CRON_SCHEDULED)
+    public void getBTCPrice() {
+    	try {
+    		logger.info(">>>>> Prepare to get BTC price from BTC-E...");
+			BigDecimal btcLastPrice = currencyService.getCryptoLastPriceFromBtcE(CurrencyPair.BTC_USD);
+			logger.info("<<<<< Get BTC price from BTC-E done, price: {}", btcLastPrice);
 
-    @Scheduled(cron = "* 5 * * * *")
+			checkPriceAndSendPushMessage(CurrencyCnst.BTC, CurrencyPair.BTC_USD, btcLastPrice);
+			
+		} catch (Exception e) {
+			logger.info("Exception raised while getting BTC price from BTC-E", e);
+		}
+    }
+
+    @Scheduled(cron = CRON_SCHEDULED)
     public void getETHPrice() {
     	try {
     		logger.info(">>>>> Prepare to get ETH price from BTC-E...");
@@ -66,7 +82,21 @@ public class ScheduledTasks {
 			logger.info("Exception raised while getting ETH price from BTC-E", e);
 		}
     }
+    
+    @Scheduled(cron = CRON_SCHEDULED)
+    public void getLTCPrice() {
+    	try {
+    		logger.info(">>>>> Prepare to get LTC price from BTC-E...");
+			BigDecimal ltcLastPrice = currencyService.getCryptoLastPriceFromBtcE(CurrencyPair.LTC_USD);
+			logger.info("<<<<< Get LTC price from BTC-E done, price: {}", ltcLastPrice);
 
+			checkPriceAndSendPushMessage(CurrencyCnst.LTC, CurrencyPair.LTC_USD, ltcLastPrice);
+			
+		} catch (Exception e) {
+			logger.info("Exception raised while getting LTC price from BTC-E", e);
+		}
+    }
+    
 	private void checkPriceAndSendPushMessage(CurrencyCnst baseCurrency, CurrencyPair currencyPair, BigDecimal lastPrice) {
 		Map<String, List<PriceReached>> registerInfos = registerService.getRegisterInfos();
 		
