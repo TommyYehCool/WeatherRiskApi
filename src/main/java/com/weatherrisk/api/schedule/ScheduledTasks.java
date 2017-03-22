@@ -44,7 +44,7 @@ public class ScheduledTasks {
 	
 	private Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
 	
-	private final String CRON_SCHEDULED = "* 5 * * * *";
+	private final String CRON_SCHEDULED = "0 0/5 * * * ?";
 
     @Autowired
     private CurrencyService currencyService;
