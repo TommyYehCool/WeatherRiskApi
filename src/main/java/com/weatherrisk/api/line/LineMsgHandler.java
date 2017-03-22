@@ -236,13 +236,13 @@ public class LineMsgHandler {
     		String cryptoCurrencyAndPrice = inputMsg.substring(inputMsg.indexOf("註冊") + "註冊".length(), inputMsg.length()).trim();
     		String[] split = cryptoCurrencyAndPrice.split(" ");
     		if (split.length != 3) {
-    			queryResult = "格式範例, 註冊eth 40 50";
+    			queryResult = "格式範例 => Ex: 註冊eth 40 50";
     		}
     		else {
     			String code = split[0].trim();
     			boolean isCryptoCurrency = CurrencyCnst.isCryptoCurrency(code);
     			if (!isCryptoCurrency) {
-    				queryResult = "目前只支援 BTC, ETH, LTC";
+    				queryResult = "目前只支援 BTC, ETH, LTC; 格式範例 => Ex: 註冊eth 40 50";
     			}
     			else {
     				try {
@@ -254,7 +254,7 @@ public class LineMsgHandler {
 						queryResult = "註冊 " + currency + " 到價通知成功, 價格: " + lowerPrice.doubleValue() + " ~ " + upperPrice.doubleValue();
     				}
     				catch (Exception e) {
-    					queryResult = "格式範例, 註冊eth 40 50"; 
+    					queryResult = "格式範例 => Ex: 註冊eth 40 50"; 
     				}
     			}
     		}
@@ -264,7 +264,7 @@ public class LineMsgHandler {
     		String cryptoCurrency = inputMsg.substring(inputMsg.indexOf("取消") + "取消".length(), inputMsg.length()).trim();
     		boolean isCryptoCurrency = CurrencyCnst.isCryptoCurrency(cryptoCurrency);
 			if (!isCryptoCurrency) {
-				queryResult = "目前只支援 BTC, ETH, LTC";
+				queryResult = "目前只支援 BTC, ETH, LTC; 格式範例 => 取消btc";
 			}
 			else {
 				CurrencyCnst currency = CurrencyCnst.convert(cryptoCurrency);
