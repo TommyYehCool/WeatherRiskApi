@@ -57,20 +57,20 @@ public class ScheduledTasks {
     
     @Scheduled(cron = CRON_SCHEDULED)
     public void getBTCPrice() {
-    	getCryptoCurrencyLastPrice(CurrencyCnst.BTC, CurrencyPair.BTC_USD);
+    	getCryptoCurrencyLastPriceFromBtcE(CurrencyCnst.BTC, CurrencyPair.BTC_USD);
     }
 
     @Scheduled(cron = CRON_SCHEDULED)
     public void getETHPrice() {
-    	getCryptoCurrencyLastPrice(CurrencyCnst.ETH, CurrencyPair.ETH_USD);
+    	getCryptoCurrencyLastPriceFromBtcE(CurrencyCnst.ETH, CurrencyPair.ETH_USD);
     }
     
     @Scheduled(cron = CRON_SCHEDULED)
     public void getLTCPrice() {
-    	getCryptoCurrencyLastPrice(CurrencyCnst.LTC, CurrencyPair.LTC_USD);
+    	getCryptoCurrencyLastPriceFromBtcE(CurrencyCnst.LTC, CurrencyPair.LTC_USD);
     }
     
-    private void getCryptoCurrencyLastPrice(CurrencyCnst baseCurrency, CurrencyPair currencyPair) {
+    private void getCryptoCurrencyLastPriceFromBtcE(CurrencyCnst baseCurrency, CurrencyPair currencyPair) {
     	try {
     		logger.info(">>>>> Prepare to get {} price from BTC-E...", baseCurrency);
 
