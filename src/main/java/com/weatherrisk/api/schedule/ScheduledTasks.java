@@ -57,43 +57,31 @@ public class ScheduledTasks {
     
     @Scheduled(cron = CRON_SCHEDULED)
     public void getBTCPrice() {
-    	try {
-    		logger.info(">>>>> Prepare to get BTC price from BTC-E...");
-			BigDecimal btcLastPrice = currencyService.getCryptoLastPriceFromBtcE(CurrencyPair.BTC_USD);
-			logger.info("<<<<< Get BTC price from BTC-E done, price: {}", btcLastPrice);
-
-			checkPriceAndSendPushMessage(CurrencyCnst.BTC, CurrencyPair.BTC_USD, btcLastPrice);
-			
-		} catch (Exception e) {
-			logger.info("Exception raised while getting BTC price from BTC-E", e);
-		}
+    	getCryptoCurrencyLastPrice(CurrencyCnst.BTC, CurrencyPair.BTC_USD);
     }
 
     @Scheduled(cron = CRON_SCHEDULED)
     public void getETHPrice() {
-    	try {
-    		logger.info(">>>>> Prepare to get ETH price from BTC-E...");
-			BigDecimal ethLastPrice = currencyService.getCryptoLastPriceFromBtcE(CurrencyPair.ETH_USD);
-			logger.info("<<<<< Get ETH price from BTC-E done, price: {}", ethLastPrice);
-
-			checkPriceAndSendPushMessage(CurrencyCnst.ETH, CurrencyPair.ETH_USD, ethLastPrice);
-			
-		} catch (Exception e) {
-			logger.info("Exception raised while getting ETH price from BTC-E", e);
-		}
+    	getCryptoCurrencyLastPrice(CurrencyCnst.ETH, CurrencyPair.ETH_USD);
     }
     
     @Scheduled(cron = CRON_SCHEDULED)
     public void getLTCPrice() {
+    	getCryptoCurrencyLastPrice(CurrencyCnst.LTC, CurrencyPair.LTC_USD);
+    }
+    
+    private void getCryptoCurrencyLastPrice(CurrencyCnst baseCurrency, CurrencyPair currencyPair) {
     	try {
-    		logger.info(">>>>> Prepare to get LTC price from BTC-E...");
-			BigDecimal ltcLastPrice = currencyService.getCryptoLastPriceFromBtcE(CurrencyPair.LTC_USD);
-			logger.info("<<<<< Get LTC price from BTC-E done, price: {}", ltcLastPrice);
+    		logger.info(">>>>> Prepare to get {} price from BTC-E...", baseCurrency);
 
-			checkPriceAndSendPushMessage(CurrencyCnst.LTC, CurrencyPair.LTC_USD, ltcLastPrice);
+			BigDecimal lastPrice = currencyService.getCryptoLastPriceFromBtcE(currencyPair);
+
+			logger.info("<<<<< Get {} price from BTC-E done, price: {}", baseCurrency, lastPrice);
+
+			checkPriceAndSendPushMessage(baseCurrency, currencyPair, lastPrice);
 			
 		} catch (Exception e) {
-			logger.info("Exception raised while getting LTC price from BTC-E", e);
+			logger.info("Exception raised while getting {} price from BTC-E", baseCurrency, e);
 		}
     }
     
