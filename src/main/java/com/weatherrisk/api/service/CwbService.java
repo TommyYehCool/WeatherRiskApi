@@ -117,6 +117,8 @@ public class CwbService {
 			
 			CwbOpenData data = (CwbOpenData) unmarshaller.unmarshal(new URL(url));
 			
+			logger.info("<---- Unmarshal result: {}", data);
+			
 			Dataset dataset = data.getDataset();
 			if (dataset == null) {
 				return "不好意思, 程式寫太爛, 壞掉啦!";

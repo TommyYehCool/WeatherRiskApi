@@ -66,7 +66,6 @@ public class Test_GetDataService {
 	}
 	
 	@Test
-	@Ignore
 	public void test_2_CwbService_getOneWeekWeatherPrediction() {
 		String data = cwbService.getOneWeekWeatherPrediction("臺北市");
 		System.out.println(data);
@@ -83,6 +82,7 @@ public class Test_GetDataService {
 	}
 	
 	@Test
+	@Ignore
 	public void test_4_BitcoinService_getPriceFromExchanges() {
 		String data = bitcoinService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.BTC_USD);
 		System.out.println(data);
@@ -144,6 +144,7 @@ public class Test_GetDataService {
 	}
 	
 	@Test
+	@Ignore
 	public void test_12_ViewshowMovieService_queryByTheaterNameAndFilmNameLike() {
 		String queryResult = viewshowMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("京站威秀", "金剛");
 		System.out.println(queryResult);
