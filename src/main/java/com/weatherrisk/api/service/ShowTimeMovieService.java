@@ -124,7 +124,7 @@ public class ShowTimeMovieService {
 			return constructQueryMovieTimesResult(showTimeMovies);
 		}
 		else {
-			logger.info("<<<<< Query Show Time movie time by theaterName: {}, filmName: {} succeed, content is empty", theaterName, filmName, showTimeMovies);
+			logger.info("<<<<< Query Show Time movie time by theaterName: {}, filmName: {} succeed, content is empty", theaterName, filmName);
 			return "查不到對應電影資料";
 		}
 	}
@@ -184,7 +184,7 @@ public class ShowTimeMovieService {
 		logger.info(">>>>> Prepare to query Show Time now playing by theater: {}", theaterName);
 		List<ShowTimeMovie> showTimeMoives = showTimeMovieRepo.findByTheaterName(theaterName);
 		if (!showTimeMoives.isEmpty()) {
-			logger.info("<<<<< Query Show Time now playing by theaterName: {}, content: {}", showTimeMoives);
+			logger.info("<<<<< Query Show Time now playing by theaterName: {}, content: {}", theaterName, showTimeMoives);
 			
 			List<String> filmNames = showTimeMoives.stream().map(ShowTimeMovie::getFilmName).collect(Collectors.toList());
 			

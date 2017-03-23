@@ -150,7 +150,7 @@ public class ViewshowMovieService {
 			return constructQueryMovieTimesResult(viewShowMovies);
 		}
 		else {
-			logger.info("<<<<< Query View Show movie time by theaterName: {}, filmName: {} succeed, content is empty", theaterName, filmName, viewShowMovies);
+			logger.info("<<<<< Query View Show movie time by theaterName: {}, filmName: {} succeed, content is empty", theaterName, filmName);
 			return "查不到對應電影資料";
 		}
 	}
@@ -184,7 +184,7 @@ public class ViewshowMovieService {
 		logger.info(">>>>> Prepare to query View Show now playing by theater: {}", theaterName);
 		List<ViewShowMovie> viewShowMoives = viewShowMovieRepo.findByTheaterName(theaterName);
 		if (!viewShowMoives.isEmpty()) {
-			logger.info("<<<<< Query View Show now playing by theaterName: {}, content: {}", viewShowMoives);
+			logger.info("<<<<< Query View Show now playing by theaterName: {}, content: {}", theaterName, viewShowMoives);
 			
 			List<String> filmNames = viewShowMoives.stream().map(ViewShowMovie::getFilmName).collect(Collectors.toList());
 			
