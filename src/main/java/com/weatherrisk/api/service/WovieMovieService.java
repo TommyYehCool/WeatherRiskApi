@@ -116,7 +116,7 @@ public class WovieMovieService {
 		logger.info(">>>>> Prepare to query Wovie movie time by theater: {}, filmName: {}", theaterName, filmName);
 		List<WovieMovie> wovieMovies = wovieMovieRepo.findByTheaterNameAndFilmNameLike(theaterName, filmName);
 		if (!wovieMovies.isEmpty()) {
-			logger.info("<<<<< Query Wovie movie time by theaterName: {}, filmName: {} succeed, content: {}", theaterName, filmName, wovieMovies);
+			logger.info("<<<<< Query Wovie movie time by theaterName: {}, filmName: {} succeed, data-size: {}", theaterName, filmName, wovieMovies.size());
 			return constructQueryMovieTimesResult(wovieMovies);
 		}
 		else {
@@ -154,7 +154,7 @@ public class WovieMovieService {
 		logger.info(">>>>> Prepare to query Wovie now playing by theater: {}", theaterName);
 		List<WovieMovie> wovieMoives = wovieMovieRepo.findByTheaterName(theaterName);
 		if (!wovieMoives.isEmpty()) {
-			logger.info("<<<<< Query Wovie now playing by theaterName: {}, content: {}", theaterName, wovieMoives);
+			logger.info("<<<<< Query Wovie now playing by theaterName: {}, data-size: {}", theaterName, wovieMoives.size());
 			
 			List<String> filmNames = wovieMoives.stream().map(WovieMovie::getFilmName).collect(Collectors.toList());
 			

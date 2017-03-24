@@ -127,11 +127,11 @@ public class MiramarMovieService {
 		logger.info(">>>>> Prepare to query Miramar movie time by theater: {}, filmName: {}", theaterName, filmName);
 		List<MiramarMovie> miramarMovies = miramarMovieRepo.findByTheaterNameAndFilmNameLike(theaterName, filmName);
 		if (!miramarMovies.isEmpty()) {
-			logger.info("<<<<< Query Miramar movie time by theaterName: {}, filmName: {} succeed, content: {}", theaterName, filmName, miramarMovies);
+			logger.info("<<<<< Query Miramar movie time by theaterName: {}, filmName: {} succeed, data-size: {}", theaterName, filmName, miramarMovies.size());
 			return constructQueryMovieTimesResult(miramarMovies);
 		}
 		else {
-			logger.info("<<<<< Query Miramar movie time by theaterName: {}, filmName: {} succeed, content is empty", theaterName, filmName, miramarMovies);
+			logger.info("<<<<< Query Miramar movie time by theaterName: {}, filmName: {} succeed, content is empty", theaterName, filmName);
 			return "查不到對應電影資料";
 		}
 	}
@@ -165,7 +165,7 @@ public class MiramarMovieService {
 		logger.info(">>>>> Prepare to query Miramar now playing by theater: {}", theaterName);
 		List<MiramarMovie> miramarMoives = miramarMovieRepo.findByTheaterName(theaterName);
 		if (!miramarMoives.isEmpty()) {
-			logger.info("<<<<< Query Miramar now playing by theaterName: {}, content: {}", miramarMoives);
+			logger.info("<<<<< Query Miramar now playing by theaterName: {}, data-size: {}", theaterName, miramarMoives.size());
 			
 			List<String> filmNames = miramarMoives.stream().map(MiramarMovie::getFilmName).collect(Collectors.toList());
 			

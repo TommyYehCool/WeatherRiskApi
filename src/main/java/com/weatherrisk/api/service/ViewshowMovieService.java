@@ -146,7 +146,7 @@ public class ViewshowMovieService {
 		logger.info(">>>>> Prepare to query View Show movie time by theater: {}, filmName: {}", theaterName, filmName);
 		List<ViewShowMovie> viewShowMovies = viewShowMovieRepo.findByTheaterNameAndFilmNameLike(theaterName, filmName);
 		if (!viewShowMovies.isEmpty()) {
-			logger.info("<<<<< Query View Show movie time by theaterName: {}, filmName: {} succeed, content: {}", theaterName, filmName, viewShowMovies);
+			logger.info("<<<<< Query View Show movie time by theaterName: {}, filmName: {} succeed, data-size: {}", theaterName, filmName, viewShowMovies.size());
 			return constructQueryMovieTimesResult(viewShowMovies);
 		}
 		else {
@@ -184,7 +184,7 @@ public class ViewshowMovieService {
 		logger.info(">>>>> Prepare to query View Show now playing by theater: {}", theaterName);
 		List<ViewShowMovie> viewShowMoives = viewShowMovieRepo.findByTheaterName(theaterName);
 		if (!viewShowMoives.isEmpty()) {
-			logger.info("<<<<< Query View Show now playing by theaterName: {}, content: {}", theaterName, viewShowMoives);
+			logger.info("<<<<< Query View Show now playing by theaterName: {}, data-size: {}", theaterName, viewShowMoives.size());
 			
 			List<String> filmNames = viewShowMoives.stream().map(ViewShowMovie::getFilmName).collect(Collectors.toList());
 			
