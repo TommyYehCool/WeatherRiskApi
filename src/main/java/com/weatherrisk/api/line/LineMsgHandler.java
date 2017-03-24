@@ -484,9 +484,8 @@ public class LineMsgHandler {
 
 	private String constructBicycleInfoMessage(UBikeInfo ubikeInfo) {
 		StringBuilder buffer = new StringBuilder();
-		buffer.append("總停車格: ").append(ubikeInfo.getTot()).append("\n");
-		buffer.append("可租借車輛數量: ").append(ubikeInfo.getSbi()).append("\n");
-		buffer.append("剩餘空位數: ").append(ubikeInfo.getBemp());
+		buffer.append("可借車輛: ").append(ubikeInfo.getSbi()).append("\n");
+		buffer.append("可停空位: ").append(ubikeInfo.getBemp());
 		return buffer.toString();
 	}
 

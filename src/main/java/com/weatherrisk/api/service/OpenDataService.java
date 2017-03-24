@@ -184,8 +184,8 @@ public class OpenDataService {
 				buffer.append("場站名稱: ").append(ubikeInfo.getSna()).append("\n");
 				buffer.append("大概位置: ").append(ubikeInfo.getAr()).append("\n");
 				buffer.append("總停車格: ").append(ubikeInfo.getTot()).append("\n");
-				buffer.append("目前車輛數量: ").append(ubikeInfo.getSbi()).append("\n");
-				buffer.append("空位數: ").append(ubikeInfo.getBemp()).append("\n");
+				buffer.append("可借車輛: ").append(ubikeInfo.getSbi()).append("\n");
+				buffer.append("可停空位: ").append(ubikeInfo.getBemp()).append("\n");
 				buffer.append("緯度: ").append(ubikeInfo.getLat()).append("\n");
 				buffer.append("經度: ").append(ubikeInfo.getLng()).append("\n");
 				buffer.append("全站禁用狀態: ").append(ubikeInfo.getAct()).append("\n");
