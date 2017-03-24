@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -28,8 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 
@@ -61,8 +57,8 @@ public class CurrencyService {
 			}
 			
 			return buffer.toString();
-		} catch (IOException e) {
-			logger.error("IOException raised while trying to get price", e);
+		} catch (Exception e) {
+			logger.error("Exception raised while trying to get price", e);
 			return "抓取價格失敗";
 		}
 	}
@@ -130,8 +126,8 @@ public class CurrencyService {
 			
 			return buffer.toString();
 			
-		} catch (IOException e) {
-			logger.error("IOException raised while trying to get price", e);
+		} catch (Exception e) {
+			logger.error("Exception raised while trying to get price", e);
 			return "抓取價格失敗";
 		}
 	}
@@ -143,7 +139,7 @@ public class CurrencyService {
 	 * 參考: <a href="http://blog.asper.tw/2015/05/json.html">取得匯率方法</a>
 	 * </pre> 
 	 */
-	private BigDecimal getBuyCashRatesFromTaiwanBank(CurrencyCnst currency) throws IOException {
+	private BigDecimal getBuyCashRatesFromTaiwanBank(CurrencyCnst currency) throws Exception {
 		Map<String, ?> currencyRatesMap = getCurrencyRatesMapFromTaiwanBank(currency);
 		
 		String strBuyCash = (String) currencyRatesMap.get("buyCash");
@@ -152,8 +148,7 @@ public class CurrencyService {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<String, ?> getCurrencyRatesMapFromTaiwanBank(CurrencyCnst currency)
-			throws MalformedURLException, IOException, ProtocolException, JsonParseException, JsonMappingException {
+	private Map<String, ?> getCurrencyRatesMapFromTaiwanBank(CurrencyCnst currency) throws Exception {
 		StringBuilder srcBuffer = new StringBuilder();
 		BufferedReader reader = null;
 	
