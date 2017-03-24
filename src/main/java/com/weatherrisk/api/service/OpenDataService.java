@@ -77,8 +77,8 @@ public class OpenDataService {
 			// insert is more faster than save
 			parkingLotInfoRepo.insert(parkingLotInfos);
 			logger.info("<<<<< Save all parking lot informations done, data-size: <{}>, time-spent: <{} ms>", parkingLotInfos.size(), System.currentTimeMillis() - startTime);
-		} catch (IOException e) {
-			logger.error("IOException raised while trying to get newest parking lot informations", e);
+		} catch (Exception e) {
+			logger.error("Exception raised while trying to get newest parking lot informations", e);
 		}
 	}
 
@@ -136,8 +136,8 @@ public class OpenDataService {
 			
 			logger.info("<<<<< Save all parking lot availables done, data-size: <{}>, time-spent: <{} ms>", parkingLotAvailables.size(), System.currentTimeMillis() - startTime);
 			
-		} catch (IOException e) {
-			logger.error("IOException raised while tring to get newest parking lot availables", e);
+		} catch (Exception e) {
+			logger.error("Exception raised while tring to get newest parking lot availables", e);
 		}
 	}
 
@@ -194,8 +194,8 @@ public class OpenDataService {
 			
 			return buffer.toString();
 			
-		} catch (IOException e) {
-			logger.error("IOException raised while tring to get newest ubike informations", e);
+		} catch (Exception e) {
+			logger.error("Exception raised while tring to get newest ubike informations", e);
 			return "抓取 UBike 資料失敗";
 		}
 	}
@@ -225,8 +225,8 @@ public class OpenDataService {
 			
 			return results;
 			
-		} catch (IOException e) {
-			logger.error("IOException raised while tring to get newest ubike informations", e);
+		} catch (Exception e) {
+			logger.error("Exception raised while tring to get newest ubike informations", e);
 			return null;
 		}
 	}

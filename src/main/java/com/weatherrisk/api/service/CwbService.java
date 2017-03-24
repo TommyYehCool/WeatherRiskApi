@@ -94,11 +94,8 @@ public class CwbService {
 			
 			return buffer.toString();
 
-		} catch (IOException e) {
-			logger.error("IOException raised while trying to get weather information", e);
-			return "抓取資料發生錯誤";
-		} catch (JAXBException e) {
-			logger.error("IOException raised while trying to get weather information", e);
+		} catch (Exception e) {
+			logger.error("Exception raised while trying to get weather information", e);
 			return "抓取資料發生錯誤";
 		}
 	}
@@ -214,11 +211,8 @@ public class CwbService {
 			
 			return buffer.toString();
 			
-		} catch (IOException e) {
-			logger.error("IOException raised while trying to get weather information", e);
-			return "抓取資料發生錯誤";
-		} catch (JAXBException e) {
-			logger.error("IOException raised while trying to get weather information", e);
+		} catch (Exception e) {
+			logger.error("Exception raised while trying to get weather information", e);
 			return "抓取資料發生錯誤";
 		} 
 	}
