@@ -14,6 +14,7 @@ import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.ShowTimeMovieService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
 import com.weatherrisk.api.service.ViewshowMovieService;
+import com.weatherrisk.api.service.WovieMovieService;
 
 /**
  * <pre>
@@ -40,6 +41,9 @@ public class Application extends SpringBootServletInitializer {
 	
 	@Autowired
 	private MiramarMovieService miramarMovieService;
+	
+	@Autowired
+	private WovieMovieService wovieMovieService;
 	
 	private CountDownLatchHandler countDownHandler = CountDownLatchHandler.getInstance();
 	
@@ -81,6 +85,13 @@ public class Application extends SpringBootServletInitializer {
 			miramarMovieService.refreshMovieTimes();
 			
 			countDownHandler.getLatchForMiramarMovie().countDown();
+		}).start();
+		
+		countDownHandler.setLatchForWovieMovie(1);
+		new Thread(() -> {
+			wovieMovieService.refreshMovieTimes();
+			
+			countDownHandler.getLatchForWovieMovie().countDown();
 		}).start();
 	}
 }
