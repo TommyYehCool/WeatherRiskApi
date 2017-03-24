@@ -96,7 +96,7 @@ public class ShowTimeMovieService {
 		
 		long startTime = System.currentTimeMillis();
 		
-		String jsonData = HttpUtil.getJsonContentFromOpenData(url);
+		String jsonData = HttpUtil.sendGetByHttpClient(url);
 		
 		logger.info("<<<<< Get Show Time movie times from url: <{}> done, time-spent: <{} ms>", url, System.currentTimeMillis() - startTime);
 

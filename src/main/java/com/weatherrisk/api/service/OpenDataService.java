@@ -46,10 +46,10 @@ public class OpenDataService {
 			
 			String jsonData = null;
 			if (isGZipFormat) {
-				jsonData = HttpUtil.getGzContentFromOpenData(parkingLotInfoUrl);
+				jsonData = HttpUtil.getGzContent(parkingLotInfoUrl);
 			}
 			else {
-				jsonData = HttpUtil.getJsonContentFromOpenData(parkingLotInfoUrl);
+				jsonData = HttpUtil.sendGetByHttpClient(parkingLotInfoUrl);
 			}
 			
 			logger.info("<<<<< Get all parking lot informations from url: <{}> done, time-spent: <{} ms>", parkingLotInfoUrl, System.currentTimeMillis() - startTime);
@@ -107,10 +107,10 @@ public class OpenDataService {
 			
 			String jsonData = null;
 			if (isGZipFormat) {
-				jsonData = HttpUtil.getGzContentFromOpenData(parkingAvailableUrl);
+				jsonData = HttpUtil.getGzContent(parkingAvailableUrl);
 			}
 			else {
-				jsonData = HttpUtil.getJsonContentFromOpenData(parkingAvailableUrl);
+				jsonData = HttpUtil.sendGetByHttpClient(parkingAvailableUrl);
 			}
 			
 			logger.info("<<<<< Get all parking lot availables from url: <{}> done, time-spent: <{} ms>", parkingAvailableUrl, System.currentTimeMillis() - startTime);
@@ -146,7 +146,7 @@ public class OpenDataService {
 		
 		long startTime = System.currentTimeMillis();
 		
-		String jsonData = HttpUtil.getJsonContentFromOpenData(ubikeInfoUrl);
+		String jsonData = HttpUtil.sendGetByHttpClient(ubikeInfoUrl);
 		
 		logger.info("<<<<< Get newest ubike informations from url: <{}> done, time-spent: <{} ms>", ubikeInfoUrl, System.currentTimeMillis() - startTime);
 		

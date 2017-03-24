@@ -22,7 +22,7 @@ import org.springframework.util.StringUtils;
 
 public class HttpUtil {
 	
-	public static String getJsonContentFromOpenData(String url) throws IOException {
+	public static String sendGetByHttpClient(String url) throws IOException {
 		HttpClient client 
 			= HttpClientBuilder.create()
 				.setRedirectStrategy(new LaxRedirectStrategy()).build();
@@ -36,7 +36,7 @@ public class HttpUtil {
 		return responseData;
 	}
 
-	public static String getGzContentFromOpenData(String url) throws IOException {
+	public static String getGzContent(String url) throws IOException {
 		URL objUrl = null;
 		InputStream inStream = null;
 		BufferedReader br = null;
@@ -60,20 +60,6 @@ public class HttpUtil {
 			IOUtils.closeQuietly(inStream);
 			IOUtils.closeQuietly(br);
 		}
-	}
-	
-	public static String getWeatherContentFromCwb(String url) throws IOException {
-		HttpClient client 
-			= HttpClientBuilder.create()
-				.setRedirectStrategy(new LaxRedirectStrategy()).build();
-		
-		HttpGet get = new HttpGet(url);
-		
-		HttpResponse response = client.execute(get);
-		
-		String responseData = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-		
-		return responseData;
 	}
 	
 	private static final int CONNECTION_TIMEOUT = 5 * 1000;
