@@ -93,7 +93,7 @@ public class RegisterService {
 		StringBuilder buffer = new StringBuilder();
 		for (PriceReached priceReached : pricesReached) {
 			buffer.append("貨幣: ").append(priceReached.getCurrency()).append(" => ");
-			buffer.append(priceReached.getLowerPrice()).append(" ~ ").append(priceReached.getUpperPrice());
+			buffer.append(priceReached.getLowerPrice().doubleValue()).append(" ~ ").append(priceReached.getUpperPrice().doubleValue());
 			buffer.append("\n");
 		}
 		return buffer.toString();
