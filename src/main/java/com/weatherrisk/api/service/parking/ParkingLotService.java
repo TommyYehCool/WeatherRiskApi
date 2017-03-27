@@ -1,4 +1,4 @@
-package com.weatherrisk.api.service;
+package com.weatherrisk.api.service.parking;
 
 import java.util.List;
 import java.util.Map;
@@ -13,6 +13,8 @@ import com.weatherrisk.api.model.ParkingLotAvailable;
 import com.weatherrisk.api.model.ParkingLotAvailableRepository;
 import com.weatherrisk.api.model.ParkingLotInfo;
 import com.weatherrisk.api.model.ParkingLotInfoRepository;
+import com.weatherrisk.api.service.opendata.NewTaipeiOpenDataService;
+import com.weatherrisk.api.service.opendata.TaipeiOpenDataService;
 
 @Service
 public class ParkingLotService {

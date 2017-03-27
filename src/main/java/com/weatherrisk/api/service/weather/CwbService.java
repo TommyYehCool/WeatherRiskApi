@@ -1,4 +1,4 @@
-package com.weatherrisk.api.service;
+package com.weatherrisk.api.service.weather;
 
 import java.net.URL;
 import java.util.Iterator;

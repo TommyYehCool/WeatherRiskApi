@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.weatherrisk.api.model.Consume;
 import com.weatherrisk.api.service.ConsumeService;
-import com.weatherrisk.api.service.CwbService;
+import com.weatherrisk.api.service.weather.CwbService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

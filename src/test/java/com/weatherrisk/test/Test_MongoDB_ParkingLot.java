@@ -17,7 +17,7 @@ import com.weatherrisk.api.model.ParkingLotAvailable;
 import com.weatherrisk.api.model.ParkingLotAvailableRepository;
 import com.weatherrisk.api.model.ParkingLotInfo;
 import com.weatherrisk.api.model.ParkingLotInfoRepository;
-import com.weatherrisk.api.service.ParkingLotService;
+import com.weatherrisk.api.service.parking.ParkingLotService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(

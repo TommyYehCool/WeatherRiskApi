@@ -1,4 +1,4 @@
-package com.weatherrisk.api.service;
+package com.weatherrisk.api.service.movie;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

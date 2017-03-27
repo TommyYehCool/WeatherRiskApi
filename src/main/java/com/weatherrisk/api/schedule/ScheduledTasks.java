@@ -15,8 +15,8 @@ import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.PushMessage;
 import com.linecorp.bot.model.message.TextMessage;
 import com.weatherrisk.api.cnst.CurrencyCnst;
-import com.weatherrisk.api.service.CurrencyService;
-import com.weatherrisk.api.service.RegisterService;
+import com.weatherrisk.api.service.currency.CurrencyService;
+import com.weatherrisk.api.service.currency.RegisterService;
 import com.weatherrisk.api.vo.PriceReached;
 
 /**

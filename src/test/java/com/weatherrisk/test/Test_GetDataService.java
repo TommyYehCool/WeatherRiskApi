@@ -15,16 +15,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.weatherrisk.api.Application;
 import com.weatherrisk.api.cnst.CurrencyCnst;
-import com.weatherrisk.api.service.AmbassadorMovieService;
-import com.weatherrisk.api.service.CurrencyService;
-import com.weatherrisk.api.service.CwbService;
-import com.weatherrisk.api.service.MiramarMovieService;
-import com.weatherrisk.api.service.NewTaipeiOpenDataService;
-import com.weatherrisk.api.service.ParkingLotService;
-import com.weatherrisk.api.service.ShowTimeMovieService;
-import com.weatherrisk.api.service.TaipeiOpenDataService;
-import com.weatherrisk.api.service.ViewshowMovieService;
-import com.weatherrisk.api.service.WovieMovieService;
+import com.weatherrisk.api.service.currency.CurrencyService;
+import com.weatherrisk.api.service.movie.AmbassadorMovieService;
+import com.weatherrisk.api.service.movie.MiramarMovieService;
+import com.weatherrisk.api.service.movie.ShowTimeMovieService;
+import com.weatherrisk.api.service.movie.ViewshowMovieService;
+import com.weatherrisk.api.service.movie.WovieMovieService;
+import com.weatherrisk.api.service.opendata.NewTaipeiOpenDataService;
+import com.weatherrisk.api.service.opendata.TaipeiOpenDataService;
+import com.weatherrisk.api.service.parking.ParkingLotService;
+import com.weatherrisk.api.service.weather.CwbService;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
 @RunWith(SpringRunner.class)

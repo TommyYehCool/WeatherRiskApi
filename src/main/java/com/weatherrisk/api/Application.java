@@ -9,13 +9,13 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 import com.weatherrisk.api.concurrent.CountDownLatchHandler;
-import com.weatherrisk.api.service.AmbassadorMovieService;
-import com.weatherrisk.api.service.MiramarMovieService;
-import com.weatherrisk.api.service.NewTaipeiOpenDataService;
-import com.weatherrisk.api.service.ShowTimeMovieService;
-import com.weatherrisk.api.service.TaipeiOpenDataService;
-import com.weatherrisk.api.service.ViewshowMovieService;
-import com.weatherrisk.api.service.WovieMovieService;
+import com.weatherrisk.api.service.movie.AmbassadorMovieService;
+import com.weatherrisk.api.service.movie.MiramarMovieService;
+import com.weatherrisk.api.service.movie.ShowTimeMovieService;
+import com.weatherrisk.api.service.movie.ViewshowMovieService;
+import com.weatherrisk.api.service.movie.WovieMovieService;
+import com.weatherrisk.api.service.opendata.NewTaipeiOpenDataService;
+import com.weatherrisk.api.service.opendata.TaipeiOpenDataService;
 
 /**
  * <pre>

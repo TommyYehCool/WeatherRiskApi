@@ -1,4 +1,4 @@
-package com.weatherrisk.api.service;
+package com.weatherrisk.api.service.currency;
 
 import java.io.BufferedReader;
 import java.io.IOException;
