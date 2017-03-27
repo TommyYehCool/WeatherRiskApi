@@ -35,17 +35,16 @@ import com.weatherrisk.api.cnst.ViewshowTheater;
 import com.weatherrisk.api.cnst.WovieTheater;
 import com.weatherrisk.api.service.AmbassadorMovieService;
 import com.weatherrisk.api.service.CurrencyService;
-import com.weatherrisk.api.service.RegisterService;
 import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.MiramarMovieService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.ParkingLotService;
+import com.weatherrisk.api.service.RegisterService;
 import com.weatherrisk.api.service.ShowTimeMovieService;
 import com.weatherrisk.api.service.TaipeiOpenDataService;
 import com.weatherrisk.api.service.ViewshowMovieService;
 import com.weatherrisk.api.service.WovieMovieService;
 import com.weatherrisk.api.vo.PriceReached;
-import com.weatherrisk.api.vo.json.ambassador.AmbassadorAllMoviesInfo;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
 import lombok.NonNull;
