@@ -162,7 +162,7 @@ public class LineMsgHandler {
     	buffer.append("<支援秀泰影城: 欣欣秀泰, 今日秀泰, 板橋秀泰, 東南亞秀泰>").append("\n");
     	buffer.append("<支援美麗華影城: 大直美麗華>").append("\n");
     	buffer.append("<支援華威影城: 天母華威>").append("\n");
-    	buffer.append("<支援國賓影城: 晶冠國賓>").append("\n");
+    	buffer.append("<支援國賓影城: 西門國賓, 微風國賓, 晶冠國賓>").append("\n");
     	buffer.append("請系統更新電影時刻表 => Ex: 更新電影時刻表").append("\n");
     	buffer.append("\n");
     	buffer.append("查詢某一家影城上映電影 => 格式: 戲院名稱 + 上映, Ex: 信義威秀上映").append("\n");

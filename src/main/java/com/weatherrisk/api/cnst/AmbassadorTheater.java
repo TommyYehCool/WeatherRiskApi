@@ -1,6 +1,8 @@
 package com.weatherrisk.api.cnst;
 
 public enum AmbassadorTheater {
+	XIMEN("西門國賓", "84b87b82-b936-4a39-b91f-e88328d33b4e"),
+	BREEZE("微風國賓", "5c2d4697-7f54-4955-800c-7b3ad782582c"),
 	CROWN("晶冠國賓", "3301d822-b385-4aa8-a9eb-aa59d58e95c9");
 	
 	private String chineseName;

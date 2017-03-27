@@ -36,6 +36,8 @@ public class AmbassadorMovieService {
 	public void refreshMovieTimes() {
 		try {
 			deleteAllMovieTimes();
+			getXimenAmbassadorMovieTimes();
+			getBreezeAmbassadorMovieTimes();
 			getCrownAmbassadorMovieTimes();
 		} catch (Exception e) {
 			logger.error("Exception raised while refresh Ambassador movie times", e);
@@ -47,6 +49,20 @@ public class AmbassadorMovieService {
 		long startTime = System.currentTimeMillis();
 		ambassadorMovieRepo.deleteAll();
 		logger.info("<<<<< Delete all Ambassador movie times done, time-spent: <{} ms>", System.currentTimeMillis() - startTime);
+	}
+	
+	private void getXimenAmbassadorMovieTimes() throws Exception {
+		String url = ambassadorMovieConfig.getXimenAmbassadorUrl();
+		url += getTodayStr();
+		String theaterName = AmbassadorTheater.XIMEN.getChineseName();
+		getAmbassadorMovieTime(url, theaterName);
+	}
+
+	private void getBreezeAmbassadorMovieTimes() throws Exception {
+		String url = ambassadorMovieConfig.getBreezeAmbassdorUrl();
+		url += getTodayStr();
+		String theaterName = AmbassadorTheater.BREEZE.getChineseName();
+		getAmbassadorMovieTime(url, theaterName);
 	}
 
 	private void getCrownAmbassadorMovieTimes() throws Exception {
