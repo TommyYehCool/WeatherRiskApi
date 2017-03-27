@@ -127,6 +127,7 @@ public class LineMsgHandler {
     
     private String constructHelpMsg() {
     	StringBuilder buffer = new StringBuilder();
+
     	buffer.append("我能做到下列事情:").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[查詢台北市及新北市停車場資訊]").append("\n");
@@ -135,9 +136,11 @@ public class LineMsgHandler {
     	buffer.append("停車場名稱搜尋 => Ex: #停車場名稱").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[查詢天氣]").append("\n");
-    	buffer.append("查詢天氣小幫手 => 格式: 縣市名稱 + 天氣, Ex: 台北市天氣").append("\n");
+    	buffer.append("查詢天氣小幫手 => 格式: 縣市名稱 + 天氣").append("\n");
+    	buffer.append("Ex: 台北市天氣").append("\n");
     	buffer.append("\n");
-    	buffer.append("查詢一周天氣 => 格式: 縣市名稱 + 一周, Ex: 台北市一周").append("\n");
+    	buffer.append("查詢一周天氣 => 格式: 縣市名稱 + 一周").append("\n");
+    	buffer.append("Ex: 台北市一周").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[查詢貨幣匯率]").append("\n");
     	buffer.append("<支援虛擬貨幣: btc, eth, ltc>").append("\n");
@@ -154,7 +157,8 @@ public class LineMsgHandler {
     	buffer.append("查詢註冊虛擬貨幣到價通知資訊 => Ex: 查詢註冊").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[UBike]").append("\n");
-    	buffer.append("關鍵字查詢 => 格式: 縣市名稱 + 關鍵字 + ubike, Ex: 台北市天母ubike, 新北市三重ubike").append("\n");
+    	buffer.append("關鍵字查詢 => 格式: 縣市名稱 + 關鍵字 + ubike").append("\n");
+    	buffer.append("Ex: 台北市天母ubike, 新北市三重ubike").append("\n");
     	buffer.append("\n");
     	buffer.append("查詢最近的兩個 UBike 場站資訊 => 傳送您目前的位置資訊即可").append("\n");
     	buffer.append("-----------------------").append("\n");
@@ -166,9 +170,11 @@ public class LineMsgHandler {
     	buffer.append("<支援國賓影城: 西門國賓, 微風國賓, 晶冠國賓>").append("\n");
     	buffer.append("請系統更新電影時刻表 => Ex: 更新電影時刻表").append("\n");
     	buffer.append("\n");
-    	buffer.append("查詢某一家影城上映電影 => 格式: 戲院名稱 + 上映, Ex: 信義威秀上映").append("\n");
+    	buffer.append("查詢某一家影城上映電影 => 格式: 戲院名稱 + 上映").append("\n");
+    	buffer.append("Ex: 信義威秀上映").append("\n");
     	buffer.append("\n");
-    	buffer.append("查詢某一部電影今日時刻表 => 格式: 戲院名稱 + 關鍵字, Ex: 信義威秀羅根");
+    	buffer.append("查詢某一部電影今日時刻表 => 格式: 戲院名稱 + 關鍵字").append("\n");
+    	buffer.append("Ex: 信義威秀羅根");
     	
     	return buffer.toString();
 	}
