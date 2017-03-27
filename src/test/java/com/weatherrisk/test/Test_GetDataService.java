@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.weatherrisk.api.Application;
 import com.weatherrisk.api.cnst.CurrencyCnst;
+import com.weatherrisk.api.service.AmbassadorMovieService;
 import com.weatherrisk.api.service.CurrencyService;
 import com.weatherrisk.api.service.CwbService;
 import com.weatherrisk.api.service.MiramarMovieService;
@@ -60,6 +61,9 @@ public class Test_GetDataService {
 	
 	@Autowired
 	private WovieMovieService wovieMovieService;
+	
+	@Autowired
+	private AmbassadorMovieService ambassdorMovieSerice;
 	
 	@Test
 	public void test_1_CwbService_getWeatherLittleHelperByCity() {
@@ -193,6 +197,23 @@ public class Test_GetDataService {
 	@Test
 	public void test_20_WovieMovieService_queryByTheaterNameAndFilmNameLike() {
 		String queryResult = wovieMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("天母華威", "羅根");
+		System.out.println(queryResult);
+	}
+	
+	@Test
+	public void test_21_AmbassadorMovieService_refresh() {
+		System.out.println("Check the system init log");
+	}
+	
+	@Test
+	public void test_22_AmbassadorMovieService_queryNowPlayingByTheaterName() {
+		String queryResult = ambassdorMovieSerice.queryNowPlayingByTheaterName("晶冠國賓");
+		System.out.println(queryResult);
+	}
+	
+	@Test
+	public void test_23_AmbassadorMovieService_queryByTheaterNameAndFilmNameLike() {
+		String queryResult = ambassdorMovieSerice.queryMovieTimesByTheaterNameAndFilmNameLike("晶冠國賓", "羅根");
 		System.out.println(queryResult);
 	}
 }

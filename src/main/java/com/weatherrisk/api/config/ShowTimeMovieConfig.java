@@ -11,7 +11,7 @@ public class ShowTimeMovieConfig {
 	/**
 	 * 場次基本網址
 	 * 
-	 * 最後可加: '?date=2017-03-16'
+	 * 最後可加: ?date=2017-03-16
 	 */
 	private final String MOVIE_TIMES_URL = "https://api.showtimes.com.tw/1/events/listForCorporation/{0}";
 	/**

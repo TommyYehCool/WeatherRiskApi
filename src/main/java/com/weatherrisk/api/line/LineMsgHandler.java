@@ -26,12 +26,14 @@ import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
+import com.weatherrisk.api.cnst.AmbassadorTheater;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.cnst.MiramarTheater;
 import com.weatherrisk.api.cnst.ShowTimeTheater;
 import com.weatherrisk.api.cnst.UBikeCity;
 import com.weatherrisk.api.cnst.ViewshowTheater;
 import com.weatherrisk.api.cnst.WovieTheater;
+import com.weatherrisk.api.service.AmbassadorMovieService;
 import com.weatherrisk.api.service.CurrencyService;
 import com.weatherrisk.api.service.RegisterService;
 import com.weatherrisk.api.service.CwbService;
@@ -43,6 +45,7 @@ import com.weatherrisk.api.service.TaipeiOpenDataService;
 import com.weatherrisk.api.service.ViewshowMovieService;
 import com.weatherrisk.api.service.WovieMovieService;
 import com.weatherrisk.api.vo.PriceReached;
+import com.weatherrisk.api.vo.json.ambassador.AmbassadorAllMoviesInfo;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
 import lombok.NonNull;
@@ -99,6 +102,9 @@ public class LineMsgHandler {
 	
 	@Autowired
 	private WovieMovieService wovieMovieService;
+	
+	@Autowired
+	private AmbassadorMovieService ambassadorMovieService;
 	
 	private final String[] helpTemplateMsgs
 		= new String[] {
@@ -157,6 +163,7 @@ public class LineMsgHandler {
     	buffer.append("<支援秀泰影城: 欣欣秀泰, 今日秀泰, 板橋秀泰, 東南亞秀泰>").append("\n");
     	buffer.append("<支援美麗華影城: 大直美麗華>").append("\n");
     	buffer.append("<支援華威影城: 天母華威>").append("\n");
+    	buffer.append("<支援國賓影城: 晶冠國賓>").append("\n");
     	buffer.append("請系統更新電影時刻表 => Ex: 更新電影時刻表").append("\n");
     	buffer.append("\n");
     	buffer.append("查詢某一家影城上映電影 => 格式: 戲院名稱 + 上映, Ex: 信義威秀上映").append("\n");
@@ -390,12 +397,30 @@ public class LineMsgHandler {
     			queryResult = wovieMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theater.getChineseName(), filmName);
     		}
     	}
+    	// 國賓電影
+    	else if (AmbassadorTheater.isSupportedTheater(inputMsg)) {
+    		AmbassadorTheater theater = AmbassadorTheater.convertByInputMsg(inputMsg);
+    		
+    		String command = inputMsg.substring(theater.getChineseName().length(), inputMsg.length()).trim();
+    		
+    		if (StringUtils.isEmpty(command)) {
+    			queryResult = "請輸入欲查詢電影名稱或'上映'";
+    		}
+    		else if (command.equals("上映")) {
+    			queryResult = ambassadorMovieService.queryNowPlayingByTheaterName(theater.getChineseName());
+    		}
+    		else {
+    			String filmName = command;
+    			queryResult = ambassadorMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theater.getChineseName(), filmName);
+    		} 
+    	}
     	// 更新電影時刻
     	else if (inputMsg.equals("更新電影時刻表")) {
     		viewshowMovieService.refreshMovieTimes();
     		showTimeMovieService.refreshMovieTimes();
     		miramarMovieService.refreshMovieTimes();
     		wovieMovieService.refreshMovieTimes();
+    		ambassadorMovieService.refreshMovieTimes();
     		queryResult = "更新成功";
     	}
     	

@@ -9,6 +9,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 import com.weatherrisk.api.concurrent.CountDownLatchHandler;
+import com.weatherrisk.api.service.AmbassadorMovieService;
 import com.weatherrisk.api.service.MiramarMovieService;
 import com.weatherrisk.api.service.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.ShowTimeMovieService;
@@ -44,6 +45,9 @@ public class Application extends SpringBootServletInitializer {
 	
 	@Autowired
 	private WovieMovieService wovieMovieService;
+	
+	@Autowired
+	private AmbassadorMovieService ambassadorMovieService;
 	
 	private CountDownLatchHandler countDownHandler = CountDownLatchHandler.getInstance();
 	
@@ -92,6 +96,13 @@ public class Application extends SpringBootServletInitializer {
 			wovieMovieService.refreshMovieTimes();
 			
 			countDownHandler.getLatchForWovieMovie().countDown();
+		}).start();
+		
+		countDownHandler.setLatchForAmbassadorMovie(1);
+		new Thread(() -> {
+			ambassadorMovieService.refreshMovieTimes();
+			
+			countDownHandler.getLatchForAmbassadorMovie().countDown();
 		}).start();
 	}
 }
