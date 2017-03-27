@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.weatherrisk.api.model.ShowTimeMovie;
+import com.weatherrisk.api.model.movie.ShowTimeMovie;
 import com.weatherrisk.api.vo.json.deserializer.ShowTimeAllMovieTimesInfoDeserializer;
 
 import lombok.Data;

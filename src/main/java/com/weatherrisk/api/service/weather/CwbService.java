@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.weatherrisk.api.config.CwbConfig;
+import com.weatherrisk.api.config.weather.CwbConfig;
 import com.weatherrisk.api.vo.xml.cwb.CwbOpenData;
 import com.weatherrisk.api.vo.xml.cwb.Dataset;
 import com.weatherrisk.api.vo.xml.cwb.Location;

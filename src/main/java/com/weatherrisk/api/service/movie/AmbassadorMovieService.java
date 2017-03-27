@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherrisk.api.cnst.AmbassadorTheater;
 import com.weatherrisk.api.concurrent.CountDownLatchHandler;
-import com.weatherrisk.api.config.AmbassadorMovieConfig;
-import com.weatherrisk.api.model.AmbassadorMovie;
-import com.weatherrisk.api.model.AmbassadorMovieRepository;
-import com.weatherrisk.api.model.MovieDateTime;
+import com.weatherrisk.api.config.movie.AmbassadorMovieConfig;
+import com.weatherrisk.api.model.movie.AmbassadorMovie;
+import com.weatherrisk.api.model.movie.AmbassadorMovieRepository;
+import com.weatherrisk.api.model.movie.MovieDateTime;
 import com.weatherrisk.api.util.HttpUtil;
 import com.weatherrisk.api.vo.json.ambassador.AmbassadorAllMoviesInfo;
 

@@ -18,10 +18,10 @@ import org.springframework.stereotype.Service;
 
 import com.weatherrisk.api.cnst.MiramarTheater;
 import com.weatherrisk.api.concurrent.CountDownLatchHandler;
-import com.weatherrisk.api.config.MiramarMovieConfig;
-import com.weatherrisk.api.model.MiramarMovie;
-import com.weatherrisk.api.model.MiramarMovieRepository;
-import com.weatherrisk.api.model.MovieDateTime;
+import com.weatherrisk.api.config.movie.MiramarMovieConfig;
+import com.weatherrisk.api.model.movie.MiramarMovie;
+import com.weatherrisk.api.model.movie.MiramarMovieRepository;
+import com.weatherrisk.api.model.movie.MovieDateTime;
 import com.weatherrisk.api.util.HttpUtil;
 
 @Service

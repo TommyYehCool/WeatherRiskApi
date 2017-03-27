@@ -1,4 +1,4 @@
-package com.weatherrisk.api.config;
+package com.weatherrisk.api.config.schedule;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;

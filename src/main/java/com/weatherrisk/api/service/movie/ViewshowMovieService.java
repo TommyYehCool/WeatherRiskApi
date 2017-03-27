@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 
 import com.weatherrisk.api.cnst.ViewshowTheater;
 import com.weatherrisk.api.concurrent.CountDownLatchHandler;
-import com.weatherrisk.api.config.ViewshowMovieConfig;
-import com.weatherrisk.api.model.MovieDateTime;
-import com.weatherrisk.api.model.ViewShowMovie;
-import com.weatherrisk.api.model.ViewShowMovieRepository;
+import com.weatherrisk.api.config.movie.ViewshowMovieConfig;
+import com.weatherrisk.api.model.movie.MovieDateTime;
+import com.weatherrisk.api.model.movie.ViewShowMovie;
+import com.weatherrisk.api.model.movie.ViewShowMovieRepository;
 import com.weatherrisk.api.util.HttpUtil;
 
 @Service

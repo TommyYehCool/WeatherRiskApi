@@ -13,11 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.weatherrisk.api.Application;
-import com.weatherrisk.api.model.ParkingLotAvailable;
-import com.weatherrisk.api.model.ParkingLotAvailableRepository;
-import com.weatherrisk.api.model.ParkingLotInfo;
-import com.weatherrisk.api.model.ParkingLotInfoRepository;
-import com.weatherrisk.api.service.parking.ParkingLotService;
+import com.weatherrisk.api.model.parkinglot.ParkingLotAvailable;
+import com.weatherrisk.api.model.parkinglot.ParkingLotAvailableRepository;
+import com.weatherrisk.api.model.parkinglot.ParkingLotInfo;
+import com.weatherrisk.api.model.parkinglot.ParkingLotInfoRepository;
+import com.weatherrisk.api.service.parkinglot.ParkingLotService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(

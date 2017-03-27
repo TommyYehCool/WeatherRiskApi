@@ -15,8 +15,8 @@ import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.weatherrisk.api.model.MovieDateTime;
-import com.weatherrisk.api.model.ShowTimeMovie;
+import com.weatherrisk.api.model.movie.MovieDateTime;
+import com.weatherrisk.api.model.movie.ShowTimeMovie;
 import com.weatherrisk.api.vo.json.showtime.ShowTimeAllMoviesInfo;
 
 public class ShowTimeAllMovieTimesInfoDeserializer extends JsonDeserializer<ShowTimeAllMoviesInfo> {

@@ -1,4 +1,4 @@
-package com.weatherrisk.api.model;
+package com.weatherrisk.api.model.parkinglot;
 
 import java.util.List;
 

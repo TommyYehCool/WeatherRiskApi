@@ -1,4 +1,4 @@
-package com.weatherrisk.api.model;
+package com.weatherrisk.api.model.movie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "show_time_movies")
-public class ShowTimeMovie {
-
+@Document(collection = "view_show_movies")
+public class ViewShowMovie {
+	
 	private String theaterName;
 	private String filmName;
 	private List<MovieDateTime> movieDateTimes = new ArrayList<>();

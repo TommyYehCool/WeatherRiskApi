@@ -23,7 +23,7 @@ import com.weatherrisk.api.service.movie.ViewshowMovieService;
 import com.weatherrisk.api.service.movie.WovieMovieService;
 import com.weatherrisk.api.service.opendata.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.opendata.TaipeiOpenDataService;
-import com.weatherrisk.api.service.parking.ParkingLotService;
+import com.weatherrisk.api.service.parkinglot.ParkingLotService;
 import com.weatherrisk.api.service.weather.CwbService;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 

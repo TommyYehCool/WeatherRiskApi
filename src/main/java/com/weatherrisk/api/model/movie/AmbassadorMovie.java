@@ -1,4 +1,4 @@
-package com.weatherrisk.api.model;
+package com.weatherrisk.api.model.movie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "miramar_movies")
-public class MiramarMovie {
+@Document(collection = "ambassador_movies")
+public class AmbassadorMovie {
 
 	private String theaterName;
 	private String filmName;

@@ -1,4 +1,4 @@
-package com.weatherrisk.api.config;
+package com.weatherrisk.api.config.weather;
 
 import java.text.MessageFormat;
 import java.util.HashMap;

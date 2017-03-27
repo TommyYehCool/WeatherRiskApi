@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 
 import com.weatherrisk.api.cnst.WovieTheater;
 import com.weatherrisk.api.concurrent.CountDownLatchHandler;
-import com.weatherrisk.api.config.WovieMovieConfig;
-import com.weatherrisk.api.model.MovieDateTime;
-import com.weatherrisk.api.model.WovieMovie;
-import com.weatherrisk.api.model.WovieMovieRepository;
+import com.weatherrisk.api.config.movie.WovieMovieConfig;
+import com.weatherrisk.api.model.movie.MovieDateTime;
+import com.weatherrisk.api.model.movie.WovieMovie;
+import com.weatherrisk.api.model.movie.WovieMovieRepository;
 import com.weatherrisk.api.util.HttpUtil;
 
 @Service

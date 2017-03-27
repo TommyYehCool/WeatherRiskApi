@@ -18,10 +18,10 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherrisk.api.cnst.ShowTimeTheater;
 import com.weatherrisk.api.concurrent.CountDownLatchHandler;
-import com.weatherrisk.api.config.ShowTimeMovieConfig;
-import com.weatherrisk.api.model.MovieDateTime;
-import com.weatherrisk.api.model.ShowTimeMovie;
-import com.weatherrisk.api.model.ShowTimeMovieRepository;
+import com.weatherrisk.api.config.movie.ShowTimeMovieConfig;
+import com.weatherrisk.api.model.movie.MovieDateTime;
+import com.weatherrisk.api.model.movie.ShowTimeMovie;
+import com.weatherrisk.api.model.movie.ShowTimeMovieRepository;
 import com.weatherrisk.api.util.HttpUtil;
 import com.weatherrisk.api.vo.json.showtime.ShowTimeAllMoviesInfo;
 

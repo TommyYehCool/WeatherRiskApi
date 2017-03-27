@@ -9,7 +9,7 @@ import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.weatherrisk.api.model.ParkingLotAvailable;
+import com.weatherrisk.api.model.parkinglot.ParkingLotAvailable;
 import com.weatherrisk.api.vo.json.tpeopendata.parkinglot.ParkingLotAvailableDetail;
 
 public class TaipeiParkingLotAvailableDetailDeserializer extends JsonDeserializer<ParkingLotAvailableDetail> {

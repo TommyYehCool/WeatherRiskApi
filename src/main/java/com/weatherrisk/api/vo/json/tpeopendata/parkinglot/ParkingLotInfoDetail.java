@@ -3,7 +3,7 @@ package com.weatherrisk.api.vo.json.tpeopendata.parkinglot;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.weatherrisk.api.model.ParkingLotInfo;
+import com.weatherrisk.api.model.parkinglot.ParkingLotInfo;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

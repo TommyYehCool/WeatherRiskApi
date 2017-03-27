@@ -1,4 +1,4 @@
-package com.weatherrisk.api.service.parking;
+package com.weatherrisk.api.service.parkinglot;
 
 import java.util.List;
 import java.util.Map;
@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.weatherrisk.api.concurrent.CountDownLatchHandler;
-import com.weatherrisk.api.model.ParkingLotAvailable;
-import com.weatherrisk.api.model.ParkingLotAvailableRepository;
-import com.weatherrisk.api.model.ParkingLotInfo;
-import com.weatherrisk.api.model.ParkingLotInfoRepository;
+import com.weatherrisk.api.model.parkinglot.ParkingLotAvailable;
+import com.weatherrisk.api.model.parkinglot.ParkingLotAvailableRepository;
+import com.weatherrisk.api.model.parkinglot.ParkingLotInfo;
+import com.weatherrisk.api.model.parkinglot.ParkingLotInfoRepository;
 import com.weatherrisk.api.service.opendata.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.opendata.TaipeiOpenDataService;
 

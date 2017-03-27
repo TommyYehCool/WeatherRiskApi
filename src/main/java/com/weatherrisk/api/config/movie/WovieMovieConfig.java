@@ -1,4 +1,4 @@
-package com.weatherrisk.api.config;
+package com.weatherrisk.api.config.movie;
 
 import org.springframework.context.annotation.Configuration;
 
