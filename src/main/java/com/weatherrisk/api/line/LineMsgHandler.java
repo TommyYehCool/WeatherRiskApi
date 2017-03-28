@@ -446,6 +446,17 @@ public class LineMsgHandler {
     	else if (inputMsg.equals("發票開獎")) {
     		queryResult = receiptRewardService.getRecentlyRewards();
     	}
+    	// 其他判斷
+    	else {
+    		// 若可轉換為數字
+    		try {
+    			Integer.parseInt(inputMsg);
+    			
+    			// 進行發票對獎
+    			queryResult = receiptRewardService.checkIsBingo(inputMsg);
+    		}
+    		catch (Exception e) {}
+    	}
     	
     	// ----- 回傳查詢結果 -----
     	if (queryResult != null) {

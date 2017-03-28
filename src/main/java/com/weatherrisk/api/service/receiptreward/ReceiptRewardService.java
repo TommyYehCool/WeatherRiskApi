@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.exfantasy.utils.tools.receipt_lottery.Bingo;
 import com.exfantasy.utils.tools.receipt_lottery.ReceiptLotteryNoUtil;
 import com.exfantasy.utils.tools.receipt_lottery.Reward;
 import com.weatherrisk.api.concurrent.CountDownLatchHandler;
@@ -70,6 +71,30 @@ public class ReceiptRewardService {
 				
 				buffer.append(reward.getRewardType().getKeyword()).append(": ").append(reward.getNo()).append("\n");
 			}
+		}
+		return buffer.toString();
+	}
+	
+	public String checkIsBingo(String lotteryNo) {
+		List<ReceiptReward> receiptRewards = receiptRewardRepo.findAll();
+
+		List<Reward> rewards = new ArrayList<>();
+		for (ReceiptReward receiptReward : receiptRewards) {
+			Reward reward = new Reward();
+			reward.setSection(receiptReward.getSection());
+			reward.setRewardType(receiptReward.getRewardType());
+			reward.setNo(receiptReward.getNo());
+		}
+		
+		StringBuilder buffer = new StringBuilder();
+		
+		Bingo bingo = ReceiptLotteryNoUtil.checkIsBingo(lotteryNo, rewards);
+		if (!bingo.isBingo()) {
+			buffer.append("你輸入的號碼未中獎");
+		}
+		else {
+			buffer.append("請參考號碼: ").append(bingo.getLotteryNo()).append("\n");
+			buffer.append("中獎金額: ").append(bingo.getPrize());
 		}
 		return buffer.toString();
 	}
