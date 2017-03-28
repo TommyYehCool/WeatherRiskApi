@@ -94,13 +94,13 @@ public class ReceiptRewardService {
 
 			case GOT:
 				DecimalFormat decimalFormat = new DecimalFormat("###,###");
-				buffer.append("請參考").append(bingo.getSectionStr()).append("號碼: ").append(bingo.getRewardNo()).append("\n");
+				buffer.append("請參考").append(bingo.getSectionStr()).append(", 號碼: ").append(bingo.getRewardNo()).append("\n");
 				buffer.append("中獎金額: ").append(decimalFormat.format(bingo.getPrize()));
 				break;
 
 			case MAYBE:
 				buffer.append("可能中獎\n");
-				buffer.append("請參考").append(bingo.getSectionStr()).append("號碼: ").append(bingo.getRewardNo());
+				buffer.append("請參考").append(bingo.getSectionStr()).append(", 號碼: ").append(bingo.getRewardNo());
 				break;
 		}
 		return buffer.toString();
@@ -158,26 +158,26 @@ public class ReceiptRewardService {
 							case 7:
 								bingo.setBingoStatus(BingoStatus.GOT);
 								bingo.setPrize(40000L);
-								break;
+								return bingo;
 							case 6:
 								bingo.setBingoStatus(BingoStatus.GOT);
 								bingo.setPrize(10000L);
-								break;
+								return bingo;
 							case 5:
 								bingo.setBingoStatus(BingoStatus.GOT);
 								bingo.setPrize(4000L);
-								break;
+								return bingo;
 							case 4:
 								bingo.setBingoStatus(BingoStatus.GOT);
 								bingo.setPrize(1000L);
-								break;
+								return bingo;
 							case 3:
 								bingo.setBingoStatus(BingoStatus.GOT);
 								bingo.setPrize(200L);
-								break;
+								return bingo;
 							default:
 								bingo.setBingoStatus(BingoStatus.NOT_GOT);
-								break;
+								return bingo;
 						}
 					}
 					break;
