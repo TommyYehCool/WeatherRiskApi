@@ -120,13 +120,9 @@ public class ReceiptRewardService {
 						bingo.setPrize(10000000L);
 						return bingo;
 					}
-					else {
-						String last3OfLotteryNo = lotteryNo.substring(lotteryNo.length() - 3, lotteryNo.length());
-						String last3OfRewardNo = number.substring(number.length() - 3, number.length());
-						if (last3OfLotteryNo.equals(last3OfRewardNo)) {
-							bingo.setBingoStatus(BingoStatus.MAYBE);
-							return bingo;
-						}
+					else if (number.endsWith(lotteryNo)) {
+						bingo.setBingoStatus(BingoStatus.MAYBE);
+						return bingo;
 					}
 					break;
 
@@ -138,13 +134,9 @@ public class ReceiptRewardService {
 						bingo.setPrize(2000000L);
 						return bingo;
 					}
-					else {
-						String last3OfLotteryNo = lotteryNo.substring(lotteryNo.length() - 3, lotteryNo.length());
-						String last3OfRewardNo = number.substring(number.length() - 3, number.length());
-						if (last3OfLotteryNo.equals(last3OfRewardNo)) {
-							bingo.setBingoStatus(BingoStatus.MAYBE);
-							return bingo;
-						}
+					else if (number.endsWith(lotteryNo)) {
+						bingo.setBingoStatus(BingoStatus.MAYBE);
+						return bingo;
 					}
 					break;
 
@@ -156,13 +148,32 @@ public class ReceiptRewardService {
 						bingo.setPrize(200000L);
 						return bingo;
 					}
-					else {
-						String last3OfLotteryNo = lotteryNo.substring(lotteryNo.length() - 3, lotteryNo.length());
-						String last3OfRewardNo = number.substring(number.length() - 3, number.length());
-						if (last3OfLotteryNo.equals(last3OfRewardNo)) {
-							bingo.setBingoStatus(BingoStatus.GOT);
-							bingo.setPrize(200L);
-							return bingo;
+					else if (number.endsWith(lotteryNo)) {
+						int length = lotteryNo.length();
+						switch (length) {
+							case 7:
+								bingo.setBingoStatus(BingoStatus.GOT);
+								bingo.setPrize(40000L);
+								break;
+							case 6:
+								bingo.setBingoStatus(BingoStatus.GOT);
+								bingo.setPrize(10000L);
+								break;
+							case 5:
+								bingo.setBingoStatus(BingoStatus.GOT);
+								bingo.setPrize(4000L);
+								break;
+							case 4:
+								bingo.setBingoStatus(BingoStatus.GOT);
+								bingo.setPrize(1000L);
+								break;
+							case 3:
+								bingo.setBingoStatus(BingoStatus.GOT);
+								bingo.setPrize(200L);
+								break;
+							default:
+								bingo.setBingoStatus(BingoStatus.NOT_GOT);
+								break;
 						}
 					}
 					break;
