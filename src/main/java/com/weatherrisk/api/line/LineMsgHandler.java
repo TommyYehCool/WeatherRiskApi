@@ -183,6 +183,7 @@ public class LineMsgHandler {
     	buffer.append("[發票]").append("\n");
     	buffer.append("更新發票開獎號碼 => Ex: 更新發票").append("\n");
     	buffer.append("查詢最近兩期發票開獎號碼 => Ex: 發票開獎").append("\n");
+    	buffer.append("發票對獎功能, 直接輸入號碼即可 => Ex: 168").append("\n");
     	
     	return buffer.toString();
 	}
