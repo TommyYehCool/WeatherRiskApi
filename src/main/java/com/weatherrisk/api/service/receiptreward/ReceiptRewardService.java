@@ -11,12 +11,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.exfantasy.utils.tools.receipt_lottery.Bingo;
 import com.exfantasy.utils.tools.receipt_lottery.ReceiptLotteryNoUtil;
 import com.exfantasy.utils.tools.receipt_lottery.Reward;
+import com.exfantasy.utils.tools.receipt_lottery.RewardType;
 import com.weatherrisk.api.concurrent.CountDownLatchHandler;
 import com.weatherrisk.api.model.receiptreward.ReceiptReward;
 import com.weatherrisk.api.model.receiptreward.ReceiptRewardRepository;
+
+import lombok.Data;
 
 @Service
 public class ReceiptRewardService {
@@ -81,27 +83,113 @@ public class ReceiptRewardService {
 		
 		List<ReceiptReward> receiptRewards = receiptRewardRepo.findAll();
 
-		List<Reward> rewards = new ArrayList<>();
-		for (ReceiptReward receiptReward : receiptRewards) {
-			Reward reward = new Reward();
-			reward.setSection(receiptReward.getSection());
-			reward.setRewardType(receiptReward.getRewardType());
-			reward.setNo(receiptReward.getNo());
-			rewards.add(reward);
-		}
-		
 		StringBuilder buffer = new StringBuilder();
 		
-		Bingo bingo = ReceiptLotteryNoUtil.checkIsBingo(lotteryNo, rewards);
-		if (!bingo.isBingo()) {
-			buffer.append("你輸入的號碼未中獎");
-		}
-		else {
-			DecimalFormat decimalFormat = new DecimalFormat("###,###");
-			buffer.append("請參考號碼: ").append(bingo.getLotteryNo()).append("\n");
-			buffer.append("中獎金額: ").append(decimalFormat.format(bingo.getPrize()));
+		BingoResult bingo = checkIsBingo(lotteryNo, receiptRewards);
+		
+		switch (bingo.getBingoStatus()) {
+			case NOT_GOT:
+				buffer.append("你輸入的號碼未中獎");
+				break;
+
+			case GOT:
+				DecimalFormat decimalFormat = new DecimalFormat("###,###");
+				buffer.append("請參考號碼: ").append(bingo.getRewardNo()).append("\n");
+				buffer.append("中獎金額: ").append(decimalFormat.format(bingo.getPrize()));
+				break;
+
+			case MAYBE:
+				buffer.append("可能中獎, 請參考號碼: ").append(bingo.getRewardNo());
+				break;
 		}
 		return buffer.toString();
+	}
+	
+	private BingoResult checkIsBingo(String lotteryNo, List<ReceiptReward> receiptRewards) {
+		BingoResult bingo = new BingoResult();
+		for (ReceiptReward receiptReward : receiptRewards) {
+			RewardType rewardType = receiptReward.getRewardType();
+			String number = receiptReward.getNo();
+			
+			switch (rewardType) {
+				// 特別獎
+				case FIRST_REWARD:
+					// 號碼完全相同
+					if (lotteryNo.equals(number)) {
+						bingo.setBingoStatus(BingoStatus.GOT);
+						bingo.setPrize(10000000L);
+						return bingo;
+					}
+					else {
+						String last3OfLotteryNo = lotteryNo.substring(lotteryNo.length() - 3, lotteryNo.length());
+						String last3OfRewardNo = number.substring(number.length() - 3, number.length());
+						if (last3OfLotteryNo.equals(last3OfRewardNo)) {
+							bingo.setBingoStatus(BingoStatus.MAYBE);
+							return bingo;
+						}
+					}
+					break;
+
+				// 特獎
+				case SEONCD_REWARD:
+					// 號碼完全相同
+					if (lotteryNo.equals(number)) {
+						bingo.setBingoStatus(BingoStatus.GOT);
+						bingo.setPrize(2000000L);
+						return bingo;
+					}
+					else {
+						String last3OfLotteryNo = lotteryNo.substring(lotteryNo.length() - 3, lotteryNo.length());
+						String last3OfRewardNo = number.substring(number.length() - 3, number.length());
+						if (last3OfLotteryNo.equals(last3OfRewardNo)) {
+							bingo.setBingoStatus(BingoStatus.MAYBE);
+							return bingo;
+						}
+					}
+					break;
+
+				// 頭獎
+				case THIRD_REWARD:
+					// 號碼完全相同
+					if (lotteryNo.equals(number)) {
+						bingo.setBingoStatus(BingoStatus.GOT);
+						bingo.setPrize(200000L);
+						return bingo;
+					}
+					else {
+						String last3OfLotteryNo = lotteryNo.substring(lotteryNo.length() - 3, lotteryNo.length());
+						String last3OfRewardNo = number.substring(number.length() - 3, number.length());
+						if (last3OfLotteryNo.equals(last3OfRewardNo)) {
+							bingo.setBingoStatus(BingoStatus.GOT);
+							bingo.setPrize(200L);
+							return bingo;
+						}
+					}
+					break;
+
+				// 增開六獎
+				case SPECIAL_SIX:
+					String last3OfLotteryNo = lotteryNo.substring(lotteryNo.length() - 3, lotteryNo.length());
+					if (last3OfLotteryNo.equals(number)) {
+						bingo.setBingoStatus(BingoStatus.GOT);
+						bingo.setPrize(200L);
+						return bingo;
+					}
+					break;
+			}
+		}
+		return bingo;
+	}
+	
+	@Data
+	private class BingoResult {
+		private String rewardNo;
+		private BingoStatus bingoStatus = BingoStatus.NOT_GOT;
+		private Long prize;
+	}
+	
+	private enum BingoStatus { 
+		NOT_GOT, GOT, MAYBE;
 	}
 	
 	private void waitForCreateDatasThreadComplete() {
