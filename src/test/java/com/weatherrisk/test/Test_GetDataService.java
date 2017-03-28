@@ -227,4 +227,9 @@ public class Test_GetDataService {
 		System.out.println(queryResult);
 	}
 
+	@Test
+	public void test_25_ReceiptRewardService_checkIsBingo() {
+		String queryResult = receiptRewardService.checkIsBingo("478");
+		System.out.println(queryResult);
+	}
 }

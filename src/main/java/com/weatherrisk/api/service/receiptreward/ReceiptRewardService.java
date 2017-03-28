@@ -1,5 +1,6 @@
 package com.weatherrisk.api.service.receiptreward;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -76,6 +77,8 @@ public class ReceiptRewardService {
 	}
 	
 	public String checkIsBingo(String lotteryNo) {
+		waitForCreateDatasThreadComplete();
+		
 		List<ReceiptReward> receiptRewards = receiptRewardRepo.findAll();
 
 		List<Reward> rewards = new ArrayList<>();
@@ -84,6 +87,7 @@ public class ReceiptRewardService {
 			reward.setSection(receiptReward.getSection());
 			reward.setRewardType(receiptReward.getRewardType());
 			reward.setNo(receiptReward.getNo());
+			rewards.add(reward);
 		}
 		
 		StringBuilder buffer = new StringBuilder();
@@ -93,8 +97,9 @@ public class ReceiptRewardService {
 			buffer.append("你輸入的號碼未中獎");
 		}
 		else {
+			DecimalFormat decimalFormat = new DecimalFormat("###,###");
 			buffer.append("請參考號碼: ").append(bingo.getLotteryNo()).append("\n");
-			buffer.append("中獎金額: ").append(bingo.getPrize());
+			buffer.append("中獎金額: ").append(decimalFormat.format(bingo.getPrize()));
 		}
 		return buffer.toString();
 	}
