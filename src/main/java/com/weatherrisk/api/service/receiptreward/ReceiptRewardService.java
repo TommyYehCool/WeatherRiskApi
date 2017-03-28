@@ -94,12 +94,13 @@ public class ReceiptRewardService {
 
 			case GOT:
 				DecimalFormat decimalFormat = new DecimalFormat("###,###");
-				buffer.append("請參考號碼: ").append(bingo.getRewardNo()).append("\n");
+				buffer.append("請參考").append(bingo.getSectionStr()).append("號碼: ").append(bingo.getRewardNo()).append("\n");
 				buffer.append("中獎金額: ").append(decimalFormat.format(bingo.getPrize()));
 				break;
 
 			case MAYBE:
-				buffer.append("可能中獎, 請參考號碼: ").append(bingo.getRewardNo());
+				buffer.append("可能中獎\n");
+				buffer.append("請參考").append(bingo.getSectionStr()).append("號碼: ").append(bingo.getRewardNo());
 				break;
 		}
 		return buffer.toString();
@@ -108,19 +109,22 @@ public class ReceiptRewardService {
 	private BingoResult checkIsBingo(String lotteryNo, List<ReceiptReward> receiptRewards) {
 		BingoResult bingo = new BingoResult();
 		for (ReceiptReward receiptReward : receiptRewards) {
-			RewardType rewardType = receiptReward.getRewardType();
-			String number = receiptReward.getNo();
+			bingo.setSection(receiptReward.getSection());
+
+			String rewardNo = receiptReward.getNo();
+			bingo.setRewardNo(rewardNo);
 			
+			RewardType rewardType = receiptReward.getRewardType();
 			switch (rewardType) {
 				// 特別獎
 				case FIRST_REWARD:
 					// 號碼完全相同
-					if (lotteryNo.equals(number)) {
+					if (lotteryNo.equals(rewardNo)) {
 						bingo.setBingoStatus(BingoStatus.GOT);
 						bingo.setPrize(10000000L);
 						return bingo;
 					}
-					else if (number.endsWith(lotteryNo)) {
+					else if (rewardNo.endsWith(lotteryNo)) {
 						bingo.setBingoStatus(BingoStatus.MAYBE);
 						return bingo;
 					}
@@ -129,12 +133,12 @@ public class ReceiptRewardService {
 				// 特獎
 				case SEONCD_REWARD:
 					// 號碼完全相同
-					if (lotteryNo.equals(number)) {
+					if (lotteryNo.equals(rewardNo)) {
 						bingo.setBingoStatus(BingoStatus.GOT);
 						bingo.setPrize(2000000L);
 						return bingo;
 					}
-					else if (number.endsWith(lotteryNo)) {
+					else if (rewardNo.endsWith(lotteryNo)) {
 						bingo.setBingoStatus(BingoStatus.MAYBE);
 						return bingo;
 					}
@@ -143,12 +147,12 @@ public class ReceiptRewardService {
 				// 頭獎
 				case THIRD_REWARD:
 					// 號碼完全相同
-					if (lotteryNo.equals(number)) {
+					if (lotteryNo.equals(rewardNo)) {
 						bingo.setBingoStatus(BingoStatus.GOT);
 						bingo.setPrize(200000L);
 						return bingo;
 					}
-					else if (number.endsWith(lotteryNo)) {
+					else if (rewardNo.endsWith(lotteryNo)) {
 						int length = lotteryNo.length();
 						switch (length) {
 							case 7:
@@ -181,7 +185,7 @@ public class ReceiptRewardService {
 				// 增開六獎
 				case SPECIAL_SIX:
 					String last3OfLotteryNo = lotteryNo.substring(lotteryNo.length() - 3, lotteryNo.length());
-					if (last3OfLotteryNo.equals(number)) {
+					if (last3OfLotteryNo.equals(rewardNo)) {
 						bingo.setBingoStatus(BingoStatus.GOT);
 						bingo.setPrize(200L);
 						return bingo;
@@ -194,9 +198,21 @@ public class ReceiptRewardService {
 	
 	@Data
 	private class BingoResult {
+		private String section;
 		private String rewardNo;
 		private BingoStatus bingoStatus = BingoStatus.NOT_GOT;
 		private Long prize;
+		
+		public String getSectionStr() {
+			String[] yearMonths = section.split("_");
+			String year = yearMonths[0];
+			String months = yearMonths[1];
+			
+			StringBuilder buffer = new StringBuilder();
+			buffer.append(year).append("年").append(months).append("月");
+			
+			return buffer.toString();
+		}
 	}
 	
 	private enum BingoStatus { 
