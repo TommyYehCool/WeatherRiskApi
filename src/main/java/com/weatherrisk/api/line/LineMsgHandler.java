@@ -43,6 +43,7 @@ import com.weatherrisk.api.service.movie.WovieMovieService;
 import com.weatherrisk.api.service.opendata.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.opendata.TaipeiOpenDataService;
 import com.weatherrisk.api.service.parkinglot.ParkingLotService;
+import com.weatherrisk.api.service.receiptreward.ReceiptRewardService;
 import com.weatherrisk.api.service.weather.CwbService;
 import com.weatherrisk.api.vo.PriceReached;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
@@ -104,6 +105,9 @@ public class LineMsgHandler {
 	
 	@Autowired
 	private AmbassadorMovieService ambassadorMovieService;
+	
+	@Autowired
+	private ReceiptRewardService receiptRewardService;
 	
 	private final String[] helpTemplateMsgs
 		= new String[] {
@@ -174,7 +178,11 @@ public class LineMsgHandler {
     	buffer.append("Ex: 信義威秀上映").append("\n");
     	buffer.append("\n");
     	buffer.append("查詢某一部電影今日時刻表 => 格式: 戲院名稱 + 關鍵字").append("\n");
-    	buffer.append("Ex: 信義威秀羅根");
+    	buffer.append("Ex: 信義威秀羅根").append("\n");
+    	buffer.append("-----------------------").append("\n");
+    	buffer.append("[發票]").append("\n");
+    	buffer.append("更新發票開獎號碼 => Ex: 更新發票").append("\n");
+    	buffer.append("查詢最近兩期發票開獎號碼 => Ex: 發票開獎").append("\n");
     	
     	return buffer.toString();
 	}
@@ -428,6 +436,15 @@ public class LineMsgHandler {
     		wovieMovieService.refreshMovieTimes();
     		ambassadorMovieService.refreshMovieTimes();
     		queryResult = "更新成功";
+    	}
+    	// 更新發票
+    	else if (inputMsg.equals("更新發票")) {
+    		receiptRewardService.getNewestReceiptRewards();
+    		queryResult = "更新成功";
+    	}
+    	// 發票開獎
+    	else if (inputMsg.equals("發票開獎")) {
+    		queryResult = receiptRewardService.getRecentlyRewards();
     	}
     	
     	// ----- 回傳查詢結果 -----

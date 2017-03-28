@@ -24,6 +24,7 @@ import com.weatherrisk.api.service.movie.WovieMovieService;
 import com.weatherrisk.api.service.opendata.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.opendata.TaipeiOpenDataService;
 import com.weatherrisk.api.service.parkinglot.ParkingLotService;
+import com.weatherrisk.api.service.receiptreward.ReceiptRewardService;
 import com.weatherrisk.api.service.weather.CwbService;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
@@ -64,6 +65,9 @@ public class Test_GetDataService {
 	
 	@Autowired
 	private AmbassadorMovieService ambassdorMovieSerice;
+	
+	@Autowired
+	private ReceiptRewardService receiptRewardService;
 	
 	@Test
 	public void test_1_CwbService_getWeatherLittleHelperByCity() {
@@ -216,4 +220,11 @@ public class Test_GetDataService {
 		String queryResult = ambassdorMovieSerice.queryMovieTimesByTheaterNameAndFilmNameLike("晶冠國賓", "羅根");
 		System.out.println(queryResult);
 	}
+	
+	@Test
+	public void test_24_ReceiptRewardService_getRecentlyRewards() {
+		String queryResult = receiptRewardService.getRecentlyRewards();
+		System.out.println(queryResult);
+	}
+
 }

@@ -17,6 +17,8 @@ public class CountDownLatchHandler {
 	
 	private CountDownLatch latchForAmbassadorMovie;
 	
+	private CountDownLatch latchForReceiptReward;
+	
 	public static CountDownLatchHandler getInstance() {
 		return instance;
 	}
@@ -44,6 +46,10 @@ public class CountDownLatchHandler {
 	public void setLatchForAmbassadorMovie(int threadCount) {
 		latchForAmbassadorMovie = new CountDownLatch(threadCount);
 	}
+	
+	public void setLatchForReceiptReward(int threadCount) {
+		latchForReceiptReward = new CountDownLatch(threadCount);
+	}
 
 	public CountDownLatch getLatchForParkingLot() {
 		return latchForParkingLot;
@@ -67,5 +73,9 @@ public class CountDownLatchHandler {
 	
 	public CountDownLatch getLatchForAmbassadorMovie() {
 		return latchForAmbassadorMovie;
+	}
+	
+	public CountDownLatch getLatchForReceiptReward() {
+		return latchForReceiptReward;
 	}
 }

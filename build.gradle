@@ -19,6 +19,7 @@ ext {
 	apacheCommonsCompressVersion = '1.13'
 	apacheHttpClientVersion = '4.5.2'
 	zxingVersion = '3.3.0'
+	myUtilsVersion = '1.1.2'
 	
 	junitVersion = '4.+'
 }
@@ -105,6 +106,9 @@ dependencies {
 	
 	// --------- QR Code Generator ---------
 	compile "com.google.zxing:core:${zxingVersion}"
+	
+	// --------- Tommy Utils ----------
+	compile "com.github.TommyYehCool:MyUtils:${myUtilsVersion}"
 	
 	// --------- JUnit --------- 
     testCompile "junit:junit:${junitVersion}"

@@ -16,6 +16,7 @@ import com.weatherrisk.api.service.movie.ViewshowMovieService;
 import com.weatherrisk.api.service.movie.WovieMovieService;
 import com.weatherrisk.api.service.opendata.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.opendata.TaipeiOpenDataService;
+import com.weatherrisk.api.service.receiptreward.ReceiptRewardService;
 
 /**
  * <pre>
@@ -48,6 +49,9 @@ public class Application extends SpringBootServletInitializer {
 	
 	@Autowired
 	private AmbassadorMovieService ambassadorMovieService;
+	
+	@Autowired
+	private ReceiptRewardService receiptRewardService;
 	
 	private CountDownLatchHandler countDownHandler = CountDownLatchHandler.getInstance();
 	
@@ -103,6 +107,13 @@ public class Application extends SpringBootServletInitializer {
 			ambassadorMovieService.refreshMovieTimes();
 			
 			countDownHandler.getLatchForAmbassadorMovie().countDown();
+		}).start();
+		
+		countDownHandler.setLatchForReceiptReward(1);
+		new Thread(() -> {
+			receiptRewardService.getNewestReceiptRewards();
+			
+			countDownHandler.getLatchForReceiptReward().countDown();
 		}).start();
 	}
 }
