@@ -13,12 +13,11 @@ import org.springframework.stereotype.Service;
 
 import com.exfantasy.utils.tools.receipt_lottery.ReceiptLotteryNoUtil;
 import com.exfantasy.utils.tools.receipt_lottery.Reward;
-import com.exfantasy.utils.tools.receipt_lottery.RewardType;
 import com.weatherrisk.api.concurrent.CountDownLatchHandler;
 import com.weatherrisk.api.model.receiptreward.ReceiptReward;
 import com.weatherrisk.api.model.receiptreward.ReceiptRewardRepository;
-
-import lombok.Data;
+import com.weatherrisk.api.util.BingoResult;
+import com.weatherrisk.api.util.ReceiptRewardUtil;
 
 @Service
 public class ReceiptRewardService {
@@ -85,7 +84,7 @@ public class ReceiptRewardService {
 
 		StringBuilder buffer = new StringBuilder();
 		
-		BingoResult bingo = checkIsBingo(lotteryNo, receiptRewards);
+		BingoResult bingo = ReceiptRewardUtil.checkIsBingo(lotteryNo, receiptRewards);
 		
 		switch (bingo.getBingoStatus()) {
 			case NOT_GOT:
@@ -104,119 +103,6 @@ public class ReceiptRewardService {
 				break;
 		}
 		return buffer.toString();
-	}
-	
-	private BingoResult checkIsBingo(String lotteryNo, List<ReceiptReward> receiptRewards) {
-		BingoResult bingo = new BingoResult();
-		for (ReceiptReward receiptReward : receiptRewards) {
-			bingo.setSection(receiptReward.getSection());
-
-			String rewardNo = receiptReward.getNo();
-			bingo.setRewardNo(rewardNo);
-			
-			RewardType rewardType = receiptReward.getRewardType();
-			switch (rewardType) {
-				// 特別獎
-				case FIRST_REWARD:
-					// 號碼完全相同
-					if (lotteryNo.equals(rewardNo)) {
-						bingo.setBingoStatus(BingoStatus.GOT);
-						bingo.setPrize(10000000L);
-						return bingo;
-					}
-					else if (rewardNo.endsWith(lotteryNo)) {
-						bingo.setBingoStatus(BingoStatus.MAYBE);
-						return bingo;
-					}
-					break;
-
-				// 特獎
-				case SEONCD_REWARD:
-					// 號碼完全相同
-					if (lotteryNo.equals(rewardNo)) {
-						bingo.setBingoStatus(BingoStatus.GOT);
-						bingo.setPrize(2000000L);
-						return bingo;
-					}
-					else if (rewardNo.endsWith(lotteryNo)) {
-						bingo.setBingoStatus(BingoStatus.MAYBE);
-						return bingo;
-					}
-					break;
-
-				// 頭獎
-				case THIRD_REWARD:
-					// 號碼完全相同
-					if (lotteryNo.equals(rewardNo)) {
-						bingo.setBingoStatus(BingoStatus.GOT);
-						bingo.setPrize(200000L);
-						return bingo;
-					}
-					else if (rewardNo.endsWith(lotteryNo)) {
-						int length = lotteryNo.length();
-						switch (length) {
-							case 7:
-								bingo.setBingoStatus(BingoStatus.GOT);
-								bingo.setPrize(40000L);
-								return bingo;
-							case 6:
-								bingo.setBingoStatus(BingoStatus.GOT);
-								bingo.setPrize(10000L);
-								return bingo;
-							case 5:
-								bingo.setBingoStatus(BingoStatus.GOT);
-								bingo.setPrize(4000L);
-								return bingo;
-							case 4:
-								bingo.setBingoStatus(BingoStatus.GOT);
-								bingo.setPrize(1000L);
-								return bingo;
-							case 3:
-								bingo.setBingoStatus(BingoStatus.GOT);
-								bingo.setPrize(200L);
-								return bingo;
-							default:
-								bingo.setBingoStatus(BingoStatus.NOT_GOT);
-								return bingo;
-						}
-					}
-					break;
-
-				// 增開六獎
-				case SPECIAL_SIX:
-					String last3OfLotteryNo = lotteryNo.substring(lotteryNo.length() - 3, lotteryNo.length());
-					if (last3OfLotteryNo.equals(rewardNo)) {
-						bingo.setBingoStatus(BingoStatus.GOT);
-						bingo.setPrize(200L);
-						return bingo;
-					}
-					break;
-			}
-		}
-		return bingo;
-	}
-	
-	@Data
-	private class BingoResult {
-		private String section;
-		private String rewardNo;
-		private BingoStatus bingoStatus = BingoStatus.NOT_GOT;
-		private Long prize;
-		
-		public String getSectionStr() {
-			String[] yearMonths = section.split("_");
-			String year = yearMonths[0];
-			String months = yearMonths[1];
-			
-			StringBuilder buffer = new StringBuilder();
-			buffer.append(year).append("年").append(months).append("月");
-			
-			return buffer.toString();
-		}
-	}
-	
-	private enum BingoStatus { 
-		NOT_GOT, GOT, MAYBE;
 	}
 	
 	private void waitForCreateDatasThreadComplete() {
