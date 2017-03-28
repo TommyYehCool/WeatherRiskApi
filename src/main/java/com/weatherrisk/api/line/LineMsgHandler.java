@@ -79,7 +79,7 @@ public class LineMsgHandler {
 	private CwbService cwbService;
 	
 	@Autowired
-	private CurrencyService bitcoinService;
+	private CurrencyService currencyService;
 	
 	@Autowired
 	private RegisterService registerService;
@@ -114,10 +114,10 @@ public class LineMsgHandler {
 	
 	private final String[] templateMsgs 
 		= new String[] {
-				"你好呀, 吃飽沒?",
-				"今天有沒有打扮得很美呀?",
-				"我愛你!",
-				"去簽看看樂透會不會中獎!"
+				"你覺得今天天氣如何呀?",
+				"看你運勢不錯去簽一張樂透試試手氣如何",
+				"工作不順嗎, 喝罐咖啡提提神",
+				"假日快到了, 有沒有安排去哪走走呢?"
 		  };
 	
     private String getRandomMsg() {
@@ -230,15 +230,15 @@ public class LineMsgHandler {
     		if (CurrencyCnst.isCryptoCurrency(inputMsg)) {
     			switch (currency) {
 					case BTC:
-						queryResult = bitcoinService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.BTC_USD);
+						queryResult = currencyService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.BTC_USD);
 						break;
 						
 					case ETH:
-						queryResult = bitcoinService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.ETH_USD);
+						queryResult = currencyService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.ETH_USD);
 			    		break;
 			    		
 					case LTC:
-						queryResult = bitcoinService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.LTC_USD);
+						queryResult = currencyService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.LTC_USD);
 						break;
 						
 					default:
@@ -247,7 +247,7 @@ public class LineMsgHandler {
      		}
     		// 真實貨幣
     		else if (CurrencyCnst.isRealCurrency(inputMsg)) {
-    			queryResult = bitcoinService.getRealCurrencyRatesFromTaiwanBank(currency);
+    			queryResult = currencyService.getRealCurrencyRatesFromTaiwanBank(currency);
     		}
     	}
     	// 註冊虛擬貨幣匯率到價通知
