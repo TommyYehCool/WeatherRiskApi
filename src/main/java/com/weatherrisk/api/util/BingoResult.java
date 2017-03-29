@@ -1,10 +1,13 @@
 package com.weatherrisk.api.util;
 
+import com.exfantasy.utils.tools.receipt_lottery.RewardType;
+
 import lombok.Data;
 
 @Data
 public class BingoResult {
 	private String section;
+	private RewardType rewardType;
 	private String rewardNo;
 	private BingoStatus bingoStatus = BingoStatus.NOT_GOT;
 	private Long prize;

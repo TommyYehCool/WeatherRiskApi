@@ -93,13 +93,13 @@ public class ReceiptRewardService {
 
 			case GOT:
 				DecimalFormat decimalFormat = new DecimalFormat("###,###");
-				buffer.append("請參考").append(bingo.getSectionStr()).append(", 號碼: ").append(bingo.getRewardNo()).append("\n");
-				buffer.append("中獎金額: ").append(decimalFormat.format(bingo.getPrize()));
+				buffer.append("中獎金額: ").append(decimalFormat.format(bingo.getPrize())).append("\n");
+				buffer.append("請參考").append(bingo.getSectionStr()).append(", ").append(bingo.getRewardType().getKeyword()).append(": ").append(bingo.getRewardNo());
 				break;
 
 			case MAYBE:
 				buffer.append("可能中獎\n");
-				buffer.append("請參考").append(bingo.getSectionStr()).append(", 號碼: ").append(bingo.getRewardNo());
+				buffer.append("請參考").append(bingo.getSectionStr()).append(", ").append(bingo.getRewardType().getKeyword()).append(": ").append(bingo.getRewardNo());
 				break;
 		}
 		return buffer.toString();

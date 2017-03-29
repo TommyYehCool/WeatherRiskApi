@@ -17,6 +17,7 @@ public class ReceiptRewardUtil {
 			bingo.setRewardNo(rewardNo);
 			
 			RewardType rewardType = receiptReward.getRewardType();
+			bingo.setRewardType(rewardType);
 			switch (rewardType) {
 				// 特別獎
 				case FIRST_REWARD:
