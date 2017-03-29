@@ -67,8 +67,8 @@ import lombok.NonNull;
 public class LineMsgHandler {
 	private static final Logger logger = LoggerFactory.getLogger(LineMsgHandler.class);
 	
-	private final int LINE_MAXIMUM_REAPLY_TEXT_MSG_LENGTH = 2000;
-	private final int LINE_MAXIMUM_REAPLY_MSG_SIZE = 5;
+	private final int LINE_MAXIMUM_REPLY_TEXT_MSG_LENGTH = 2000;
+	private final int LINE_MAXIMUM_REPLY_MSG_SIZE = 5;
 	
 	@Autowired
     private LineMessagingClient lineMessagingClient;
@@ -461,8 +461,8 @@ public class LineMsgHandler {
     	
     	// ----- 回傳查詢結果 -----
     	if (queryResult != null) {
-    		if (queryResult.length() > LINE_MAXIMUM_REAPLY_TEXT_MSG_LENGTH) {
-    			logger.warn("!!!!! Prepare to reply message length: <{}> excceed LINE maximum reply message length: <{}>", queryResult.length(), LINE_MAXIMUM_REAPLY_TEXT_MSG_LENGTH);
+    		if (queryResult.length() > LINE_MAXIMUM_REPLY_TEXT_MSG_LENGTH) {
+    			logger.warn("!!!!! Prepare to reply message length: <{}> excceed LINE maximum reply message length: <{}>", queryResult.length(), LINE_MAXIMUM_REPLY_TEXT_MSG_LENGTH);
     			return new TextMessage("資料量太多(" + queryResult.length() + "), 無法回覆");
     		}
     		return new TextMessage(queryResult);
@@ -561,7 +561,7 @@ public class LineMsgHandler {
     private void reply(@NonNull String replyToken, @NonNull List<Message> messages) {
         try {
         	BotApiResponse apiResponse = null;
-        	if (messages.size() > LINE_MAXIMUM_REAPLY_MSG_SIZE) {
+        	if (messages.size() > LINE_MAXIMUM_REPLY_MSG_SIZE) {
         		List<Message> errorMsg = Arrays.asList(new TextMessage[] {new TextMessage("資料數目超過可回傳訊息")});
         		
         		apiResponse 
