@@ -23,7 +23,7 @@ import com.weatherrisk.api.model.movie.WovieMovieRepository;
 import com.weatherrisk.api.util.HttpUtil;
 
 @Service
-public class WovieMovieService {
+public class WovieMovieService implements MovieService {
 
 	private Logger logger = LoggerFactory.getLogger(ViewshowMovieService.class);
 	
@@ -35,6 +35,7 @@ public class WovieMovieService {
 	@Autowired
 	private WovieMovieRepository wovieMovieRepo;
 	
+	@Override
 	public void refreshMovieTimes() {
 		try {
 			deleteAllMovieTimes();
@@ -44,7 +45,8 @@ public class WovieMovieService {
 		}
 	}
 
-	private void deleteAllMovieTimes() {
+	@Override
+	public void deleteAllMovieTimes() {
 		logger.info(">>>>> Prepare to delete all Wovie movie times...");
 		long startTime = System.currentTimeMillis();
 		wovieMovieRepo.deleteAll();
@@ -110,6 +112,7 @@ public class WovieMovieService {
 		return dateFormat.format(new Date());
 	}
 
+	@Override
 	public String queryMovieTimesByTheaterNameAndFilmNameLike(String theaterName, String filmName) {
 		waitForCreateDatasThreadComplete();
 		
@@ -148,6 +151,7 @@ public class WovieMovieService {
 		return buffer.toString();
 	}
 	
+	@Override
 	public String queryNowPlayingByTheaterName(String theaterName) {
 		waitForCreateDatasThreadComplete();
 		
@@ -172,7 +176,8 @@ public class WovieMovieService {
 		}
 	}
 
-	private void waitForCreateDatasThreadComplete() {
+	@Override
+	public void waitForCreateDatasThreadComplete() {
 		// 等待建立資料的 thread 處理完才進行查詢
 		try {
 			countDownHandler.getLatchForWovieMovie().await();

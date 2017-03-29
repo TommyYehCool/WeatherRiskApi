@@ -21,7 +21,7 @@ import com.weatherrisk.api.model.movie.ViewShowMovieRepository;
 import com.weatherrisk.api.util.HttpUtil;
 
 @Service
-public class ViewshowMovieService {
+public class ViewshowMovieService implements MovieService {
 	
 	private Logger logger = LoggerFactory.getLogger(ViewshowMovieService.class);
 	
@@ -45,7 +45,8 @@ public class ViewshowMovieService {
 		}
 	}
 	
-	private void deleteAllMovieTimes() {
+	@Override
+	public void deleteAllMovieTimes() {
 		logger.info(">>>>> Prepare to delete all View Show movie times...");
 		long startTime = System.currentTimeMillis();
 		viewShowMovieRepo.deleteAll();
@@ -140,6 +141,7 @@ public class ViewshowMovieService {
 		logger.info("<<<<< Insert all {} View Show movie times done, data-size: <{}>, time-spent: <{} ms>", theaterName, viewShowMovies.size(), System.currentTimeMillis() - startTime);
 	}
 
+	@Override
 	public String queryMovieTimesByTheaterNameAndFilmNameLike(String theaterName, String filmName) {
 		waitForCreateDatasThreadComplete();
 		
@@ -178,6 +180,7 @@ public class ViewshowMovieService {
 		return buffer.toString();
 	}
 
+	@Override
 	public String queryNowPlayingByTheaterName(String theaterName) {
 		waitForCreateDatasThreadComplete();
 		
@@ -202,7 +205,8 @@ public class ViewshowMovieService {
 		}
 	}
 	
-	private void waitForCreateDatasThreadComplete() {
+	@Override
+	public void waitForCreateDatasThreadComplete() {
 		// 等待建立資料的 thread 處理完才進行查詢
 		try {
 			countDownHandler.getLatchForViewShowMovie().await();

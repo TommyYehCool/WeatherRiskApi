@@ -26,7 +26,7 @@ import com.weatherrisk.api.util.HttpUtil;
 import com.weatherrisk.api.vo.json.showtime.ShowTimeAllMoviesInfo;
 
 @Service
-public class ShowTimeMovieService {
+public class ShowTimeMovieService implements MovieService {
 
 	private Logger logger = LoggerFactory.getLogger(ShowTimeMovieService.class);
 	
@@ -38,6 +38,7 @@ public class ShowTimeMovieService {
 	@Autowired
 	private ShowTimeMovieRepository showTimeMovieRepo;
 	
+	@Override
 	public void refreshMovieTimes() {
 		try {
 			deleteAllMovieTimes();
@@ -51,7 +52,8 @@ public class ShowTimeMovieService {
 		}
 	}
 
-	private void deleteAllMovieTimes() {
+	@Override
+	public void deleteAllMovieTimes() {
 		logger.info(">>>>> Prepare to delete all Show Time movie times...");
 		long startTime = System.currentTimeMillis();
 		showTimeMovieRepo.deleteAll();
@@ -114,6 +116,7 @@ public class ShowTimeMovieService {
 		logger.info("<<<<< Insert all {} Show Time movie times done, data-size: <{}>, time-spent: <{} ms>", theaterName, showTimeMoviesInfo.size(), System.currentTimeMillis() - startTime);
 	}
 
+	@Override
 	public String queryMovieTimesByTheaterNameAndFilmNameLike(String theaterName, String filmName) {
 		waitForCreateDatasThreadComplete();
 		
@@ -178,6 +181,7 @@ public class ShowTimeMovieService {
 		return buffer.toString();
 	}
 	
+	@Override
 	public String queryNowPlayingByTheaterName(String theaterName) {
 		waitForCreateDatasThreadComplete();
 		
@@ -202,7 +206,8 @@ public class ShowTimeMovieService {
 		}
 	}
 	
-	private void waitForCreateDatasThreadComplete() {
+	@Override
+	public void waitForCreateDatasThreadComplete() {
 		// 等待建立資料的 thread 處理完才進行查詢
 		try {
 			countDownHandler.getLatchForShowTimeMovie().await();

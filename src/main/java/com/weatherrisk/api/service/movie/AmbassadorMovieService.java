@@ -21,7 +21,7 @@ import com.weatherrisk.api.util.HttpUtil;
 import com.weatherrisk.api.vo.json.ambassador.AmbassadorAllMoviesInfo;
 
 @Service
-public class AmbassadorMovieService {
+public class AmbassadorMovieService implements MovieService {
 
 	private Logger logger = LoggerFactory.getLogger(ShowTimeMovieService.class);
 	
@@ -33,6 +33,7 @@ public class AmbassadorMovieService {
 	@Autowired
 	private AmbassadorMovieRepository ambassadorMovieRepo;
 	
+	@Override
 	public void refreshMovieTimes() {
 		try {
 			deleteAllMovieTimes();
@@ -44,7 +45,8 @@ public class AmbassadorMovieService {
 		}
 	}
 
-	private void deleteAllMovieTimes() {
+	@Override
+	public void deleteAllMovieTimes() {
 		logger.info(">>>>> Prepare to delete all Ambassador movie times...");
 		long startTime = System.currentTimeMillis();
 		ambassadorMovieRepo.deleteAll();
@@ -99,7 +101,8 @@ public class AmbassadorMovieService {
 		ambassadorMovieRepo.insert(ambassadorMoviesInfo);
 		logger.info("<<<<< Insert all {} Ambassador movie times done, data-size: <{}>, time-spent: <{} ms>", theaterName, ambassadorMoviesInfo.size(), System.currentTimeMillis() - startTime);
 	}
-	
+
+	@Override
 	public String queryMovieTimesByTheaterNameAndFilmNameLike(String theaterName, String filmName) {
 		waitForCreateDatasThreadComplete();
 		
@@ -139,6 +142,7 @@ public class AmbassadorMovieService {
 		return buffer.toString();
 	}
 	
+	@Override
 	public String queryNowPlayingByTheaterName(String theaterName) {
 		waitForCreateDatasThreadComplete();
 		
@@ -163,7 +167,8 @@ public class AmbassadorMovieService {
 		}
 	}
 
-	private void waitForCreateDatasThreadComplete() {
+	@Override
+	public void waitForCreateDatasThreadComplete() {
 		// 等待建立資料的 thread 處理完才進行查詢
 		try {
 			countDownHandler.getLatchForAmbassadorMovie().await();

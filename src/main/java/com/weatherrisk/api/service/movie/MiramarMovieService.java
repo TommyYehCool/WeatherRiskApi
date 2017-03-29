@@ -25,7 +25,7 @@ import com.weatherrisk.api.model.movie.MovieDateTime;
 import com.weatherrisk.api.util.HttpUtil;
 
 @Service
-public class MiramarMovieService {
+public class MiramarMovieService implements MovieService {
 
 	private Logger logger = LoggerFactory.getLogger(MiramarMovieService.class);
 
@@ -37,6 +37,7 @@ public class MiramarMovieService {
 	@Autowired
 	private MiramarMovieRepository miramarMovieRepo;
 	
+	@Override
 	public void refreshMovieTimes() {
 		try {
 			deleteAllMovieTimes();
@@ -46,7 +47,8 @@ public class MiramarMovieService {
 		}
 	}
 
-	private void deleteAllMovieTimes() {
+	@Override
+	public void deleteAllMovieTimes() {
 		logger.info(">>>>> Prepare to delete all Miramar movie times...");
 		long startTime = System.currentTimeMillis();
 		miramarMovieRepo.deleteAll();
@@ -121,6 +123,7 @@ public class MiramarMovieService {
 		logger.info("<<<<< Insert all {} Miramar movie times done, data-size: <{}>, time-spent: <{} ms>", theaterName, miramarMovies.size(), System.currentTimeMillis() - startTime);
 	}
 	
+	@Override
 	public String queryMovieTimesByTheaterNameAndFilmNameLike(String theaterName, String filmName) {
 		waitForCreateDatasThreadComplete();
 		
@@ -159,6 +162,7 @@ public class MiramarMovieService {
 		return buffer.toString();
 	}
 
+	@Override
 	public String queryNowPlayingByTheaterName(String theaterName) {
 		waitForCreateDatasThreadComplete();
 		
@@ -183,7 +187,8 @@ public class MiramarMovieService {
 		}
 	}
 	
-	private void waitForCreateDatasThreadComplete() {
+	@Override
+	public void waitForCreateDatasThreadComplete() {
 		// 等待建立資料的 thread 處理完才進行查詢
 		try {
 			countDownHandler.getLatchForMiramarMovie().await();
