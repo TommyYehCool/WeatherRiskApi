@@ -578,7 +578,7 @@ public class LineMsgHandler {
             logger.info("Sent messages: {}", apiResponse);
 
         } catch (InterruptedException | ExecutionException e) {
-            logger.error("Expcetion raised while tring to reply", e);
+            logger.error("Exception raised while tring to reply", e);
         }
     }
 }
