@@ -66,6 +66,14 @@ public class Application extends SpringBootServletInitializer {
 	
 	@PostConstruct
 	public void postConstruct() {
+		refreshParkingLotDatas();
+
+		refreshMovieDatas();
+		
+		refreshReceiptRewardDatas();
+	}
+
+	private void refreshParkingLotDatas() {
 		countDownHandler.setLatchForParkingLot(1);
 		new Thread(() -> {
 			taipeiOpenDataService.getNewestParkingLotInfos();
@@ -73,7 +81,9 @@ public class Application extends SpringBootServletInitializer {
 			
 			countDownHandler.getLatchForParkingLot().countDown();
 		}).start();
+	}
 
+	private void refreshMovieDatas() {
 		countDownHandler.setLatchForViewShowMovie(1);
 		new Thread(() -> {
 			viewshowMovieService.refreshMovieTimes();
@@ -108,7 +118,9 @@ public class Application extends SpringBootServletInitializer {
 			
 			countDownHandler.getLatchForAmbassadorMovie().countDown();
 		}).start();
-		
+	}
+
+	private void refreshReceiptRewardDatas() {
 		countDownHandler.setLatchForReceiptReward(1);
 		new Thread(() -> {
 			receiptRewardService.getNewestReceiptRewards();
