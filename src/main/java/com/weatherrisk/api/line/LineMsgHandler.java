@@ -462,7 +462,7 @@ public class LineMsgHandler {
     	// ----- 回傳查詢結果 -----
     	if (queryResult != null) {
     		if (queryResult.length() > LINE_MAXIMUM_REPLY_TEXT_MSG_LENGTH) {
-    			logger.warn("!!!!! Prepare to reply message length: <{}> excceed LINE maximum reply message length: <{}>", queryResult.length(), LINE_MAXIMUM_REPLY_TEXT_MSG_LENGTH);
+    			logger.warn("!!!!! Prepare to reply message length: <{}> exceed LINE maximum reply message length: <{}>", queryResult.length(), LINE_MAXIMUM_REPLY_TEXT_MSG_LENGTH);
     			return new TextMessage("資料量太多(" + queryResult.length() + "), 無法回覆");
     		}
     		return new TextMessage(queryResult);
