@@ -64,7 +64,7 @@ public enum CurrencyCnst {
 	
 	public static boolean isSupportedCurrency(String code) {
 		for (CurrencyCnst currency : CurrencyCnst.values()) {
-			if (currency.toString().compareToIgnoreCase(code) == 0) {
+			if (currency.toString().equalsIgnoreCase(code)) {
 				return true;
 			}
 		}
