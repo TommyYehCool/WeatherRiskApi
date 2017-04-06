@@ -463,7 +463,7 @@ public class LineMsgHandler {
     	if (queryResult != null) {
     		if (queryResult.length() > LINE_MAXIMUM_REPLY_TEXT_MSG_LENGTH) {
     			logger.warn("!!!!! Prepare to reply message length: <{}> exceed LINE maximum reply message length: <{}>", queryResult.length(), LINE_MAXIMUM_REPLY_TEXT_MSG_LENGTH);
-    			queryResult = queryResult.substring(0, LINE_MAXIMUM_REPLY_MSG_SIZE - 3) + "...";
+    			queryResult = queryResult.substring(0, LINE_MAXIMUM_REPLY_TEXT_MSG_LENGTH - 3) + "...";
     			return new TextMessage(queryResult);
     		}
     		return new TextMessage(queryResult);
