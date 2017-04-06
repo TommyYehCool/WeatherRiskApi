@@ -73,7 +73,7 @@ public enum CurrencyCnst {
 	
 	public static boolean isCryptoCurrency(String code) {
 		for (CurrencyCnst currency : crypto_currency) {
-			if (currency.toString().compareToIgnoreCase(code) == 0) {
+			if (currency.toString().equalsIgnoreCase(code)) {
 				return true;
 			}
 		}
@@ -82,7 +82,7 @@ public enum CurrencyCnst {
 	
 	public static boolean isRealCurrency(String code) {
 		for (CurrencyCnst currency : real_currency) {
-			if (currency.toString().compareToIgnoreCase(code) == 0) {
+			if (currency.toString().equalsIgnoreCase(code)) {
 				return true;
 			}
 		}
@@ -91,7 +91,7 @@ public enum CurrencyCnst {
 	
 	public static CurrencyCnst convert(String code) {
 		for (CurrencyCnst currency : CurrencyCnst.values()) {
-			if (currency.toString().compareToIgnoreCase(code) == 0) {
+			if (currency.toString().equalsIgnoreCase(code)) {
 				return currency;
 			}
 		}
