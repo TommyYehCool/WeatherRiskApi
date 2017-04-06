@@ -212,7 +212,7 @@ public class LineMsgHandler {
     		queryResult = constructHelpMsg();
     	}
     	// 停車場-精準搜尋
-    	if (inputMsg.startsWith("#")) {
+    	else if (inputMsg.startsWith("#")) {
     		String name = inputMsg.substring(1, inputMsg.length());
     		queryResult = parkingLotService.findByName(name);
     	}
