@@ -65,7 +65,7 @@ import lombok.NonNull;
  */
 @LineMessageHandler
 public class LineMsgHandler {
-	private static final Logger logger = LoggerFactory.getLogger(LineMsgHandler.class);
+	private final Logger logger = LoggerFactory.getLogger(LineMsgHandler.class);
 	
 	private final int LINE_MAXIMUM_REPLY_TEXT_MSG_LENGTH = 2000;
 	private final int LINE_MAXIMUM_REPLY_MSG_SIZE = 5;
