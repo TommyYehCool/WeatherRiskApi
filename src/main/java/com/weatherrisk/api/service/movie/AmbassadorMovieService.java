@@ -23,7 +23,7 @@ import com.weatherrisk.api.vo.json.ambassador.AmbassadorAllMoviesInfo;
 @Service
 public class AmbassadorMovieService implements MovieService {
 
-	private Logger logger = LoggerFactory.getLogger(ShowTimeMovieService.class);
+	private Logger logger = LoggerFactory.getLogger(AmbassadorMovieService.class);
 	
 	private CountDownLatchHandler countDownHandler = CountDownLatchHandler.getInstance();
 	

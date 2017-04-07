@@ -23,8 +23,8 @@ import com.weatherrisk.api.util.HttpUtil;
 public class Test_GetStockPrice {
 	/**
 	 * <pre>
-	 * <a href="http://kentyeh.blogspot.tw/2015/07/blog-post_16.html">���雯蝡�</a>
-	 * <a href="https://sites.google.com/site/kentyeh2000/zheng-jiao-suo-ji-shi-zi-xun-jie-xi">Json �撘�</a>
+	 * <a href="http://kentyeh.blogspot.tw/2015/07/blog-post_16.html">參考網站</a>
+	 * <a href="https://sites.google.com/site/kentyeh2000/zheng-jiao-suo-ji-shi-zi-xun-jie-xi">Json 格式</a>
 	 * </pre> 
 	 */
 	@Test

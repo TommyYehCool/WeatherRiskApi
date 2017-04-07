@@ -25,6 +25,7 @@ import com.weatherrisk.api.service.opendata.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.opendata.TaipeiOpenDataService;
 import com.weatherrisk.api.service.parkinglot.ParkingLotService;
 import com.weatherrisk.api.service.receiptreward.ReceiptRewardService;
+import com.weatherrisk.api.service.stock.StockService;
 import com.weatherrisk.api.service.weather.CwbService;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
@@ -68,6 +69,9 @@ public class Test_GetDataService {
 	
 	@Autowired
 	private ReceiptRewardService receiptRewardService;
+	
+	@Autowired
+	private StockService stockService;
 	
 	@Test
 	public void test_1_CwbService_getWeatherLittleHelperByCity() {
@@ -229,5 +233,10 @@ public class Test_GetDataService {
 	public void test_25_ReceiptRewardService_checkIsBingo() {
 		String queryResult = receiptRewardService.checkIsBingo("478");
 		System.out.println(queryResult);
+	}
+	
+	@Test
+	public void test_26_StockService_getStockInfo() {
+		stockService.refreshStockInfo();
 	}
 }
