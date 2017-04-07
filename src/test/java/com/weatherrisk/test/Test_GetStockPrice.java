@@ -18,8 +18,6 @@ import org.jsoup.select.Elements;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.weatherrisk.api.util.HttpUtil;
-
 public class Test_GetStockPrice {
 	/**
 	 * <pre>
@@ -89,6 +87,7 @@ public class Test_GetStockPrice {
 	
 	@Test
 	public void testGetOtcStockInfo() throws Exception {
+		@SuppressWarnings("unused")
 		String otcUrl = "http://isin.twse.com.tw/isin/C_public.jsp?strMode=4";
 	}
 }
