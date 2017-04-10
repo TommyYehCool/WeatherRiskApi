@@ -1,11 +1,14 @@
 package com.weatherrisk.api.service.currency;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -190,5 +193,18 @@ public class RegisterService {
 
 	public Map<String, List<StockPriceReached>> getStockRegisterInfos() {
 		return this.stockRegisterMap;
+	}
+	
+	public Set<String> getAllRegisteredStockNameOrId() {
+		Set<String> uniqueStockNameOrId = new HashSet<>();
+		
+		Collection<List<StockPriceReached>> allRegisteredStockNameOrId = this.stockRegisterMap.values();
+		for (List<StockPriceReached> pricesReached : allRegisteredStockNameOrId) {
+			for (StockPriceReached priceReached : pricesReached) {
+				uniqueStockNameOrId.add(priceReached.getStockNameOrId());
+			}
+		}
+		
+		return uniqueStockNameOrId;
 	}
 }

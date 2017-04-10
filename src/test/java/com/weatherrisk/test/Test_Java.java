@@ -4,6 +4,8 @@ import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TimeZone;
 
 import org.junit.Ignore;
@@ -37,6 +39,7 @@ public class Test_Java {
 	}
 	
 	@Test
+	@Ignore
 	public void test_3_testSubstring() {
 		String inputMsg = "台北市天氣";
 		String city = inputMsg.substring(0, inputMsg.length() - 2);
@@ -85,6 +88,7 @@ public class Test_Java {
 	}
 	
 	@Test
+	@Ignore
 	public void test_6_testGMT() {
 		String gmtTime = "10:30:00";
 		SimpleDateFormat gmtTimeFormat = new SimpleDateFormat("HH:mm:ss");
@@ -98,5 +102,14 @@ public class Test_Java {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void test_7_testSet() {
+		Set<String> test = new HashSet<>();
+		test.add("123");
+		test.add("123");
+		test.add("456");
+		test.forEach(System.out::println);
 	}
 }

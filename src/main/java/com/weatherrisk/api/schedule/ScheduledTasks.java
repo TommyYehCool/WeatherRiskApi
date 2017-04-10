@@ -1,9 +1,12 @@
 package com.weatherrisk.api.schedule;
 
 import java.math.BigDecimal;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +79,18 @@ public class ScheduledTasks {
     
     @Scheduled(cron = CRON_SCHEDULED)
     public void getRegisteredStockPrice() {
-    	// TODO 排程取得所有有註冊的股票價格
+    	Set<String> allRegisteredStockNameOrId = registerService.getAllRegisteredStockNameOrId();
+    	Iterator<String> it = allRegisteredStockNameOrId.iterator();
+    	while (it.hasNext()) {
+    		String stockNameOrId = it.next();
+    		boolean isName = !StringUtils.isNumeric(stockNameOrId);
+    		if (isName) {
+    			
+    		}
+    		else {
+    			
+    		}
+    	}
     }
     
     private void getCryptoCurrencyLastPriceFromBtcE(CurrencyCnst baseCurrency, CurrencyPair currencyPair) {
