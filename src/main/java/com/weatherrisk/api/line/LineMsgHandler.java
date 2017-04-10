@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.tomcat.util.net.SocketEvent;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -273,11 +274,17 @@ public class LineMsgHandler {
     		String stockNameOrIdAndPrice = inputMsg.substring(inputMsg.indexOf("註冊股票") + "註冊股票".length(), inputMsg.length()).trim();
     		String[] split = stockNameOrIdAndPrice.split(" ");
     		if (split.length != 3) {
-    			queryResult = "格式範例 => 註冊 艾訊 60 65";
+    			queryResult = "格式範例 => 註冊股票 艾訊 60 65";
     		}
     		else {
-    			// TODO 股票到價通知
-    			queryResult = "格式正確，功能尚未實作";
+    			String stockNameOrId = split[0].trim();
+    			boolean isSupportedStock = stockService.isSupportedStock(stockNameOrId);
+    			if (!isSupportedStock) {
+    				queryResult = "你輸入的商品不支援 (" + stockNameOrId + ")";
+    			}
+    			else {
+    				// TODO
+    			}
     		}
     	}
     	// 註冊虛擬貨幣匯率到價通知

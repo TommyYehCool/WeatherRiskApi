@@ -79,6 +79,43 @@ public class StockService {
 		return null;
 	}
 	
+	public boolean isSupportedStock(String stockNameOrId) {
+		boolean isSupportedStock = false;
+		
+		boolean isName = false;
+		try {
+			Integer.parseInt(stockNameOrId);
+		}
+		catch (Exception e) {
+			isName = true;
+		}
+		if (isName) {
+			TseStock tseStock = tseStockRepo.findByName(stockNameOrId);
+			if (tseStock != null) {
+				isSupportedStock = true;
+			}
+			else {
+				OtcStock otcStock = otcStockRepo.findByName(stockNameOrId);
+				if (otcStock != null) {
+					isSupportedStock = true;
+				}
+			}
+		}
+		else {
+			TseStock tseStock = tseStockRepo.findById(stockNameOrId);
+			if (tseStock != null) {
+				isSupportedStock = true;
+			}
+			else {
+				OtcStock otcStock = otcStockRepo.findById(stockNameOrId);
+				if (otcStock != null) {
+					isSupportedStock = true;
+				}
+			}
+		}
+		return isSupportedStock;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public String getStockPriceByNameOrId(String stockNameOrId) {
 		boolean isName = false;
