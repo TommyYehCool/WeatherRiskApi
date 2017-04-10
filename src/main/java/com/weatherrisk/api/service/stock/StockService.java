@@ -58,11 +58,11 @@ public class StockService {
 	private String[] getExChAndNameByName(String name) {
 		TseStock tseStock = tseStockRepo.findByName(name);
 		if (tseStock != null) {
-			return new String[] {"tse_" + tseStock.getId() + ".tw", tseStock.getName()};
+			return new String[] {"tse_" + tseStock.getId() + ".tw", tseStock.getName() + " (" + tseStock.getId() + ")"};
 		}
 		OtcStock otcStock = otcStockRepo.findByName(name);
 		if (otcStock != null) {
-			return new String[] {"otc_" + otcStock.getId() + ".tw", otcStock.getName()};
+			return new String[] {"otc_" + otcStock.getId() + ".tw", otcStock.getName() + " (" + otcStock.getId() + ")"};
 		}
 		return null;
 	}
@@ -70,11 +70,11 @@ public class StockService {
 	private String[] getExChAndNameById(String id) {
 		TseStock tseStock = tseStockRepo.findById(id);
 		if (tseStock != null) {
-			return new String[] {"tse_" + id + ".tw", tseStock.getName()};
+			return new String[] {"tse_" + id + ".tw", tseStock.getName() + " (" + tseStock.getId() + ")"};
 		}
 		OtcStock otcStock = otcStockRepo.findById(id);
 		if (otcStock != null) {
-			return new String[] {"otc_" + id + ".tw", otcStock.getName()};
+			return new String[] {"otc_" + id + ".tw", otcStock.getName() + " (" + otcStock.getId() + ")"};
 		}
 		return null;
 	}
