@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.weatherrisk.api.Application;
 import com.weatherrisk.api.cnst.CurrencyCnst;
-import com.weatherrisk.api.cnst.StockType;
 import com.weatherrisk.api.service.currency.CurrencyService;
 import com.weatherrisk.api.service.movie.AmbassadorMovieService;
 import com.weatherrisk.api.service.movie.MiramarMovieService;
@@ -242,14 +241,12 @@ public class Test_GetDataService {
 	}
 	
 	@Test
-	public void test_27_StockService_checkStockTypeById() {
-		StockType stockType = stockService.getStockTypeById("3088");
-		System.out.println(stockType);
+	public void test_27_StockService_getStockPriceByNameOrId() {
+		String queryResult = stockService.getStockPriceByNameOrId("3088");
+		System.out.println(queryResult);
+		
+		queryResult = stockService.getStockPriceByNameOrId("鴻海");
+		System.out.println(queryResult);
 	}
 	
-	@Test
-	public void test_28_StockService_checkStockPriceById() {
-		String json = stockService.getStockPriceById("3088");
-		System.out.println(json);
-	}
 }

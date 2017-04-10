@@ -1,10 +1,13 @@
 package com.weatherrisk.api.service.stock;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -21,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherrisk.api.cnst.StockType;
 import com.weatherrisk.api.config.stock.StockConfig;
 import com.weatherrisk.api.model.stock.OtcStock;
@@ -52,35 +56,54 @@ public class StockService {
 		}
 	}
 	
-	public StockType getStockTypeById(String id) {
+	private String[] getExChAndNameByName(String name) {
+		TseStock tseStock = tseStockRepo.findByName(name);
+		if (tseStock != null) {
+			return new String[] {"tse_" + tseStock.getId() + ".tw", tseStock.getName()};
+		}
+		OtcStock otcStock = otcStockRepo.findByName(name);
+		if (otcStock != null) {
+			return new String[] {"otc_" + otcStock.getId() + ".tw", otcStock.getName()};
+		}
+		return null;
+	}
+	
+	private String[] getExChAndNameById(String id) {
 		TseStock tseStock = tseStockRepo.findById(id);
 		if (tseStock != null) {
-			return StockType.TSE;
+			return new String[] {"tse_" + id + ".tw", tseStock.getName()};
 		}
 		OtcStock otcStock = otcStockRepo.findById(id);
 		if (otcStock != null) {
-			return StockType.OTC;
+			return new String[] {"otc_" + id + ".tw", otcStock.getName()};
 		}
-		return StockType.UNKNOWN;
+		return null;
 	}
 	
-	public String getStockPriceById(String id) {
-		StockType stockType = getStockTypeById(id);
-		
-		String ex_ch = "";
-		
-		switch (stockType) {
-			case OTC:
-				ex_ch = "otc_" + id + ".tw";
-				break;
-
-			case TSE:
-				ex_ch = "tse_" + id + ".tw";
-				break;
-
-			case UNKNOWN:
-				return "目前只支援上市櫃商品";
+	@SuppressWarnings("unchecked")
+	public String getStockPriceByNameOrId(String stockNameOrId) {
+		boolean isName = false;
+		try {
+			Integer.parseInt(stockNameOrId);
 		}
+		catch (Exception e) {
+			isName = true;
+		}
+		
+		String[] exChAndName = null;
+		if (isName) {
+			exChAndName = getExChAndNameByName(stockNameOrId);
+		}
+		else {
+			exChAndName = getExChAndNameById(stockNameOrId);
+		}
+		
+		if (exChAndName == null) {
+			return "你輸入的代號: " + stockNameOrId + ", 找不到對應資料";
+		}
+		
+		String ex_ch = exChAndName[0];
+		String name = exChAndName[1];
 		
 		try {
 			HttpClient client = HttpClientBuilder.create().build();
@@ -105,9 +128,30 @@ public class StockService {
 			String json = EntityUtils.toString(entity, StandardCharsets.UTF_8);
 			json = json.replaceAll("\r\n", "").trim();
 
-			// TODO 解析 json 格式回傳正確訊息
+			Map<String, ?> map = new HashMap<>();
+
+			ObjectMapper objectMapper = new ObjectMapper();
+			try {
+				map = objectMapper.readValue(json, HashMap.class);
+			} catch (IOException e) {
+				logger.error("IOException raised while read json string to hashmap", e);
+				return "抓取股票價格失敗";
+			}
 			
-			return json;
+			List<?> msgArray = (List<?>) map.get("msgArray");
+			Map<?, ?> dataMap = (Map<?, ?>) msgArray.get(0);
+			
+			String high = (String) dataMap.get("h");
+			String low = (String) dataMap.get("l");
+			String match = (String) dataMap.get("z");
+			
+			StringBuilder buffer = new StringBuilder();
+			buffer.append(name).append("\n");
+			buffer.append("最高價: ").append(high).append("\n");
+			buffer.append("成交價: ").append(match).append("\n");
+			buffer.append("最低價: ").append(low).append("\n");
+			
+			return buffer.toString();
 		} catch (Exception e) {
 			logger.error("Exception raised while get newest stock price", e);
 			return "抓取最新股價失敗";

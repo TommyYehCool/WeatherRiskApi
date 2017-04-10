@@ -26,7 +26,6 @@ public class Test_GetStockPrice {
 	 * </pre> 
 	 */
 	@Test
-	@Ignore
 	public void test() throws IOException {
 		HttpClient client = HttpClientBuilder.create().build();
 		
@@ -36,8 +35,8 @@ public class Test_GetStockPrice {
 		String setCookie = response.getFirstHeader("Set-Cookie").getValue();
 		String jsessionId = setCookie.split("; ")[0];
 		
-//		String ex_ch = "otc_3088.tw";
-		String ex_ch = "tse_1101.tw";
+		String ex_ch = "otc_3088.tw";
+//		String ex_ch = "tse_1101.tw";
 		long systemTime = System.currentTimeMillis();
 		String url = "http://mis.twse.com.tw/stock/api/getStockInfo.jsp?json=1&delay=0&ex_ch={0}&_=" + systemTime;
 		url = MessageFormat.format(url, ex_ch);
@@ -55,6 +54,7 @@ public class Test_GetStockPrice {
 	}
 	
 	@Test
+	@Ignore
 	public void testGetTseStockInfo() throws Exception {
 		String tseUrl = "http://isin.twse.com.tw/isin/C_public.jsp?strMode=2";
 

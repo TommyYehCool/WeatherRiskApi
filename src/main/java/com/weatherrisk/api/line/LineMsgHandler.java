@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.tomcat.util.net.SocketEvent;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ import com.weatherrisk.api.cnst.AmbassadorTheater;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.cnst.MiramarTheater;
 import com.weatherrisk.api.cnst.ShowTimeTheater;
+import com.weatherrisk.api.cnst.StockType;
 import com.weatherrisk.api.cnst.UBikeCity;
 import com.weatherrisk.api.cnst.ViewshowTheater;
 import com.weatherrisk.api.cnst.WovieTheater;
@@ -44,6 +46,7 @@ import com.weatherrisk.api.service.opendata.NewTaipeiOpenDataService;
 import com.weatherrisk.api.service.opendata.TaipeiOpenDataService;
 import com.weatherrisk.api.service.parkinglot.ParkingLotService;
 import com.weatherrisk.api.service.receiptreward.ReceiptRewardService;
+import com.weatherrisk.api.service.stock.StockService;
 import com.weatherrisk.api.service.weather.CwbService;
 import com.weatherrisk.api.vo.PriceReached;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
@@ -108,6 +111,9 @@ public class LineMsgHandler {
 	
 	@Autowired
 	private ReceiptRewardService receiptRewardService;
+	
+	@Autowired
+	private StockService stockService;
 	
 	private final String[] helpTemplateMsgs
 		= new String[] {
@@ -184,6 +190,10 @@ public class LineMsgHandler {
     	buffer.append("更新發票開獎號碼 => Ex: 更新發票").append("\n");
     	buffer.append("查詢最近兩期發票開獎號碼 => Ex: 發票開獎").append("\n");
     	buffer.append("發票對獎功能, 直接輸入號碼即可 => Ex: 168").append("\n");
+    	buffer.append("-----------------------").append("\n");
+    	buffer.append("[股票]").append("\n");
+    	buffer.append("查詢股票目前成交價 => Ex: 股票艾訊").append("\n");
+    	buffer.append("-----------------------").append("\n");
     	
     	return buffer.toString();
 	}
@@ -446,6 +456,11 @@ public class LineMsgHandler {
     	// 發票開獎
     	else if (inputMsg.equals("發票開獎")) {
     		queryResult = receiptRewardService.getRecentlyRewards();
+    	}
+    	// 股票價格
+    	else if (inputMsg.startsWith("股票")) {
+    		String stockNameOrId = inputMsg.substring(inputMsg.indexOf("股票") + "股票".length(), inputMsg.length()).trim();
+    		queryResult = stockService.getStockPriceByNameOrId(stockNameOrId);
     	}
     	// 其他判斷
     	else {
