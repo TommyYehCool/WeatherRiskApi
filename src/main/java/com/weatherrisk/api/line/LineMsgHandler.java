@@ -190,7 +190,8 @@ public class LineMsgHandler {
     	buffer.append("發票對獎功能, 直接輸入號碼即可 => Ex: 168").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[股票]").append("\n");
-    	buffer.append("查詢股票目前成交價 => Ex: 股票艾訊").append("\n");
+    	buffer.append("更新股票資料檔 => Ex: 更新股票").append("\n");
+    	buffer.append("查詢股票目前成交價 => Ex: 股票艾訊, 股票3088").append("\n");
     	buffer.append("-----------------------").append("\n");
     	
     	return buffer.toString();
@@ -454,6 +455,11 @@ public class LineMsgHandler {
     	// 發票開獎
     	else if (inputMsg.equals("發票開獎")) {
     		queryResult = receiptRewardService.getRecentlyRewards();
+    	}
+    	// 更新股票
+    	else if (inputMsg.equals("更新股票")) {
+    		stockService.refreshStockInfo();
+    		queryResult = "更新成功";
     	}
     	// 股票價格
     	else if (inputMsg.startsWith("股票")) {

@@ -107,18 +107,18 @@ public class StockService {
 		try {
 			HttpClient client = HttpClientBuilder.create().build();
 			
+			// 先發 request 取得 sessionId
 			String getSessionUrl = stockConfig.getSessionIdUrl();
 			HttpGet request = new HttpGet(getSessionUrl);
 			HttpResponse response = client.execute(request);
 	
 			String setCookie = response.getFirstHeader("Set-Cookie").getValue();
 			String jsessionId = setCookie.split("; ")[0];
-			
+
+			// 將取得的 sessionId 塞進 cookie, 打取得價錢的 url
 			String getPriceUrl = stockConfig.getPriceUrl(ex_ch);
-			
 			request = new HttpGet(getPriceUrl);
 			request.addHeader("Cookie", jsessionId);
-			
 			response = client.execute(request);
 			
 			HttpEntity entity = response.getEntity();
