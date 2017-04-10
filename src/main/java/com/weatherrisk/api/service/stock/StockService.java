@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -82,13 +83,8 @@ public class StockService {
 	public boolean isSupportedStock(String stockNameOrId) {
 		boolean isSupportedStock = false;
 		
-		boolean isName = false;
-		try {
-			Integer.parseInt(stockNameOrId);
-		}
-		catch (Exception e) {
-			isName = true;
-		}
+		boolean isName = !StringUtils.isNumeric(stockNameOrId);
+
 		if (isName) {
 			TseStock tseStock = tseStockRepo.findByName(stockNameOrId);
 			if (tseStock != null) {
@@ -118,13 +114,7 @@ public class StockService {
 	
 	@SuppressWarnings("unchecked")
 	public String getStockPriceByNameOrId(String stockNameOrId) {
-		boolean isName = false;
-		try {
-			Integer.parseInt(stockNameOrId);
-		}
-		catch (Exception e) {
-			isName = true;
-		}
+		boolean isName = !StringUtils.isNumeric(stockNameOrId);
 		
 		String[] exChAndName = null;
 		if (isName) {

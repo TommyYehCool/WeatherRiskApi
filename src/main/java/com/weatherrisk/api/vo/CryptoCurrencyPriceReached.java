@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PriceReached {
+public class CryptoCurrencyPriceReached {
 	private CurrencyCnst currency;
 	private BigDecimal lowerPrice;
 	private BigDecimal upperPrice;

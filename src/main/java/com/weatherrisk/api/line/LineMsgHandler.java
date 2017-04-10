@@ -47,7 +47,8 @@ import com.weatherrisk.api.service.parkinglot.ParkingLotService;
 import com.weatherrisk.api.service.receiptreward.ReceiptRewardService;
 import com.weatherrisk.api.service.stock.StockService;
 import com.weatherrisk.api.service.weather.CwbService;
-import com.weatherrisk.api.vo.PriceReached;
+import com.weatherrisk.api.vo.CryptoCurrencyPriceReached;
+import com.weatherrisk.api.vo.StockPriceReached;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
 import lombok.NonNull;
@@ -283,7 +284,11 @@ public class LineMsgHandler {
     				queryResult = "你輸入的商品不支援 (" + stockNameOrId + ")";
     			}
     			else {
-    				// TODO
+    				BigDecimal lowerPrice = new BigDecimal(Double.parseDouble(split[1]));
+					BigDecimal upperPrice = new BigDecimal(Double.parseDouble(split[2]));
+					StockPriceReached stockPriceReached = new StockPriceReached(stockNameOrId, lowerPrice, upperPrice);
+					
+					// TODO 註冊
     			}
     		}
     	}
@@ -305,8 +310,8 @@ public class LineMsgHandler {
     					CurrencyCnst currency = CurrencyCnst.convert(code);
     					BigDecimal lowerPrice = new BigDecimal(Double.parseDouble(split[1]));
     					BigDecimal upperPrice = new BigDecimal(Double.parseDouble(split[2]));
-    					PriceReached priceReached = new PriceReached(currency, lowerPrice, upperPrice);
-						registerService.register(userId, priceReached);
+    					CryptoCurrencyPriceReached priceReached = new CryptoCurrencyPriceReached(currency, lowerPrice, upperPrice);
+						registerService.registerCryptoCurrency(userId, priceReached);
 						queryResult = "註冊 " + currency + " 到價通知成功, 價格: " + lowerPrice.doubleValue() + " ~ " + upperPrice.doubleValue();
     				}
     				catch (Exception e) {
@@ -324,9 +329,9 @@ public class LineMsgHandler {
 			}
 			else {
 				CurrencyCnst currency = CurrencyCnst.convert(cryptoCurrency);
-				boolean hasRegistered = registerService.hasRegistered(userId, currency);
+				boolean hasRegistered = registerService.hasRegisteredCryptoCurrency(userId, currency);
 				if (hasRegistered) {
-					registerService.unregister(userId, currency);
+					registerService.unregisterCryptoCurrency(userId, currency);
 					queryResult = "取消註冊 " + currency + " 成功";
 				}
 				else {
@@ -336,9 +341,9 @@ public class LineMsgHandler {
     	}
     	// 查詢註冊虛擬貨幣匯率到價通知
     	else if (inputMsg.equals("查詢註冊")) {
-    		boolean hasRegistered = registerService.hasRegistered(userId);
+    		boolean hasRegistered = registerService.hasRegisteredCryptoCurrency(userId);
     		if (hasRegistered) {
-    			queryResult = registerService.getPricesReachedInfos(userId);
+    			queryResult = registerService.getCryptoCurrencyPricesReachedInfos(userId);
     		}
     		else {
     			queryResult = "您未註冊任何到價通知";

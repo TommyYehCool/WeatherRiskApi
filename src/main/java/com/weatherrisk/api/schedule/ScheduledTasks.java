@@ -17,7 +17,7 @@ import com.linecorp.bot.model.message.TextMessage;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.service.currency.CurrencyService;
 import com.weatherrisk.api.service.currency.RegisterService;
-import com.weatherrisk.api.vo.PriceReached;
+import com.weatherrisk.api.vo.CryptoCurrencyPriceReached;
 
 /**
  * <pre>
@@ -86,12 +86,12 @@ public class ScheduledTasks {
     }
     
 	private void checkPriceAndSendPushMessage(CurrencyCnst baseCurrency, CurrencyPair currencyPair, BigDecimal lastPrice) {
-		Map<String, List<PriceReached>> registerInfos = registerService.getRegisterInfos();
+		Map<String, List<CryptoCurrencyPriceReached>> registerInfos = registerService.getCryptoCurrencyRegisterInfos();
 		
 		String[] userIds = registerInfos.keySet().toArray(new String[0]);
 		for (String userId : userIds) {
-			List<PriceReached> pricesReached = registerInfos.get(userId);
-			for (PriceReached priceReached : pricesReached) {
+			List<CryptoCurrencyPriceReached> pricesReached = registerInfos.get(userId);
+			for (CryptoCurrencyPriceReached priceReached : pricesReached) {
 				if (priceReached.getCurrency().equals(baseCurrency)) {
 					BigDecimal lowerPrice = priceReached.getLowerPrice();
 					BigDecimal upperPrice = priceReached.getUpperPrice();
