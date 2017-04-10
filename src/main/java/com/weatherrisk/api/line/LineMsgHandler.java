@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.tomcat.util.net.SocketEvent;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,6 @@ import com.weatherrisk.api.cnst.AmbassadorTheater;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.cnst.MiramarTheater;
 import com.weatherrisk.api.cnst.ShowTimeTheater;
-import com.weatherrisk.api.cnst.StockType;
 import com.weatherrisk.api.cnst.UBikeCity;
 import com.weatherrisk.api.cnst.ViewshowTheater;
 import com.weatherrisk.api.cnst.WovieTheater;

@@ -2,7 +2,6 @@ package com.weatherrisk.api.service.stock;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -108,17 +107,16 @@ public class StockService {
 		try {
 			HttpClient client = HttpClientBuilder.create().build();
 			
-			HttpGet request = new HttpGet("http://mis.twse.com.tw/stock");
+			String getSessionUrl = stockConfig.getSessionIdUrl();
+			HttpGet request = new HttpGet(getSessionUrl);
 			HttpResponse response = client.execute(request);
 	
 			String setCookie = response.getFirstHeader("Set-Cookie").getValue();
 			String jsessionId = setCookie.split("; ")[0];
 			
-			long systemTime = System.currentTimeMillis();
-			String url = "http://mis.twse.com.tw/stock/api/getStockInfo.jsp?json=1&delay=0&ex_ch={0}&_=" + systemTime;
-			url = MessageFormat.format(url, ex_ch);
+			String getPriceUrl = stockConfig.getPriceUrl(ex_ch);
 			
-			request = new HttpGet(url);
+			request = new HttpGet(getPriceUrl);
 			request.addHeader("Cookie", jsessionId);
 			
 			response = client.execute(request);
