@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.tomcat.util.net.SocketEvent;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -284,11 +283,16 @@ public class LineMsgHandler {
     				queryResult = "你輸入的商品不支援 (" + stockNameOrId + ")";
     			}
     			else {
-    				BigDecimal lowerPrice = new BigDecimal(Double.parseDouble(split[1]));
-					BigDecimal upperPrice = new BigDecimal(Double.parseDouble(split[2]));
-					StockPriceReached stockPriceReached = new StockPriceReached(stockNameOrId, lowerPrice, upperPrice);
-					
-					// TODO 註冊
+    				try {
+	    				BigDecimal lowerPrice = new BigDecimal(Double.parseDouble(split[1]));
+						BigDecimal upperPrice = new BigDecimal(Double.parseDouble(split[2]));
+						StockPriceReached stockPriceReached = new StockPriceReached(stockNameOrId, lowerPrice, upperPrice);
+						registerService.registerStock(userId, stockPriceReached);
+						queryResult = "註冊 " + stockNameOrId + " 到價通知成功, 價格: " + lowerPrice.doubleValue() + " ~ " + upperPrice.doubleValue();
+    				}
+    				catch (Exception e) {
+    					queryResult = "格式範例 => 註冊股票 艾訊 60 65"; 
+    				}
     			}
     		}
     	}
@@ -315,10 +319,14 @@ public class LineMsgHandler {
 						queryResult = "註冊 " + currency + " 到價通知成功, 價格: " + lowerPrice.doubleValue() + " ~ " + upperPrice.doubleValue();
     				}
     				catch (Exception e) {
-    					queryResult = "格式範例 => Ex: 註冊eth 40 50"; 
+    					queryResult = "格式範例 => 註冊eth 40 50"; 
     				}
     			}
     		}
+    	}
+    	// 取消股票到價通知
+    	else if (inputMsg.startsWith("取消股票")) {
+    		// TODO 取消股票到價通知
     	}
     	// 取消虛擬貨幣匯率到價通知
     	else if (inputMsg.startsWith("取消")) {
@@ -338,6 +346,10 @@ public class LineMsgHandler {
 					queryResult = "您未註冊 " + currency + " 到價通知";
 				}
 			}
+    	}
+    	// 查詢註冊股票到價通知
+    	else if (inputMsg.equals("查詢股票註冊")) {
+    		// TODO 查詢註冊股票到價通知
     	}
     	// 查詢註冊虛擬貨幣匯率到價通知
     	else if (inputMsg.equals("查詢註冊")) {

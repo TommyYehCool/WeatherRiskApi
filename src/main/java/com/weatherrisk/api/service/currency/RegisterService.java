@@ -13,13 +13,20 @@ import org.springframework.stereotype.Service;
 
 import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.vo.CryptoCurrencyPriceReached;
+import com.weatherrisk.api.vo.StockPriceReached;
 
 @Service
 public class RegisterService {
 	
 	private Logger logger = LoggerFactory.getLogger(RegisterService.class);
-
+	/**
+	 * 數位貨幣註冊紀錄
+	 */
 	private Map<String, List<CryptoCurrencyPriceReached>> cryptoCurrencyRegisterMap = Collections.synchronizedMap(new HashMap<>());
+	/**
+	 * 股票註冊紀錄
+	 */
+	private Map<String, List<StockPriceReached>> stockRegisterMap = Collections.synchronizedMap(new HashMap<>());
 	
 	public void registerCryptoCurrency(String userId, CryptoCurrencyPriceReached priceReached) {
 		List<CryptoCurrencyPriceReached> pricesReached;
@@ -46,6 +53,31 @@ public class RegisterService {
 		logger.info("UserId: <{}>, 註冊: {}", userId, pricesReached);
 	}
 	
+	public void registerStock(String userId, StockPriceReached stockPriceReached) {
+		List<StockPriceReached> pricesReached;
+		if (!this.stockRegisterMap.containsKey(userId)) {
+			pricesReached = new ArrayList<>();
+			pricesReached.add(stockPriceReached);
+			this.stockRegisterMap.put(userId, pricesReached);
+		}
+		else {
+			pricesReached = this.stockRegisterMap.get(userId);
+			
+			// 移除已經存在的股票價格區間
+			Iterator<StockPriceReached> it = pricesReached.iterator();
+			while (it.hasNext()) {
+				StockPriceReached existedPriceReached = it.next();
+				if (existedPriceReached.getStockNameOrId().equals(stockPriceReached.getStockNameOrId())) {
+					it.remove();
+				}
+			}
+			
+			pricesReached.add(stockPriceReached);
+		}
+		
+		logger.info("UserId: <{}>, 註冊: {}", userId, pricesReached);
+	}
+
 	public void unregisterCryptoCurrency(String userId, CurrencyCnst currency) {
 		List<CryptoCurrencyPriceReached> pricesReached = this.cryptoCurrencyRegisterMap.get(userId);
 		Iterator<CryptoCurrencyPriceReached> it = pricesReached.iterator();
@@ -64,8 +96,35 @@ public class RegisterService {
 		}
 	}
 	
+	public void unregisterStockPrice(String userId, String stockNameOrId) {
+		List<StockPriceReached> pricesReached = this.stockRegisterMap.get(userId);
+		Iterator<StockPriceReached> it = pricesReached.iterator();
+		while (it.hasNext()) {
+			StockPriceReached priceReached = it.next();
+			if (priceReached.getStockNameOrId().equals(stockNameOrId)) {
+				it.remove();
+			}
+		}
+		if (pricesReached.size() == 0) {
+			this.stockRegisterMap.remove(userId);
+			logger.info("UserId: <{}>, 取消所有到價通知", userId);
+		}
+		else {
+			logger.info("UserId: <{}>, 仍有註冊: {}", userId, pricesReached);
+		}
+	}
+
 	public boolean hasRegisteredCryptoCurrency(String userId) {
 		if (this.cryptoCurrencyRegisterMap.containsKey(userId)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public boolean hasRegisteredStock(String userId) {
+		if (this.stockRegisterMap.containsKey(userId)) {
 			return true;
 		}
 		else {
@@ -88,6 +147,21 @@ public class RegisterService {
 		}
 	}
 	
+	public boolean hasRegisteredStock(String userId, String stockNameOrId) {
+		if (this.stockRegisterMap.containsKey(userId)) {
+			List<StockPriceReached> pricesReached = this.stockRegisterMap.get(userId);
+			for (StockPriceReached priceReached : pricesReached) {
+				if (priceReached.getStockNameOrId().equals(stockNameOrId)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	public String getCryptoCurrencyPricesReachedInfos(String userId) {
 		List<CryptoCurrencyPriceReached> pricesReached = this.cryptoCurrencyRegisterMap.get(userId);
 		StringBuilder buffer = new StringBuilder();
@@ -99,7 +173,22 @@ public class RegisterService {
 		return buffer.toString();
 	}
 	
+	public String getStockPricesReachedInfos(String userId) {
+		List<StockPriceReached> pricesReached = this.stockRegisterMap.get(userId);
+		StringBuilder buffer = new StringBuilder();
+		for (StockPriceReached priceReached : pricesReached) {
+			buffer.append("股票: ").append(priceReached.getStockNameOrId()).append(" => ");
+			buffer.append(priceReached.getLowerPrice().doubleValue()).append(" ~ ").append(priceReached.getUpperPrice().doubleValue());
+			buffer.append("\n");
+		}
+		return buffer.toString();
+	}
+	
 	public Map<String, List<CryptoCurrencyPriceReached>> getCryptoCurrencyRegisterInfos() {
 		return this.cryptoCurrencyRegisterMap;
+	}
+
+	public Map<String, List<StockPriceReached>> getStockRegisterInfos() {
+		return this.stockRegisterMap;
 	}
 }
