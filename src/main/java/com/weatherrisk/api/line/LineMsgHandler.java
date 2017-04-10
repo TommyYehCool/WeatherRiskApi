@@ -268,12 +268,24 @@ public class LineMsgHandler {
     			queryResult = currencyService.getRealCurrencyRatesFromTaiwanBank(currency);
     		}
     	}
+    	// 註冊股票到價通知
+    	else if (inputMsg.startsWith("註冊股票")) {
+    		String stockNameOrIdAndPrice = inputMsg.substring(inputMsg.indexOf("註冊股票") + "註冊股票".length(), inputMsg.length()).trim();
+    		String[] split = stockNameOrIdAndPrice.split(" ");
+    		if (split.length != 3) {
+    			queryResult = "格式範例 => 註冊 艾訊 60 65";
+    		}
+    		else {
+    			// TODO 股票到價通知
+    			queryResult = "格式正確，功能尚未實作";
+    		}
+    	}
     	// 註冊虛擬貨幣匯率到價通知
     	else if (inputMsg.startsWith("註冊")) {
     		String cryptoCurrencyAndPrice = inputMsg.substring(inputMsg.indexOf("註冊") + "註冊".length(), inputMsg.length()).trim();
     		String[] split = cryptoCurrencyAndPrice.split(" ");
     		if (split.length != 3) {
-    			queryResult = "格式範例 => Ex: 註冊eth 40 50";
+    			queryResult = "格式範例 => 註冊 eth 40 50";
     		}
     		else {
     			String code = split[0].trim();
