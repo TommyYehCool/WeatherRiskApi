@@ -17,6 +17,7 @@ import com.linecorp.bot.model.message.TextMessage;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.service.currency.CurrencyService;
 import com.weatherrisk.api.service.currency.RegisterService;
+import com.weatherrisk.api.service.stock.StockService;
 import com.weatherrisk.api.vo.CryptoCurrencyPriceReached;
 
 /**
@@ -50,6 +51,9 @@ public class ScheduledTasks {
     private CurrencyService currencyService;
     
     @Autowired
+    private StockService stockService;
+    
+    @Autowired
     private RegisterService registerService;
     
     @Autowired
@@ -68,6 +72,11 @@ public class ScheduledTasks {
     @Scheduled(cron = CRON_SCHEDULED)
     public void getLTCPrice() {
     	getCryptoCurrencyLastPriceFromBtcE(CurrencyCnst.LTC, CurrencyPair.LTC_USD);
+    }
+    
+    @Scheduled(cron = CRON_SCHEDULED)
+    public void getRegisteredStockPrice() {
+    	// TODO 排程取得所有有註冊的股票價格
     }
     
     private void getCryptoCurrencyLastPriceFromBtcE(CurrencyCnst baseCurrency, CurrencyPair currencyPair) {

@@ -177,7 +177,7 @@ public class RegisterService {
 		List<StockPriceReached> pricesReached = this.stockRegisterMap.get(userId);
 		StringBuilder buffer = new StringBuilder();
 		for (StockPriceReached priceReached : pricesReached) {
-			buffer.append("股票: ").append(priceReached.getStockNameOrId()).append(" => ");
+			buffer.append(priceReached.getStockNameOrId()).append(" => ");
 			buffer.append(priceReached.getLowerPrice().doubleValue()).append(" ~ ").append(priceReached.getUpperPrice().doubleValue());
 			buffer.append("\n");
 		}
