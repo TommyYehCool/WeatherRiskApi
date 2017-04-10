@@ -326,7 +326,21 @@ public class LineMsgHandler {
     	}
     	// 取消股票到價通知
     	else if (inputMsg.startsWith("取消股票")) {
-    		// TODO 取消股票到價通知
+    		String stockNameOrId = inputMsg.substring(inputMsg.indexOf("取消股票") + "取消股票".length(), inputMsg.length()).trim();
+    		boolean isSupportedStock = stockService.isSupportedStock(stockNameOrId);
+			if (!isSupportedStock) {
+				queryResult = "你輸入的商品不支援 (" + stockNameOrId + ")";
+			}
+			else {
+				boolean hasRegistered = registerService.hasRegisteredStock(userId, stockNameOrId);
+				if (hasRegistered) {
+					registerService.unregisterStockPrice(userId, stockNameOrId);
+					queryResult = "取消註冊 " + stockNameOrId + " 成功";
+				}
+				else {
+					queryResult = "您未註冊 " + stockNameOrId + " 到價通知";
+				}
+			}
     	}
     	// 取消虛擬貨幣匯率到價通知
     	else if (inputMsg.startsWith("取消")) {
@@ -349,7 +363,13 @@ public class LineMsgHandler {
     	}
     	// 查詢註冊股票到價通知
     	else if (inputMsg.equals("查詢股票註冊")) {
-    		// TODO 查詢註冊股票到價通知
+    		boolean hasRegistered = registerService.hasRegisteredStock(userId);
+    		if (hasRegistered) {
+    			queryResult = registerService.getStockPricesReachedInfos(userId);
+    		}
+    		else {
+    			queryResult = "您未註冊任何到價通知";
+    		}
     	}
     	// 查詢註冊虛擬貨幣匯率到價通知
     	else if (inputMsg.equals("查詢註冊")) {
