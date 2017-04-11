@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +21,7 @@ import com.weatherrisk.api.service.currency.CurrencyService;
 import com.weatherrisk.api.service.currency.RegisterService;
 import com.weatherrisk.api.service.stock.StockService;
 import com.weatherrisk.api.vo.CryptoCurrencyPriceReached;
+import com.weatherrisk.api.vo.StockPriceReached;
 
 /**
  * <pre>
@@ -83,16 +83,16 @@ public class ScheduledTasks {
     	Iterator<String> it = allRegisteredStockNameOrId.iterator();
     	while (it.hasNext()) {
     		String stockNameOrId = it.next();
-    		Double matchPrice = stockService.getStockMatchPriceByNameOrId(stockNameOrId);
+    		BigDecimal matchPrice = stockService.getStockMatchPriceByNameOrId(stockNameOrId);
     		if (matchPrice == null) {
     			logger.error("Get stock match price got problem, stockNameOrId: <{}>", stockNameOrId);
     			continue;
     		}
-    		// TODO
+    		checkStockPriceAndSendPushMessage(stockNameOrId, matchPrice);
     	}
     }
     
-    private void getCryptoCurrencyLastPriceFromBtcE(CurrencyCnst baseCurrency, CurrencyPair currencyPair) {
+	private void getCryptoCurrencyLastPriceFromBtcE(CurrencyCnst baseCurrency, CurrencyPair currencyPair) {
     	try {
     		logger.info(">>>>> Prepare to get {} price from BTC-E...", baseCurrency);
 
@@ -100,14 +100,14 @@ public class ScheduledTasks {
 
 			logger.info("<<<<< Get {} price from BTC-E done, price: {}", baseCurrency, lastPrice);
 
-			checkPriceAndSendPushMessage(baseCurrency, currencyPair, lastPrice);
+			checkCryptoCurrencyPriceAndSendPushMessage(baseCurrency, currencyPair, lastPrice);
 			
 		} catch (Exception e) {
 			logger.info("Exception raised while getting {} price from BTC-E", baseCurrency, e);
 		}
     }
     
-	private void checkPriceAndSendPushMessage(CurrencyCnst baseCurrency, CurrencyPair currencyPair, BigDecimal lastPrice) {
+	private void checkCryptoCurrencyPriceAndSendPushMessage(CurrencyCnst baseCurrency, CurrencyPair currencyPair, BigDecimal lastPrice) {
 		Map<String, List<CryptoCurrencyPriceReached>> registerInfos = registerService.getCryptoCurrencyRegisterInfos();
 		
 		String[] userIds = registerInfos.keySet().toArray(new String[0]);
@@ -124,6 +124,31 @@ public class ScheduledTasks {
 					}
 					else if (lastPrice.doubleValue() >= upperPrice.doubleValue()) {
 						String pushMsg = currencyPair.toString() + " 目前價格: " + lastPrice.doubleValue() + " 大於 " + upperPrice.doubleValue() + " 該賣出囉!!";
+						sendPushMessage(userId, pushMsg);
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	private void checkStockPriceAndSendPushMessage(String stockNameOrId, BigDecimal matchPrice) {
+		Map<String, List<StockPriceReached>> registerInfos = registerService.getStockRegisterInfos();
+		
+		String[] userIds = registerInfos.keySet().toArray(new String[0]);
+		for (String userId : userIds) {
+			List<StockPriceReached> pricesReached = registerInfos.get(userId);
+			for (StockPriceReached priceReached : pricesReached) {
+				if (priceReached.getStockNameOrId().equals(stockNameOrId)) {
+					BigDecimal lowerPrice = priceReached.getLowerPrice();
+					BigDecimal upperPrice = priceReached.getUpperPrice();
+					if (matchPrice.doubleValue() <= lowerPrice.doubleValue()) {
+						String pushMsg = stockNameOrId + " 目前成交價: " + matchPrice.doubleValue() + " 小於 " + lowerPrice.doubleValue();
+						sendPushMessage(userId, pushMsg);
+						break;
+					}
+					else if (matchPrice.doubleValue() >= upperPrice.doubleValue()) {
+						String pushMsg = stockNameOrId + " 目前成交價: " + matchPrice.doubleValue() + " 大於 " + upperPrice.doubleValue() + " 該賣出囉!!";
 						sendPushMessage(userId, pushMsg);
 						break;
 					}

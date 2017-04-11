@@ -23,11 +23,11 @@ public class RegisterService {
 	
 	private Logger logger = LoggerFactory.getLogger(RegisterService.class);
 	/**
-	 * 數位貨幣註冊紀錄
+	 * 數位貨幣註冊紀錄, key: userId
 	 */
 	private Map<String, List<CryptoCurrencyPriceReached>> cryptoCurrencyRegisterMap = Collections.synchronizedMap(new HashMap<>());
 	/**
-	 * 股票註冊紀錄
+	 * 股票註冊紀錄, key: userId
 	 */
 	private Map<String, List<StockPriceReached>> stockRegisterMap = Collections.synchronizedMap(new HashMap<>());
 	

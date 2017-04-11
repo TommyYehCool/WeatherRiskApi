@@ -1,5 +1,6 @@
 package com.weatherrisk.api.service.stock;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -142,7 +143,7 @@ public class StockService {
 		return buffer.toString();
 	}
 	
-	public Double getStockMatchPriceByNameOrId(String stockNameOrId) {
+	public BigDecimal getStockMatchPriceByNameOrId(String stockNameOrId) {
 		String[] exChAndName = getExChAndNameByNameOrId(stockNameOrId);
 		if (exChAndName == null) {
 			return null;
@@ -160,7 +161,7 @@ public class StockService {
 		
 		String match = (String) dataMap.get("z");
 		
-		return new Double(match);
+		return new BigDecimal(match);
 	}
 
 	@SuppressWarnings("unchecked")

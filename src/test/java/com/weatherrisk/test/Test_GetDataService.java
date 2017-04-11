@@ -1,6 +1,7 @@
 package com.weatherrisk.test;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.FixMethodOrder;
@@ -251,7 +252,7 @@ public class Test_GetDataService {
 	
 	@Test
 	public void test_28_StockService_getStockMatchPriceByNameOrId() {
-		Double result = stockService.getStockMatchPriceByNameOrId("鴻海");
+		BigDecimal result = stockService.getStockMatchPriceByNameOrId("鴻海");
 		System.out.println(result);
 	}
 }

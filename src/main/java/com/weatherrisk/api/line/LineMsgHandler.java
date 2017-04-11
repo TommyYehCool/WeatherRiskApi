@@ -194,6 +194,12 @@ public class LineMsgHandler {
     	buffer.append("更新股票資料檔 => Ex: 更新股票").append("\n");
     	buffer.append("查詢股票目前成交價 => Ex: 股票艾訊, 股票3088").append("\n");
     	buffer.append("-----------------------").append("\n");
+    	buffer.append("[註冊股票到價通知]").append("\n");
+    	buffer.append("註冊股票到價通知 => Ex: 註冊股票 3088 40 50").append("\n");
+    	buffer.append("\n");
+    	buffer.append("取消股票到價通知 => Ex: 取消股票 3088").append("\n");
+    	buffer.append("\n");
+    	buffer.append("查詢註冊股票到價通知資訊 => Ex: 查詢股票註冊").append("\n");
     	
     	return buffer.toString();
 	}
