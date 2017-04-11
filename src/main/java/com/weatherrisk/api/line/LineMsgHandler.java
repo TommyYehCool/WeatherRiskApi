@@ -520,7 +520,7 @@ public class LineMsgHandler {
     	// 股票價格
     	else if (inputMsg.startsWith("股票")) {
     		String stockNameOrId = inputMsg.substring(inputMsg.indexOf("股票") + "股票".length(), inputMsg.length()).trim();
-    		queryResult = stockService.getStockPriceByNameOrId(stockNameOrId);
+    		queryResult = stockService.getStockPriceStrByNameOrId(stockNameOrId);
     	}
     	// 其他判斷
     	else {

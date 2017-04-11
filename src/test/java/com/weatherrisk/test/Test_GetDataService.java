@@ -241,12 +241,17 @@ public class Test_GetDataService {
 	}
 	
 	@Test
-	public void test_27_StockService_getStockPriceByNameOrId() {
-		String queryResult = stockService.getStockPriceByNameOrId("3088");
+	public void test_27_StockService_getStockPriceStrByNameOrId() {
+		String queryResult = stockService.getStockPriceStrByNameOrId("3088");
 		System.out.println(queryResult);
 		
-		queryResult = stockService.getStockPriceByNameOrId("鴻海");
+		queryResult = stockService.getStockPriceStrByNameOrId("鴻海");
 		System.out.println(queryResult);
 	}
 	
+	@Test
+	public void test_28_StockService_getStockMatchPriceByNameOrId() {
+		Double result = stockService.getStockMatchPriceByNameOrId("鴻海");
+		System.out.println(result);
+	}
 }

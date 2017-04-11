@@ -83,13 +83,12 @@ public class ScheduledTasks {
     	Iterator<String> it = allRegisteredStockNameOrId.iterator();
     	while (it.hasNext()) {
     		String stockNameOrId = it.next();
-    		boolean isName = !StringUtils.isNumeric(stockNameOrId);
-    		if (isName) {
-    			
+    		Double matchPrice = stockService.getStockMatchPriceByNameOrId(stockNameOrId);
+    		if (matchPrice == null) {
+    			logger.error("Get stock match price got problem, stockNameOrId: <{}>", stockNameOrId);
+    			continue;
     		}
-    		else {
-    			
-    		}
+    		// TODO
     	}
     }
     

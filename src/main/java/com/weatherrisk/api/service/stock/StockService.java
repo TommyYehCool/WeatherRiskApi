@@ -1,6 +1,5 @@
 package com.weatherrisk.api.service.stock;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,30 +51,31 @@ public class StockService {
 			getTseStockInfo();
 			getOtcStockInfo();
 		} catch (Exception e) {
-			logger.error("Exception raised while refresh TSE and OTC stock info", e);
+			logger.error("Exception raised while refreshing TSE and OTC stock info", e);
 		}
 	}
 	
-	private String[] getExChAndNameByName(String name) {
-		TseStock tseStock = tseStockRepo.findByName(name);
-		if (tseStock != null) {
-			return new String[] {"tse_" + tseStock.getId() + ".tw", tseStock.getName() + " (" + tseStock.getId() + ")"};
+	private String[] getExChAndNameByNameOrId(String stockNameOrId) {
+		boolean isName = !StringUtils.isNumeric(stockNameOrId);
+		if (isName) {
+			TseStock tseStock = tseStockRepo.findByName(stockNameOrId);
+			if (tseStock != null) {
+				return new String[] {"tse_" + tseStock.getId() + ".tw", tseStock.getName() + " (" + tseStock.getId() + ")"};
+			}
+			OtcStock otcStock = otcStockRepo.findByName(stockNameOrId);
+			if (otcStock != null) {
+				return new String[] {"otc_" + otcStock.getId() + ".tw", otcStock.getName() + " (" + otcStock.getId() + ")"};
+			}
 		}
-		OtcStock otcStock = otcStockRepo.findByName(name);
-		if (otcStock != null) {
-			return new String[] {"otc_" + otcStock.getId() + ".tw", otcStock.getName() + " (" + otcStock.getId() + ")"};
-		}
-		return null;
-	}
-	
-	private String[] getExChAndNameById(String id) {
-		TseStock tseStock = tseStockRepo.findById(id);
-		if (tseStock != null) {
-			return new String[] {"tse_" + id + ".tw", tseStock.getName() + " (" + tseStock.getId() + ")"};
-		}
-		OtcStock otcStock = otcStockRepo.findById(id);
-		if (otcStock != null) {
-			return new String[] {"otc_" + id + ".tw", otcStock.getName() + " (" + otcStock.getId() + ")"};
+		else {
+			TseStock tseStock = tseStockRepo.findById(stockNameOrId);
+			if (tseStock != null) {
+				return new String[] {"tse_" + tseStock.getId() + ".tw", tseStock.getName() + " (" + tseStock.getId() + ")"};
+			}
+			OtcStock otcStock = otcStockRepo.findById(stockNameOrId);
+			if (otcStock != null) {
+				return new String[] {"otc_" + otcStock.getId() + ".tw", otcStock.getName() + " (" + otcStock.getId() + ")"};
+			}
 		}
 		return null;
 	}
@@ -112,18 +112,8 @@ public class StockService {
 		return isSupportedStock;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public String getStockPriceByNameOrId(String stockNameOrId) {
-		boolean isName = !StringUtils.isNumeric(stockNameOrId);
-		
-		String[] exChAndName = null;
-		if (isName) {
-			exChAndName = getExChAndNameByName(stockNameOrId);
-		}
-		else {
-			exChAndName = getExChAndNameById(stockNameOrId);
-		}
-		
+	public String getStockPriceStrByNameOrId(String stockNameOrId) {
+		String[] exChAndName = getExChAndNameByNameOrId(stockNameOrId);
 		if (exChAndName == null) {
 			return "你輸入的代號: " + stockNameOrId + ", 找不到對應資料";
 		}
@@ -131,56 +121,80 @@ public class StockService {
 		String ex_ch = exChAndName[0];
 		String name = exChAndName[1];
 		
+		Map<?, ?> dataMap = null;
 		try {
-			HttpClient client = HttpClientBuilder.create().build();
-			
-			// 先發 request 取得 sessionId
-			String getSessionUrl = stockConfig.getSessionIdUrl();
-			HttpGet request = new HttpGet(getSessionUrl);
-			HttpResponse response = client.execute(request);
-	
-			String setCookie = response.getFirstHeader("Set-Cookie").getValue();
-			String jsessionId = setCookie.split("; ")[0];
-
-			// 將取得的 sessionId 塞進 cookie, 打取得價錢的 url
-			String getPriceUrl = stockConfig.getPriceUrl(ex_ch);
-			request = new HttpGet(getPriceUrl);
-			request.addHeader("Cookie", jsessionId);
-			response = client.execute(request);
-			
-			HttpEntity entity = response.getEntity();
-			
-			String json = EntityUtils.toString(entity, StandardCharsets.UTF_8);
-			json = json.replaceAll("\r\n", "").trim();
-
-			Map<String, ?> map = new HashMap<>();
-
-			ObjectMapper objectMapper = new ObjectMapper();
-			try {
-				map = objectMapper.readValue(json, HashMap.class);
-			} catch (IOException e) {
-				logger.error("IOException raised while read json string to hashmap", e);
-				return "抓取股票價格失敗";
-			}
-			
-			List<?> msgArray = (List<?>) map.get("msgArray");
-			Map<?, ?> dataMap = (Map<?, ?>) msgArray.get(0);
-			
-			String high = (String) dataMap.get("h");
-			String low = (String) dataMap.get("l");
-			String match = (String) dataMap.get("z");
-			
-			StringBuilder buffer = new StringBuilder();
-			buffer.append(name).append("\n");
-			buffer.append("最高價: ").append(high).append("\n");
-			buffer.append("成交價: ").append(match).append("\n");
-			buffer.append("最低價: ").append(low).append("\n");
-			
-			return buffer.toString();
+			dataMap = sendRequestToGetDataMap(ex_ch);
 		} catch (Exception e) {
-			logger.error("Exception raised while get newest stock price", e);
+			logger.error("Exception raised while trying to get newest stock price", e);
 			return "抓取最新股價失敗";
 		}
+			
+		String high = (String) dataMap.get("h");
+		String low = (String) dataMap.get("l");
+		String match = (String) dataMap.get("z");
+		
+		StringBuilder buffer = new StringBuilder();
+		buffer.append(name).append("\n");
+		buffer.append("最高價: ").append(high).append("\n");
+		buffer.append("成交價: ").append(match).append("\n");
+		buffer.append("最低價: ").append(low).append("\n");
+		
+		return buffer.toString();
+	}
+	
+	public Double getStockMatchPriceByNameOrId(String stockNameOrId) {
+		String[] exChAndName = getExChAndNameByNameOrId(stockNameOrId);
+		if (exChAndName == null) {
+			return null;
+		}
+		
+		String ex_ch = exChAndName[0];
+		
+		Map<?, ?> dataMap = null;
+		try {
+			dataMap = sendRequestToGetDataMap(ex_ch);
+		} catch (Exception e) {
+			logger.error("Exception raised while trying to get newest stock price", e);
+			return null;
+		}
+		
+		String match = (String) dataMap.get("z");
+		
+		return new Double(match);
+	}
+
+	@SuppressWarnings("unchecked")
+	private Map<?, ?> sendRequestToGetDataMap(String ex_ch) throws Exception {
+		HttpClient client = HttpClientBuilder.create().build();
+		
+		// 先發 request 取得 sessionId
+		String getSessionUrl = stockConfig.getSessionIdUrl();
+		HttpGet request = new HttpGet(getSessionUrl);
+		HttpResponse response = client.execute(request);
+
+		String setCookie = response.getFirstHeader("Set-Cookie").getValue();
+		String jsessionId = setCookie.split("; ")[0];
+
+		// 將取得的 sessionId 塞進 cookie, 打取得價錢的 url
+		String getPriceUrl = stockConfig.getPriceUrl(ex_ch);
+		request = new HttpGet(getPriceUrl);
+		request.addHeader("Cookie", jsessionId);
+		response = client.execute(request);
+		
+		HttpEntity entity = response.getEntity();
+		
+		String json = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+		json = json.replaceAll("\r\n", "").trim();
+
+		Map<String, ?> map = new HashMap<>();
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		map = objectMapper.readValue(json, HashMap.class);
+		
+		List<?> msgArray = (List<?>) map.get("msgArray");
+		Map<?, ?> dataMap = (Map<?, ?>) msgArray.get(0);
+		
+		return dataMap;
 	}
 
 	private void getTseStockInfo() throws Exception {
