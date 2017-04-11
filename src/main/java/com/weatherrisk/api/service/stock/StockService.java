@@ -143,7 +143,7 @@ public class StockService {
 		return buffer.toString();
 	}
 	
-	public BigDecimal getStockMatchPriceByNameOrId(String stockNameOrId) {
+	public BigDecimal getStockMatchPriceByNameOrId(String stockNameOrId) throws Exception {
 		String[] exChAndName = getExChAndNameByNameOrId(stockNameOrId);
 		if (exChAndName == null) {
 			return null;
@@ -151,13 +151,7 @@ public class StockService {
 		
 		String ex_ch = exChAndName[0];
 		
-		Map<?, ?> dataMap = null;
-		try {
-			dataMap = sendRequestToGetDataMap(ex_ch);
-		} catch (Exception e) {
-			logger.error("Exception raised while trying to get newest stock price", e);
-			return null;
-		}
+		Map<?, ?> dataMap = sendRequestToGetDataMap(ex_ch);
 		
 		String match = (String) dataMap.get("z");
 		

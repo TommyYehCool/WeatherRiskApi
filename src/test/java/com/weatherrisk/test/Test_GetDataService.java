@@ -251,7 +251,7 @@ public class Test_GetDataService {
 	}
 	
 	@Test
-	public void test_28_StockService_getStockMatchPriceByNameOrId() {
+	public void test_28_StockService_getStockMatchPriceByNameOrId() throws Exception {
 		BigDecimal result = stockService.getStockMatchPriceByNameOrId("鴻海");
 		System.out.println(result);
 	}

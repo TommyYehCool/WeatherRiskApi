@@ -83,12 +83,17 @@ public class ScheduledTasks {
     	Iterator<String> it = allRegisteredStockNameOrId.iterator();
     	while (it.hasNext()) {
     		String stockNameOrId = it.next();
-    		BigDecimal matchPrice = stockService.getStockMatchPriceByNameOrId(stockNameOrId);
-    		if (matchPrice == null) {
-    			logger.error("Get stock match price got problem, stockNameOrId: <{}>", stockNameOrId);
-    			continue;
+    		try {
+	    		logger.info(">>>>> Prepare to get stock match price with stockNameOrId: <{}>", stockNameOrId);
+	    		
+	    		BigDecimal matchPrice = stockService.getStockMatchPriceByNameOrId(stockNameOrId);
+	    		
+	    		logger.info("<<<<< Get stock match price with stockNameOrId: <{}> done, match price: {}", stockNameOrId, matchPrice);
+	    		
+	    		checkStockPriceAndSendPushMessage(stockNameOrId, matchPrice);
+    		} catch (Exception e) {
+    			logger.error("Exception raised while trying to get stock match price with stockNameOrId: <{}>", stockNameOrId, e);
     		}
-    		checkStockPriceAndSendPushMessage(stockNameOrId, matchPrice);
     	}
     }
     
@@ -101,9 +106,8 @@ public class ScheduledTasks {
 			logger.info("<<<<< Get {} price from BTC-E done, price: {}", baseCurrency, lastPrice);
 
 			checkCryptoCurrencyPriceAndSendPushMessage(baseCurrency, currencyPair, lastPrice);
-			
 		} catch (Exception e) {
-			logger.info("Exception raised while getting {} price from BTC-E", baseCurrency, e);
+			logger.error("Exception raised while trying to get {} price from BTC-E", baseCurrency, e);
 		}
     }
     
