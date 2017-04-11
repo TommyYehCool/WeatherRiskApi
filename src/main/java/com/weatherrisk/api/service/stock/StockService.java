@@ -224,21 +224,29 @@ public class StockService {
 		if (isName) {
 			TseStock tseStock = tseStockRepo.findByName(stockNameOrId);
 			if (tseStock != null) {
-				return new String[] {"tse_" + tseStock.getId() + ".tw", tseStock.getName() + " (" + tseStock.getId() + ")"};
+				String ex_ch = "tse_" + tseStock.getId() + ".tw";
+				String stockName = tseStock.getName() + " (" + tseStock.getId() + ")";
+				return new String[] {ex_ch, stockName};
 			}
 			OtcStock otcStock = otcStockRepo.findByName(stockNameOrId);
 			if (otcStock != null) {
-				return new String[] {"otc_" + otcStock.getId() + ".tw", otcStock.getName() + " (" + otcStock.getId() + ")"};
+				String ex_ch = "otc_" + otcStock.getId() + ".tw";
+				String stockName = otcStock.getName() + " (" + otcStock.getId() + ")";
+				return new String[] {ex_ch, stockName};
 			}
 		}
 		else {
 			TseStock tseStock = tseStockRepo.findById(stockNameOrId);
 			if (tseStock != null) {
-				return new String[] {"tse_" + tseStock.getId() + ".tw", tseStock.getName() + " (" + tseStock.getId() + ")"};
+				String ex_ch = "tse_" + tseStock.getId() + ".tw";
+				String stockName = tseStock.getName() + " (" + tseStock.getId() + ")";
+				return new String[] {ex_ch, stockName};
 			}
 			OtcStock otcStock = otcStockRepo.findById(stockNameOrId);
 			if (otcStock != null) {
-				return new String[] {"otc_" + otcStock.getId() + ".tw", otcStock.getName() + " (" + otcStock.getId() + ")"};
+				String ex_ch = "otc_" + otcStock.getId() + ".tw";
+				String stockName = otcStock.getName() + " (" + otcStock.getId() + ")";
+				return new String[] {ex_ch, stockName};
 			}
 		}
 		return null;
