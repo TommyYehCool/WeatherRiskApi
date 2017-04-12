@@ -105,11 +105,20 @@ public class Test_Java {
 	}
 	
 	@Test
+	@Ignore
 	public void test_7_testSet() {
 		Set<String> test = new HashSet<>();
 		test.add("123");
 		test.add("123");
 		test.add("456");
 		test.forEach(System.out::println);
+	}
+	
+	@Test
+	public void test_8_testDateFormat() throws ParseException {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		String str = "2017/3/24";
+		Date date = dateFormat.parse(str);
+		System.out.println(date);
 	}
 }

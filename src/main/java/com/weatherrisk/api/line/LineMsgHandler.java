@@ -1,6 +1,8 @@
 package com.weatherrisk.api.line;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,11 +10,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.ReplyMessage;
@@ -200,6 +202,10 @@ public class LineMsgHandler {
     	buffer.append("取消股票到價通知 => Ex: 取消股票 3088").append("\n");
     	buffer.append("\n");
     	buffer.append("查詢註冊股票到價通知資訊 => Ex: 查詢股票註冊").append("\n");
+    	buffer.append("-----------------------").append("\n");
+    	buffer.append("[新增股票買賣資訊]").append("\n");
+    	buffer.append("新增買 => Ex: 2017/3/24 買進 3088 56.8 2000").append("\n");
+    	buffer.append("新增賣 => Ex: 2017/3/24 賣出 3088 60 2000").append("\n");
     	
     	return buffer.toString();
 	}
@@ -528,6 +534,30 @@ public class LineMsgHandler {
     		String stockNameOrId = inputMsg.substring(inputMsg.indexOf("股票") + "股票".length(), inputMsg.length()).trim();
     		queryResult = stockService.getStockPriceStrByNameOrId(stockNameOrId);
     	}
+    	// 新增股票買賣紀錄
+    	else if (inputMsg.contains("買進") || inputMsg.contains("賣出")) {
+    		if (inputMsg.contains("買進")) {
+    			String errorMsg = checkBuySellStockMsg("買進", inputMsg);
+    			if (errorMsg != null) {
+    				queryResult = errorMsg;
+    			}
+    			else {
+    				// TODO 新增股票買進資訊
+    			}
+    		}
+    		else if (inputMsg.contains("賣出")) {
+    			String errorMsg = checkBuySellStockMsg("賣出", inputMsg);
+    			if (errorMsg != null) {
+    				queryResult = errorMsg;
+    			}
+    			else {
+    				// TODO 新增股票賣出資訊
+    			}
+    		}
+    		else {
+    			queryResult = "格式錯誤, Ex: 2017/3/24 買進 3088 56.8 2000";
+    		}
+    	}
     	// 其他判斷
     	else {
     		// 若可轉換為數字
@@ -555,6 +585,52 @@ public class LineMsgHandler {
     	}
     }
 	
+	private String checkBuySellStockMsg(String buySellKeyWord, String inputMsg) {
+		String[] split = inputMsg.split(" ");
+		if (split.length != 5) {
+			return "格式範例: 2017/3/24 " + buySellKeyWord + " 3088 56.8 2000";
+		}
+		else {
+			// check 日期
+			String dateStr = split[0];
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+			try {
+				dateFormat.parse(dateStr);
+			} catch (ParseException e) {
+				return "日期格式為 yyyy/MM/dd";
+			}
+			
+			// check 買進/賣出
+			String buySell = split[1];
+			if (!buySell.equals(buySellKeyWord)) {
+				return "請確認為買進/賣出";
+			}
+			
+			// check 股票
+			String stockNameOrId = split[2];
+			boolean isSupportedStock = stockService.isSupportedStock(stockNameOrId);
+			if (!isSupportedStock) {
+				return "不支援您輸入的股票";
+			}
+			
+			// check 價格
+			String strPrice = split[3];
+			boolean isNumeric = StringUtils.isNumeric(strPrice);
+			if (!isNumeric) {
+				return "請確認輸入的價格";
+			}
+			
+			// check 股數
+			String strShares = split[4];
+			isNumeric = StringUtils.isNumeric(strShares);
+			if (!isNumeric) {
+				return "請確認輸入的股數";
+			}
+		}
+		return null;
+	}
+	
+
 	@EventMapping
     public void handleLocationMessageEvent(MessageEvent<LocationMessageContent> event) {
 		logger.info(">>>>> handle location message event, event: {}", event);
