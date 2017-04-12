@@ -548,7 +548,7 @@ public class LineMsgHandler {
 					String stockNameOrId = split[2];
 					double buyPrice = Double.parseDouble(split[3]);
 					int buyShares = Integer.parseInt(split[4]);
-					stockService.addBuyStock(userId, buyDate, stockNameOrId, buyPrice, buyShares);
+					queryResult = stockService.addBuyStock(userId, buyDate, stockNameOrId, buyPrice, buyShares);
     			}
     		}
     		else if (inputMsg.contains("賣")) {
@@ -557,7 +557,13 @@ public class LineMsgHandler {
     				queryResult = errorMsg;
     			}
     			else {
-    				// TODO 新增股票賣資訊
+    				// 新增股票賣資訊
+    				String[] split = inputMsg.split(" ");
+    				String sellDate = split[0];
+					String stockNameOrId = split[2];
+					double sellPrice = Double.parseDouble(split[3]);
+					int sellShares = Integer.parseInt(split[4]);
+					queryResult = stockService.addSellStock(userId, sellDate, stockNameOrId, sellPrice, sellShares);
     			}
     		}
     		else {

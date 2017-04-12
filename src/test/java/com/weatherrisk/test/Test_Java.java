@@ -129,4 +129,10 @@ public class Test_Java {
 		boolean isNumeric = StringUtils.isNumeric(price);
 		System.out.println(isNumeric);
 	}
+	
+	@Test
+	public void test_10_testContain() {
+		String inputMsg = "2017/3/24 買 3088 56.8 2000";
+		System.out.println(inputMsg.contains("買"));
+	}
 }

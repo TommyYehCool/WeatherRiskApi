@@ -353,4 +353,40 @@ public class StockService {
 
 		return resultMsg;
 	}
+	
+	public String addSellStock(String userId, String sellDate, String stockNameOrId, double sellPrice, int sellShares) {
+		TreasuryStock sellStock = new TreasuryStock();
+		sellStock.setUserId(userId);
+		try {
+			sellStock.setSellDate(sellDate);
+		} catch (ParseException e) {
+			logger.error("Exception raised while paring buyDate, the correct format is 'yyyy/MM/dd'");
+			return "新增失敗, 因日期格式錯誤";
+		}
+
+		Stock stock = getStockByNameOrId(stockNameOrId);
+		if (stock == null) {
+			return "新增失敗, 你輸入的商品: " + stockNameOrId + " 找不到";
+		}
+		
+		sellStock.setStockType(stock.getStockType());
+		sellStock.setId(stock.getId());
+		sellStock.setKey(userId + "-" + stock.getId());
+		sellStock.setName(stock.getName()); 
+		sellStock.setSellPriceAndShares(sellPrice, sellShares);
+		
+		long startTime = System.currentTimeMillis();
+		logger.info(">>>>> Prepare to save sell stock infomation, {}...", sellStock);
+		treasuryStockRepo.save(sellStock);
+		logger.info("<<<<< Save sell stock infomation done, time-spent: <{} ms>", (System.currentTimeMillis() - startTime));
+		
+		StringBuilder buffer = new StringBuilder();
+		buffer.append(sellDate);
+		buffer.append(" 賣出 (").append(stock.getId()).append(")").append(stock.getName());
+		buffer.append(" $").append(sellPrice).append(" ");
+		buffer.append(sellShares).append("股").append(", 資訊儲存成功");
+		String resultMsg = buffer.toString();
+
+		return resultMsg;
+	}
 }
