@@ -76,13 +76,13 @@ public class Test_GetDataService {
 	private StockService stockService;
 	
 	@Test
-	public void test_1_CwbService_getWeatherLittleHelperByCity() {
+	public void test_01_CwbService_getWeatherLittleHelperByCity() {
 		String data = cwbService.getWeatherLitteleHelperByCity("台北市");
 		System.out.println(data);
 	}
 	
 	@Test
-	public void test_2_CwbService_getOneWeekWeatherPrediction() {
+	public void test_02_CwbService_getOneWeekWeatherPrediction() {
 		String data = cwbService.getOneWeekWeatherPrediction("臺北市");
 		System.out.println(data);
 		
@@ -91,13 +91,13 @@ public class Test_GetDataService {
 	}
 	
 	@Test
-	public void test_3_BitcoinService_getBitcoinPriceFromWinkdex() {
+	public void test_03_BitcoinService_getBitcoinPriceFromWinkdex() {
 		String data = bitcoinService.getBitcoinPriceFromWinkdex();
 		System.out.println(data);
 	}
 	
 	@Test
-	public void test_4_BitcoinService_getPriceFromExchanges() {
+	public void test_04_BitcoinService_getPriceFromExchanges() {
 		String data = bitcoinService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.BTC_USD);
 		System.out.println(data);
 		
@@ -106,7 +106,7 @@ public class Test_GetDataService {
 	}
 	
 	@Test
-	public void test_5_BitcoinService_getRatesFromTaiwanBank() throws IOException {
+	public void test_05_BitcoinService_getRatesFromTaiwanBank() throws IOException {
 		String data = bitcoinService.getRealCurrencyRatesFromTaiwanBank(CurrencyCnst.USD);
 		System.out.println(data);
 		
@@ -115,19 +115,19 @@ public class Test_GetDataService {
 	}
 	
 	@Test
-	public void test_6_TaipeiOpenDataService_getNewestUBikeInfo() {
+	public void test_06_TaipeiOpenDataService_getNewestUBikeInfo() {
 		String data = taipeiOpenDataService.getNewestUBikeInfoByNameLike("士林");
 		System.out.println(data);
 	}
 	
 	@Test
-	public void test_7_NewTaipeiOpenDataService_getNewestUBikeInfo() {
+	public void test_07_NewTaipeiOpenDataService_getNewestUBikeInfo() {
 		String data = newTaipeiOpenDataService.getNewestUBikeInfoByNameLike("三重");
 		System.out.println(data);
 	}
 	
 	@Test
-	public void test_8_TaipeiOpenDataService_getNearbyUBikeStations() {
+	public void test_08_TaipeiOpenDataService_getNearbyUBikeStations() {
 		double userLatitude = 25.041861;
 		double userLongitude = 121.554212;
 		List<UBikeInfo> nearbyUBikeStations = taipeiOpenDataService.getNearbyUBikeStations(userLatitude, userLongitude);
@@ -135,7 +135,7 @@ public class Test_GetDataService {
 	}
 	
 	@Test
-	public void test_9_ParkingLotService_findByName() {
+	public void test_09_ParkingLotService_findByName() {
 		String result = parkingLotService.findByNameLike("洛陽");
 		System.out.println(result);
 	}
@@ -266,6 +266,12 @@ public class Test_GetDataService {
 	@Test
 	public void test_30_StockService_addBuyStock() {
 		String result = stockService.addBuyStock("Tommy", "2017/3/24", "3088", 56.8, 2000);
+		System.out.println(result);
+	}
+	
+	@Test
+	public void test_31_StockService_queryTreasuryStock() {
+		String result = stockService.queryTreasuryStock("U8e1ad9783b416aa040e54575e92ef776");
 		System.out.println(result);
 	}
 }

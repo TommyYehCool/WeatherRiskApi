@@ -391,7 +391,20 @@ public class StockService {
 	}
 
 	public String queryTreasuryStock(String userId) {
-		// TODO Auto-generated method stub
-		return null;
+		List<TreasuryStock> treasuryStocks = treasuryStockRepo.findByUserId(userId);
+		
+		StringBuilder buffer = new StringBuilder();
+		for (int i = 0; i < treasuryStocks.size(); i++) {
+			TreasuryStock treasuryStock = treasuryStocks.get(i);
+			buffer.append("(").append(treasuryStock.getId()).append(") ").append(treasuryStock.getName()).append("\n");
+			buffer.append("買進價: ").append(treasuryStock.getBuyPrice()).append("\n");
+			buffer.append("買進股數: ").append(treasuryStock.getBuyShares()).append("\n");
+			buffer.append("金額: ").append(treasuryStock.getBuyMatchAmount());
+			if (i != treasuryStocks.size() - 1) {
+				buffer.append("\n-----------");
+			}
+		}
+		
+		return buffer.toString();
 	}
 }
