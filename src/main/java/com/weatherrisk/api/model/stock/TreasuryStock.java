@@ -1,6 +1,7 @@
 package com.weatherrisk.api.model.stock;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,12 +19,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Document(collection = "treasury_stock")
 public class TreasuryStock {
-
+	
 	@Transient
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 	
+	// 買賣手續費
 	@Transient
 	private final double feePercent = 0.001425;
+	
+	// 賣交易稅
+	@Transient
+	private final double sellTradeTaxPercent = 0.003;
 
 	@Id
 	private String key;
@@ -42,7 +48,7 @@ public class TreasuryStock {
 
 	private long buyShares;
 	
-	private long buyMatchAmount;
+	private double buyMatchAmount;
 
 	private Date sellDate;
 	
@@ -50,30 +56,42 @@ public class TreasuryStock {
 
 	private long sellShares;
 	
-	private long sellMatchAmount;
+	private double sellMatchAmount;
 	
 	public void setBuyDate(String buyDate) throws ParseException {
 		this.buyDate = dateFormat.parse(buyDate);
 	}
 
-	public void setBuyPriceAndShares(double buyPrice, int buyShares) {
+	public void setBuyPriceAndShares(double buyPrice, long buyShares) {
 		this.buyPrice = buyPrice;
 		this.buyShares = buyShares;
 		
-		BigDecimal matchAmountWithoutFee = new BigDecimal(this.buyPrice).multiply(new BigDecimal(this.buyShares));
-		this.buyMatchAmount = matchAmountWithoutFee.add(matchAmountWithoutFee.multiply(new BigDecimal(feePercent))).longValue();
+		BigDecimal bBuyPrice = new BigDecimal(this.buyPrice);
+		BigDecimal bBuyShares = new BigDecimal(this.buyShares);
+		BigDecimal matchAmountWithoutFee = bBuyPrice.multiply(bBuyShares);
+		
+		BigDecimal fee = matchAmountWithoutFee.multiply(new BigDecimal(feePercent)).setScale(0, RoundingMode.FLOOR);
+		
+		this.buyMatchAmount = matchAmountWithoutFee.add(fee).doubleValue();
 	}
 	
 	public void setSellDate(String sellDate) throws ParseException {
 		this.sellDate = dateFormat.parse(sellDate);
 	}
 	
-	public void setSellPriceAndShares(double sellPrice, int sellShares) {
+	public void setSellPriceAndShares(double sellPrice, long sellShares) {
 		this.sellPrice = sellPrice;
 		this.sellShares = sellShares;
 		
-		BigDecimal matchAmountWithoutFee = new BigDecimal(this.sellPrice).multiply(new BigDecimal(this.sellShares));
-		this.sellMatchAmount = matchAmountWithoutFee.subtract(matchAmountWithoutFee.multiply(new BigDecimal(feePercent))).longValue();
+		BigDecimal bSellPrice = new BigDecimal(this.sellPrice);
+		BigDecimal bSellShares = new BigDecimal(this.sellShares);
+		BigDecimal matchAmountWithoutFee = bSellPrice.multiply(bSellShares);
+		
+		BigDecimal fee = matchAmountWithoutFee.multiply(new BigDecimal(feePercent)).setScale(0, RoundingMode.FLOOR);
+		
+		BigDecimal sellTradeTax = matchAmountWithoutFee.multiply(new BigDecimal(sellTradeTaxPercent)).setScale(0, RoundingMode.FLOOR);
+		
+		this.sellMatchAmount = matchAmountWithoutFee.subtract(fee).subtract(sellTradeTax).doubleValue();
 	}
 
 	@Override

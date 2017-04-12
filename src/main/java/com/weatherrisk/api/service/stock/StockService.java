@@ -318,7 +318,7 @@ public class StockService {
 		return dataMap;
 	}
 	
-	public String addBuyStock(String userId, String buyDate, String stockNameOrId, double buyPrice, int buyShares) {
+	public String addBuyStock(String userId, String buyDate, String stockNameOrId, double buyPrice, long buyShares) {
 		TreasuryStock buyStock = new TreasuryStock();
 		buyStock.setUserId(userId);
 		try {
@@ -354,7 +354,7 @@ public class StockService {
 		return resultMsg;
 	}
 	
-	public String addSellStock(String userId, String sellDate, String stockNameOrId, double sellPrice, int sellShares) {
+	public String addSellStock(String userId, String sellDate, String stockNameOrId, double sellPrice, long sellShares) {
 		TreasuryStock sellStock = new TreasuryStock();
 		sellStock.setUserId(userId);
 		try {
@@ -388,5 +388,10 @@ public class StockService {
 		String resultMsg = buffer.toString();
 
 		return resultMsg;
+	}
+
+	public String queryTreasuryStock(String userId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

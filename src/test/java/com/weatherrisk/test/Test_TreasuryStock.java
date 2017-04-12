@@ -19,9 +19,11 @@ public class Test_TreasuryStock {
 		TreasuryStock stock = new TreasuryStock(); 
 		stock.setStockType(StockType.OTC);
 		stock.setId("3088"); 
-		stock.setName("艾訊"); 
-		stock.setBuyDate("2017/03/24"); 
+		stock.setName("艾訊");
+		stock.setBuyDate("2017/3/24");
 		stock.setBuyPriceAndShares(56.8d, 2000);
+		stock.setSellDate("2017/4/12"); 
+		stock.setSellPriceAndShares(60.9d, 2000);
 		System.out.println(stock);
 	}
 }

@@ -547,7 +547,7 @@ public class LineMsgHandler {
     				String buyDate = split[0];
 					String stockNameOrId = split[2];
 					double buyPrice = Double.parseDouble(split[3]);
-					int buyShares = Integer.parseInt(split[4]);
+					long buyShares = Long.parseLong(split[4]);
 					queryResult = stockService.addBuyStock(userId, buyDate, stockNameOrId, buyPrice, buyShares);
     			}
     		}
@@ -562,13 +562,17 @@ public class LineMsgHandler {
     				String sellDate = split[0];
 					String stockNameOrId = split[2];
 					double sellPrice = Double.parseDouble(split[3]);
-					int sellShares = Integer.parseInt(split[4]);
+					long sellShares = Long.parseLong(split[4]);
 					queryResult = stockService.addSellStock(userId, sellDate, stockNameOrId, sellPrice, sellShares);
     			}
     		}
     		else {
     			queryResult = "格式錯誤, Ex: 2017/3/24 買 3088 56.8 2000";
     		}
+    	}
+    	// 查詢股票庫存
+    	else if (inputMsg.equals("查詢股票庫存")) {
+    		queryResult = stockService.queryTreasuryStock(userId);
     	}
     	// 其他判斷
     	else {
@@ -636,7 +640,7 @@ public class LineMsgHandler {
 			// check 股數
 			String strShares = split[4];
 			try {
-				Integer.parseInt(strShares);
+				Long.parseLong(strShares);
 			} catch (Exception e) {
 				return "請確認輸入的股數";
 			}
