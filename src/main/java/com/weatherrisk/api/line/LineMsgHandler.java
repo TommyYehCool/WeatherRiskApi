@@ -542,7 +542,13 @@ public class LineMsgHandler {
     				queryResult = errorMsg;
     			}
     			else {
-    				// TODO 新增股票買資訊
+    				// 新增股票買資訊
+    				String[] split = inputMsg.split(" ");
+    				String buyDate = split[0];
+					String stockNameOrId = split[2];
+					double buyPrice = Double.parseDouble(split[3]);
+					int buyShares = Integer.parseInt(split[4]);
+					stockService.addBuyStock(userId, buyDate, stockNameOrId, buyPrice, buyShares);
     			}
     		}
     		else if (inputMsg.contains("賣")) {
@@ -615,15 +621,17 @@ public class LineMsgHandler {
 			
 			// check 價格
 			String strPrice = split[3];
-			boolean isNumeric = StringUtils.isNumeric(strPrice);
-			if (!isNumeric) {
+			try {
+				Double.parseDouble(strPrice);
+			} catch (Exception e) {
 				return "請確認輸入的價格";
 			}
 			
 			// check 股數
 			String strShares = split[4];
-			isNumeric = StringUtils.isNumeric(strShares);
-			if (!isNumeric) {
+			try {
+				Integer.parseInt(strShares);
+			} catch (Exception e) {
 				return "請確認輸入的股數";
 			}
 		}

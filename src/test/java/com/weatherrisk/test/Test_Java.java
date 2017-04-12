@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -120,5 +121,12 @@ public class Test_Java {
 		String str = "2017/3/24";
 		Date date = dateFormat.parse(str);
 		System.out.println(date);
+	}
+	
+	@Test
+	public void test_9_testStringUtils() {
+		String price = "56.8";
+		boolean isNumeric = StringUtils.isNumeric(price);
+		System.out.println(isNumeric);
 	}
 }
