@@ -1,5 +1,7 @@
 package com.weatherrisk.api.model.stock;
 
+import com.weatherrisk.api.cnst.StockType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,4 +14,6 @@ public class Stock {
 	protected String id;
 	
 	protected String name;
+	
+	protected StockType stockType;
 }

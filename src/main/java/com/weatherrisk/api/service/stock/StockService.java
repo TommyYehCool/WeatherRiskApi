@@ -2,6 +2,7 @@ package com.weatherrisk.api.service.stock;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,6 +31,8 @@ import com.weatherrisk.api.config.stock.StockConfig;
 import com.weatherrisk.api.model.stock.OtcStock;
 import com.weatherrisk.api.model.stock.OtcStockRepository;
 import com.weatherrisk.api.model.stock.Stock;
+import com.weatherrisk.api.model.stock.TreasuryStock;
+import com.weatherrisk.api.model.stock.TreasuryStockRepository;
 import com.weatherrisk.api.model.stock.TseStock;
 import com.weatherrisk.api.model.stock.TseStockRepository;
 
@@ -46,6 +49,9 @@ public class StockService {
 	
 	@Autowired
 	private OtcStockRepository otcStockRepo;
+	
+	@Autowired
+	private TreasuryStockRepository treasuryStockRepo;
 	
 	public void refreshStockInfo() {
 		try {
@@ -251,6 +257,32 @@ public class StockService {
 		}
 		return null;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <T extends Stock> T getStockByNameOrId(String stockNameOrId) {
+		boolean isName = !StringUtils.isNumeric(stockNameOrId);
+		if (isName) {
+			TseStock tseStock = tseStockRepo.findByName(stockNameOrId);
+			if (tseStock != null) {
+				return (T) tseStock;
+			}
+			OtcStock otcStock = otcStockRepo.findByName(stockNameOrId);
+			if (otcStock != null) {
+				return (T) otcStock;
+			}
+		}
+		else {
+			TseStock tseStock = tseStockRepo.findById(stockNameOrId);
+			if (tseStock != null) {
+				return (T) tseStock;
+			}
+			OtcStock otcStock = otcStockRepo.findById(stockNameOrId);
+			if (otcStock != null) {
+				return (T) otcStock;
+			}
+		}
+		return null;
+	}
 
 	@SuppressWarnings("unchecked")
 	private Map<?, ?> sendRequestToGetDataMap(String ex_ch) throws Exception {
@@ -284,5 +316,40 @@ public class StockService {
 		Map<?, ?> dataMap = (Map<?, ?>) msgArray.get(0);
 		
 		return dataMap;
+	}
+	
+	public String addBuyStock(String userId, String buyDate, String stockNameOrId, double buyPrice, int buyShares) {
+		TreasuryStock buyStock = new TreasuryStock();
+		buyStock.setUserId(userId);
+		try {
+			buyStock.setBuyDate(buyDate);
+		} catch (ParseException e) {
+			logger.error("Exception raised while paring buyDate, the correct format is 'yyyy/MM/dd'");
+			return "新增失敗, 因日期格式錯誤";
+		}
+
+		Stock stock = getStockByNameOrId(stockNameOrId);
+		if (stock == null) {
+			return "新增失敗, 你輸入的商品: " + stockNameOrId + " 找不到";
+		}
+		
+		buyStock.setStockType(stock.getStockType());
+		buyStock.setId(stock.getId()); 
+		buyStock.setName(stock.getName()); 
+		buyStock.setBuyPriceAndShares(buyPrice, buyShares);
+		
+		long startTime = System.currentTimeMillis();
+		logger.info(">>>>> Prepare to save buy stock infomation, {}...", buyStock);
+		treasuryStockRepo.save(buyStock);
+		logger.info("<<<<< Save buy stock infomation done, time-spent: <{} ms>", (System.currentTimeMillis() - startTime));
+		
+		StringBuilder buffer = new StringBuilder();
+		buffer.append(buyDate);
+		buffer.append(" 買進 (").append(stock.getId()).append(")").append(stock.getName());
+		buffer.append(" $").append(buyPrice).append(" ");
+		buffer.append(buyShares).append("股").append(", 資訊儲存成功");
+		String resultMsg = buffer.toString();
+
+		return resultMsg;
 	}
 }

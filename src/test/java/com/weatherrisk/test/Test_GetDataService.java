@@ -16,6 +16,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.weatherrisk.api.Application;
 import com.weatherrisk.api.cnst.CurrencyCnst;
+import com.weatherrisk.api.cnst.StockType;
+import com.weatherrisk.api.model.stock.Stock;
+import com.weatherrisk.api.model.stock.TreasuryStock;
 import com.weatherrisk.api.service.currency.CurrencyService;
 import com.weatherrisk.api.service.movie.AmbassadorMovieService;
 import com.weatherrisk.api.service.movie.MiramarMovieService;
@@ -253,6 +256,18 @@ public class Test_GetDataService {
 	@Test
 	public void test_28_StockService_getStockMatchPriceByNameOrId() throws Exception {
 		BigDecimal result = stockService.getStockMatchPriceByNameOrId("鴻海");
+		System.out.println(result);
+	}
+	
+	@Test
+	public void test_29_StockService_getStockByNameOrId() {
+		Stock stock = stockService.getStockByNameOrId("3088");
+		System.out.println(stock);
+	}
+	
+	@Test
+	public void test_30_StockService_addBuyStock() {
+		String result = stockService.addBuyStock("Tommy", "2017/3/24", "3088", 56.8, 2000);
 		System.out.println(result);
 	}
 }
