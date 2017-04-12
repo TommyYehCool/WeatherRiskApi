@@ -334,7 +334,8 @@ public class StockService {
 		}
 		
 		buyStock.setStockType(stock.getStockType());
-		buyStock.setId(stock.getId()); 
+		buyStock.setId(stock.getId());
+		buyStock.setKey(userId + "-" + stock.getId());
 		buyStock.setName(stock.getName()); 
 		buyStock.setBuyPriceAndShares(buyPrice, buyShares);
 		

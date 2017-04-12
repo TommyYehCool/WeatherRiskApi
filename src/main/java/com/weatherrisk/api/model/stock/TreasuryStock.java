@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -23,6 +24,9 @@ public class TreasuryStock {
 	
 	@Transient
 	private final double feePercent = 0.001425;
+
+	@Id
+	private String key;
 	
 	private String userId;
 	
