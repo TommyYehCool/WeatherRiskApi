@@ -204,8 +204,8 @@ public class LineMsgHandler {
     	buffer.append("查詢註冊股票到價通知資訊 => Ex: 查詢股票註冊").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[新增股票買賣資訊]").append("\n");
-    	buffer.append("新增買 => Ex: 2017/3/24 買進 3088 56.8 2000").append("\n");
-    	buffer.append("新增賣 => Ex: 2017/3/24 賣出 3088 60 2000").append("\n");
+    	buffer.append("新增買 => Ex: 2017/3/24 買 3088 56.8 2000").append("\n");
+    	buffer.append("新增賣 => Ex: 2017/3/24 賣 3088 60 2000").append("\n");
     	
     	return buffer.toString();
 	}
@@ -535,27 +535,27 @@ public class LineMsgHandler {
     		queryResult = stockService.getStockPriceStrByNameOrId(stockNameOrId);
     	}
     	// 新增股票買賣紀錄
-    	else if (inputMsg.contains("買進") || inputMsg.contains("賣出")) {
-    		if (inputMsg.contains("買進")) {
-    			String errorMsg = checkBuySellStockMsg("買進", inputMsg);
+    	else if (inputMsg.contains("買") || inputMsg.contains("賣")) {
+    		if (inputMsg.contains("買")) {
+    			String errorMsg = checkBuySellStockMsg("買", inputMsg);
     			if (errorMsg != null) {
     				queryResult = errorMsg;
     			}
     			else {
-    				// TODO 新增股票買進資訊
+    				// TODO 新增股票買資訊
     			}
     		}
-    		else if (inputMsg.contains("賣出")) {
-    			String errorMsg = checkBuySellStockMsg("賣出", inputMsg);
+    		else if (inputMsg.contains("賣")) {
+    			String errorMsg = checkBuySellStockMsg("賣", inputMsg);
     			if (errorMsg != null) {
     				queryResult = errorMsg;
     			}
     			else {
-    				// TODO 新增股票賣出資訊
+    				// TODO 新增股票賣資訊
     			}
     		}
     		else {
-    			queryResult = "格式錯誤, Ex: 2017/3/24 買進 3088 56.8 2000";
+    			queryResult = "格式錯誤, Ex: 2017/3/24 買 3088 56.8 2000";
     		}
     	}
     	// 其他判斷
@@ -600,10 +600,10 @@ public class LineMsgHandler {
 				return "日期格式為 yyyy/MM/dd";
 			}
 			
-			// check 買進/賣出
+			// check 買/賣
 			String buySell = split[1];
 			if (!buySell.equals(buySellKeyWord)) {
-				return "請確認為買進/賣出";
+				return "請確認為買/賣";
 			}
 			
 			// check 股票
