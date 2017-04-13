@@ -412,7 +412,7 @@ public class StockService {
 		for (int i = 0; i < treasuryStocks.size(); i++) {
 			TreasuryStock treasuryStock = treasuryStocks.get(i);
 			
-			buffer.append("(").append(treasuryStock.getId()).append(") ").append(treasuryStock.getStockName()).append("\n");
+			buffer.append("(").append(treasuryStock.getStockId()).append(") ").append(treasuryStock.getStockName()).append("\n");
 			buffer.append("買進價: ").append(treasuryStock.getBuyPrice()).append("\n");
 			buffer.append("買進股數: ").append(treasuryStock.getBuyShares()).append("\n");
 			buffer.append("買進金額: ").append(treasuryStock.getBuyMatchAmount());
