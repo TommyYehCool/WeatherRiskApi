@@ -412,22 +412,28 @@ public class StockService {
 		for (int i = 0; i < treasuryStocks.size(); i++) {
 			TreasuryStock treasuryStock = treasuryStocks.get(i);
 			
-			buffer.append("(").append(treasuryStock.getStockId()).append(") ").append(treasuryStock.getStockName()).append("\n");
-			buffer.append("買進價: ").append(treasuryStock.getBuyPrice()).append("\n");
-			buffer.append("買進股數: ").append(treasuryStock.getBuyShares()).append("\n");
-			buffer.append("買進金額: ").append(treasuryStock.getBuyMatchAmount());
+			String stockId = treasuryStock.getStockId();
+			String stockName = treasuryStock.getStockName();
+			double buyPrice = treasuryStock.getBuyPrice();
+			long buyShares = treasuryStock.getBuyShares();
+			double buyMatchAmount = treasuryStock.getBuyMatchAmount();
+			
+			buffer.append("(").append(stockId).append(") ").append(stockName).append("\n");
+			buffer.append("買進價: ").append(buyPrice).append("\n");
+			buffer.append("買進股數: ").append(buyShares).append("\n");
+			buffer.append("買進金額: ").append(buyMatchAmount);
 			
 			double matchPrice = -1;
 			try {
-				matchPrice = getStockMatchPriceByNameOrId(treasuryStock.getId()).doubleValue();
+				matchPrice = getStockMatchPriceByNameOrId(stockId).doubleValue();
 			} catch (Exception e) {
-				logger.error("Exception raised while tring to get match price with id: {}", treasuryStock.getId());
+				logger.error("Exception raised while tring to get match price with id: {}", stockId);
 			}
 			
 			if (matchPrice != -1) {
 				buffer.append("\n目前成交價: ").append(matchPrice).append("\n");
 
-				BigDecimal currentAmount = new BigDecimal(matchPrice).multiply(new BigDecimal(treasuryStock.getBuyShares()));
+				BigDecimal currentAmount = new BigDecimal(matchPrice).multiply(new BigDecimal(buyShares));
 				buffer.append("目前金額: ").append(currentAmount.doubleValue()).append("\n");
 				
 				BigDecimal fee = currentAmount.multiply(new BigDecimal(TreasuryStock.feePercent)).setScale(0, RoundingMode.FLOOR);
@@ -439,7 +445,7 @@ public class StockService {
 				BigDecimal currentSellMatchAmount = currentAmount.subtract(fee).subtract(sellTradeTax);
 				buffer.append("賣出可得金額: ").append(currentSellMatchAmount.doubleValue()).append("\n");
 				
-				BigDecimal winLoseAmount = currentSellMatchAmount.subtract(new BigDecimal(treasuryStock.getBuyMatchAmount()));
+				BigDecimal winLoseAmount = currentSellMatchAmount.subtract(new BigDecimal(buyMatchAmount));
 				if (winLoseAmount.doubleValue() > 0) {
 					winLoseAmount = winLoseAmount.setScale(0, RoundingMode.CEILING);
 				}
