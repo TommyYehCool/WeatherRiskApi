@@ -37,7 +37,7 @@ public class Test_MongoDB_ParkingLot {
 	private ParkingLotService parkingLotService;
 
 	@Test
-	public void test_1_findParkingLotInfo_ByArea() {
+	public void test_01_findParkingLotInfo_ByArea() {
 		String area = "中山區";
 		System.out.println(">>>>> Test find by area: <" + area + ">");
 		List<ParkingLotInfo> parkingLotInfos = parkingLotInfoRepo.findByArea(area);
@@ -47,7 +47,7 @@ public class Test_MongoDB_ParkingLot {
 	}
 	
 	@Test
-	public void test_2_findParkingLotInfo_ByNameLike() {
+	public void test_02_findParkingLotInfo_ByNameLike() {
 		String name = "市民";
 		System.out.println(">>>>> Test find by name like: <" + name + ">");
 		List<ParkingLotInfo> parkingLotInfos = parkingLotInfoRepo.findByNameLike(name);
@@ -57,7 +57,7 @@ public class Test_MongoDB_ParkingLot {
 	}
 	
 	@Test
-	public void test_3_findParkingLotAvailable_ById() {
+	public void test_03_findParkingLotAvailable_ById() {
 		String id = "056";
 		System.out.println(">>>>> Test find by id: <" + id + ">");
 		ParkingLotAvailable parkingLotAvailable = parkingLotAvailableRepo.findById(id);
@@ -65,7 +65,7 @@ public class Test_MongoDB_ParkingLot {
 	}
 	
 	@Test
-	public void test_4_findParkingLotAvailable_ByIdIn() {
+	public void test_04_findParkingLotAvailable_ByIdIn() {
 		List<String> ids = Arrays.asList(new String[] {"058", "057"});
 		System.out.println(">>>>> Test find by id in: <" + ids + ">");
 		List<ParkingLotAvailable> parkingLotAvailables = parkingLotAvailableRepo.findByIdIn(ids);
@@ -75,7 +75,7 @@ public class Test_MongoDB_ParkingLot {
 	}
 	
 	@Test
-	public void test_5_testParkingLotService() {
+	public void test_05_testParkingLotService() {
 		parkingLotService.findByNameLike("市民");
 	}
 }

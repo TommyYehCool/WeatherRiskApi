@@ -36,14 +36,14 @@ public class Test_MongoDB_Consume {
 	private MongoTemplate mongoTemplate;
 	
 	@Test
-	public void test_1_deleteAllConsumes() throws Exception {
+	public void test_01_deleteAllConsumes() throws Exception {
 		consumeRepository.deleteAll();
 		
 		System.out.println(">>>>> Test 1: deleteAllConsumes -> Delete all testing datas done");
 	}
 	
 	@Test
-	public void test_2_addConsume() throws Exception {
+	public void test_02_addConsume() throws Exception {
 		int dataCnts = 0;
 		
 		String lotteryNo = "12345678";
@@ -74,7 +74,7 @@ public class Test_MongoDB_Consume {
 	}
 	
 	@Test
-	public void test_3_findConsumeByLotteyNo() throws Exception {
+	public void test_03_findConsumeByLotteyNo() throws Exception {
 		String lotteryNo = "12345678";
 
 		Consume consume = consumeRepository.findByLotteryNo(lotteryNo);
@@ -91,7 +91,7 @@ public class Test_MongoDB_Consume {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_4_findConsumesByExampleLotteryNo() throws Exception {
+	public void test_04_findConsumesByExampleLotteryNo() throws Exception {
 		String lotteryNo = "12345678";
 
 		List<Consume> consumes 
@@ -113,7 +113,7 @@ public class Test_MongoDB_Consume {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_5_findConsumesByExampleProdName() throws Exception {
+	public void test_05_findConsumesByExampleProdName() throws Exception {
 		String prodName = "Lucky Strike";
 		
 		Query query = new Query();
@@ -133,7 +133,7 @@ public class Test_MongoDB_Consume {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_6_findConsumesByProdNameStartingWith() throws Exception {
+	public void test_06_findConsumesByProdNameStartingWith() throws Exception {
 		String prodNameStartingWith = "Lucky";
 		String prodName = "Lucky Strike";
 		
@@ -152,7 +152,7 @@ public class Test_MongoDB_Consume {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_7_findConsumesByAmountBetween() throws Exception {
+	public void test_07_findConsumesByAmountBetween() throws Exception {
 		Long amountGT = 10L;
 		Long amountLT = 30L;
 		
@@ -169,7 +169,7 @@ public class Test_MongoDB_Consume {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_8_findConsumesByProdNameLikeOrderByLotteryNo() throws Exception {
+	public void test_08_findConsumesByProdNameLikeOrderByLotteryNo() throws Exception {
 		String prodNameLike = "御";
 		
 		List<Consume> consumes = consumeRepository.findByProdNameLikeOrderByLotteryNoAsc(prodNameLike);

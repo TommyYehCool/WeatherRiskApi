@@ -19,7 +19,7 @@ public class Test_Java {
 	
 	@Test
 	@Ignore
-	public void test_1_testStr() {
+	public void test_01_testStr() {
 		String inputMsg = "#大安森林公園地下停車場";
 		String searchStr = inputMsg.substring(1, inputMsg.length());
 		System.out.println(searchStr);
@@ -27,7 +27,7 @@ public class Test_Java {
 	
 	@Test
 	@Ignore
-	public void test_2_message_format() {
+	public void test_02_message_format() {
 		String CWB_URL = "http://opendata.cwb.gov.tw/opendataapi?dataid={0}&authorizationkey={1}";
 		
 		String dataId = "F-C0032-001";
@@ -41,7 +41,7 @@ public class Test_Java {
 	
 	@Test
 	@Ignore
-	public void test_3_testSubstring() {
+	public void test_03_testSubstring() {
 		String inputMsg = "台北市天氣";
 		String city = inputMsg.substring(0, inputMsg.length() - 2);
 		System.out.println(city);
@@ -70,19 +70,19 @@ public class Test_Java {
 	
 	@Test
 	@Ignore
-	public void test_4_testEnumSet() {
-		System.out.println(">>>>> Starting to test_4_testEnumSet");
+	public void test_04_testEnumSet() {
+		System.out.println(">>>>> Starting to test_04_testEnumSet");
 		String code = "Btc";
 		boolean result = CurrencyCnst.isCryptoCurrency(code);
 		System.out.println(result);
 		result = CurrencyCnst.isRealCurrency(code);
 		System.out.println(result);
-		System.out.println("<<<<< test_4_testEnumSet done");
+		System.out.println("<<<<< test_04_testEnumSet done");
 	}
 	
 	@Test
 	@Ignore
-	public void test_5_testUBikeCity() {
+	public void test_05_testUBikeCity() {
 		String address = "106台灣台北市大安區延吉街70巷5弄10號";
 		boolean result = UBikeCity.isSupportedAddress(address);
 		System.out.println("test5 --> " + result);
@@ -90,7 +90,7 @@ public class Test_Java {
 	
 	@Test
 	@Ignore
-	public void test_6_testGMT() {
+	public void test_06_testGMT() {
 		String gmtTime = "10:30:00";
 		SimpleDateFormat gmtTimeFormat = new SimpleDateFormat("HH:mm:ss");
 		gmtTimeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -107,7 +107,7 @@ public class Test_Java {
 	
 	@Test
 	@Ignore
-	public void test_7_testSet() {
+	public void test_07_testSet() {
 		Set<String> test = new HashSet<>();
 		test.add("123");
 		test.add("123");
@@ -116,7 +116,7 @@ public class Test_Java {
 	}
 	
 	@Test
-	public void test_8_testDateFormat() throws ParseException {
+	public void test_08_testDateFormat() throws ParseException {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		String str = "2017/3/24";
 		Date date = dateFormat.parse(str);
@@ -124,7 +124,7 @@ public class Test_Java {
 	}
 	
 	@Test
-	public void test_9_testStringUtils() {
+	public void test_09_testStringUtils() {
 		String price = "56.8";
 		boolean isNumeric = StringUtils.isNumeric(price);
 		System.out.println(isNumeric);

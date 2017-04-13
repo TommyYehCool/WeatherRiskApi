@@ -39,7 +39,7 @@ public class Test_MongoDB_Activity {
 	private final String collectionName = ((Document) Activity.class.getAnnotation(Document.class)).collection();
 	
 	@Test
-	public void test_1_deleteAllActivities() {
+	public void test_01_deleteAllActivities() {
 		activityRepository.deleteAll();
 		
 		List<Activity> allActivities = activityRepository.findAll();
@@ -52,7 +52,7 @@ public class Test_MongoDB_Activity {
 	}
 	
 	@Test
-	public void test_2_addActivities() throws Exception {
+	public void test_02_addActivities() throws Exception {
 		// ----- Add 第一筆 -----
 		Long id = counterService.getNextSequence(collectionName);
 		String createUser = "Tommy";
@@ -86,7 +86,7 @@ public class Test_MongoDB_Activity {
 	}
 	
 	@Test
-	public void test_3_findActivityById() {
+	public void test_03_findActivityById() {
 		long id = 1L;
 		Activity activity = activityRepository.findById(id);
 		
@@ -97,7 +97,7 @@ public class Test_MongoDB_Activity {
 	}
 	
 	@Test
-	public void test_4_findActivitiesByCreateUser() {
+	public void test_04_findActivitiesByCreateUser() {
 		String createUser = "Tommy";
 		
 		List<Activity> activities = activityRepository.findByCreateUser(createUser);
@@ -112,7 +112,7 @@ public class Test_MongoDB_Activity {
 	}
 	
 	@Test
-	public void test_5_findActivitiesByStartDatetimeBetween() throws Exception {
+	public void test_05_findActivitiesByStartDatetimeBetween() throws Exception {
 		SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		Date startDate = dateTimeFormat.parse("2017/02/01 00:00");
 		Date endDate = dateTimeFormat.parse("2017/12/01 00:00");
@@ -121,6 +121,6 @@ public class Test_MongoDB_Activity {
 		
 		assertThat(activities.size()).isEqualTo(1);
 		
-		System.out.println(">>>>> Test 5: test_5_findActivitiesByStartDateBetween(" + startDate + ", " + endDate + ") -> " + activities);
+		System.out.println(">>>>> Test 5: test_05_findActivitiesByStartDateBetween(" + startDate + ", " + endDate + ") -> " + activities);
 	}
 }

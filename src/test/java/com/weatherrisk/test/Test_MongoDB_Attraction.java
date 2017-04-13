@@ -37,7 +37,7 @@ public class Test_MongoDB_Attraction {
 	private final String collectionName = ((Document) Attraction.class.getAnnotation(Document.class)).collection();
 	
 	@Test
-	public void test_1_deleteAllAttractions() {
+	public void test_01_deleteAllAttractions() {
 		attractionRepository.deleteAll();
 		
 		List<Attraction> allAttractions = attractionRepository.findAll();
@@ -50,7 +50,7 @@ public class Test_MongoDB_Attraction {
 	}
 	
 	@Test
-	public void test_2_addAttractions() throws Exception {
+	public void test_02_addAttractions() throws Exception {
 		Long id = counterService.getNextSequence(collectionName);
 		AttractionType attractionType = AttractionType.PERSONAL;
 		String country = "Taiwan";
@@ -116,7 +116,7 @@ public class Test_MongoDB_Attraction {
 	}
 	
 	@Test
-	public void test_3_findAttractionsByAttractionType() throws Exception {
+	public void test_03_findAttractionsByAttractionType() throws Exception {
 		AttractionType attractionType = AttractionType.RESTAURANT;
 
 		List<Attraction> attractions = attractionRepository.findAttractionsByAttractionType(attractionType);
