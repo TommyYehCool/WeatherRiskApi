@@ -1,6 +1,7 @@
 package com.weatherrisk.api.service.stock;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -400,7 +401,7 @@ public class StockService {
 			buffer.append("(").append(treasuryStock.getId()).append(") ").append(treasuryStock.getName()).append("\n");
 			buffer.append("買進價: ").append(treasuryStock.getBuyPrice()).append("\n");
 			buffer.append("買進股數: ").append(treasuryStock.getBuyShares()).append("\n");
-			buffer.append("金額: ").append(treasuryStock.getBuyMatchAmount());
+			buffer.append("買進金額: ").append(treasuryStock.getBuyMatchAmount());
 			
 			double matchPrice = -1;
 			try {
@@ -411,8 +412,21 @@ public class StockService {
 			
 			if (matchPrice != -1) {
 				buffer.append("\n目前成交價: ").append(matchPrice).append("\n");
+
 				BigDecimal currentAmount = new BigDecimal(matchPrice).multiply(new BigDecimal(treasuryStock.getBuyShares()));
-				buffer.append("目前金額: ").append(currentAmount.doubleValue());
+				buffer.append("目前金額: ").append(currentAmount.doubleValue()).append("\n");
+				
+				BigDecimal fee = currentAmount.multiply(new BigDecimal(TreasuryStock.feePercent)).setScale(0, RoundingMode.FLOOR);
+				buffer.append("賣出手續費: ").append(fee.doubleValue()).append("\n");
+				
+				BigDecimal sellTradeTax = currentAmount.multiply(new BigDecimal(TreasuryStock.sellTradeTaxPercent)).setScale(0, RoundingMode.FLOOR);
+				buffer.append("賣出交易稅: ").append(sellTradeTax.doubleValue()).append("\n");
+				
+				BigDecimal currentSellMatchAmount = currentAmount.subtract(fee).subtract(sellTradeTax);
+				buffer.append("目前賣出可得金額: ").append(currentSellMatchAmount.doubleValue()).append("\n");
+				
+				BigDecimal winLoseAmount = currentSellMatchAmount.subtract(new BigDecimal(treasuryStock.getBuyMatchAmount()));
+				buffer.append("損益試算: ").append(winLoseAmount.doubleValue());
 			}
 			
 			if (i != treasuryStocks.size() - 1) {

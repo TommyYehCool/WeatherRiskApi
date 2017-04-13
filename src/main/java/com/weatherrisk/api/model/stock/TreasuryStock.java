@@ -23,13 +23,12 @@ public class TreasuryStock {
 	@Transient
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 	
-	// 買賣手續費
 	@Transient
-	private final double feePercent = 0.001425;
+	public static final double feePercent = 0.001425;
 	
 	// 賣交易稅
 	@Transient
-	private final double sellTradeTaxPercent = 0.003;
+	public static final double sellTradeTaxPercent = 0.003;
 
 	@Id
 	private String key;
