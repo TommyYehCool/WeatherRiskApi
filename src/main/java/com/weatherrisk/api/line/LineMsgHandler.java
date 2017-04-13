@@ -187,6 +187,7 @@ public class LineMsgHandler {
     	buffer.append("查詢註冊股票到價通知資訊 => Ex: 查詢股票註冊").append("\n");
     	buffer.append("新增股票買進資訊 => Ex: 2017/3/24 買 3088 56.8 2000").append("\n");
     	buffer.append("新增股票賣出資訊 => Ex: 2017/3/24 賣 3088 60 2000").append("\n");
+    	buffer.append("刪除股票庫存 => Ex: 刪除股票庫存鴻海").append("\n");
     	buffer.append("查詢股票庫存 => Ex: 查詢股票庫存").append("\n");
     	
     	return buffer.toString();
@@ -335,6 +336,11 @@ public class LineMsgHandler {
     		else {
     			queryResult = "格式錯誤, Ex: 2017/3/24 買 3088 56.8 2000";
     		}
+    	}
+    	// 刪除股票庫存
+    	else if (inputMsg.startsWith("刪除股票庫存")) {
+    		String stockNameOrId = inputMsg.substring(inputMsg.indexOf("股票") + "股票".length(), inputMsg.length()).trim();
+    		queryResult = stockService.deleteTreasuryStock(userId, stockNameOrId);
     	}
     	// 查詢股票庫存
     	else if (inputMsg.equals("查詢股票庫存")) {

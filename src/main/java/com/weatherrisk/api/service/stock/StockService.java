@@ -402,7 +402,7 @@ public class StockService {
 		treasuryStockRepo.delete(key);
 		logger.info("<<<<< Delete treasury stock with key: {} done", key);
 		
-		return "刪除成功";
+		return "刪除 " + stock.getName() + " 庫存資訊成功";
 	}
 
 	public String queryTreasuryStock(String userId) {
