@@ -427,10 +427,10 @@ public class StockService {
 				
 				BigDecimal winLoseAmount = currentSellMatchAmount.subtract(new BigDecimal(treasuryStock.getBuyMatchAmount()));
 				if (winLoseAmount.doubleValue() > 0) {
-					winLoseAmount.setScale(0, RoundingMode.CEILING);
+					winLoseAmount = winLoseAmount.setScale(0, RoundingMode.CEILING);
 				}
 				else {
-					winLoseAmount.setScale(0, RoundingMode.FLOOR);
+					winLoseAmount = winLoseAmount.setScale(0, RoundingMode.FLOOR);
 				}
 				buffer.append("損益試算: ").append(winLoseAmount.doubleValue());
 			}
