@@ -430,7 +430,7 @@ public class StockService {
 			}
 			
 			if (i != treasuryStocks.size() - 1) {
-				buffer.append("\n-----------");
+				buffer.append("\n-----------\n");
 			}
 		}
 		
