@@ -396,10 +396,25 @@ public class StockService {
 		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < treasuryStocks.size(); i++) {
 			TreasuryStock treasuryStock = treasuryStocks.get(i);
+			
 			buffer.append("(").append(treasuryStock.getId()).append(") ").append(treasuryStock.getName()).append("\n");
 			buffer.append("買進價: ").append(treasuryStock.getBuyPrice()).append("\n");
 			buffer.append("買進股數: ").append(treasuryStock.getBuyShares()).append("\n");
 			buffer.append("金額: ").append(treasuryStock.getBuyMatchAmount());
+			
+			double matchPrice = -1;
+			try {
+				matchPrice = getStockMatchPriceByNameOrId(treasuryStock.getId()).doubleValue();
+			} catch (Exception e) {
+				logger.error("Exception raised while tring to get match price with id: {}", treasuryStock.getId());
+			}
+			
+			if (matchPrice != -1) {
+				buffer.append("\n目前成交價: ").append(matchPrice).append("\n");
+				BigDecimal currentAmount = new BigDecimal(matchPrice).multiply(new BigDecimal(treasuryStock.getBuyShares()));
+				buffer.append("目前金額: ").append(currentAmount.doubleValue());
+			}
+			
 			if (i != treasuryStocks.size() - 1) {
 				buffer.append("\n-----------");
 			}

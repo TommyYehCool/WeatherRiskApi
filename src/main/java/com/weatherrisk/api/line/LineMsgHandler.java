@@ -143,34 +143,25 @@ public class LineMsgHandler {
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[查詢台北市及新北市停車場資訊]").append("\n");
     	buffer.append("模糊搜尋 => Ex: @士林").append("\n");
-    	buffer.append("\n");
     	buffer.append("停車場名稱搜尋 => Ex: #停車場名稱").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[查詢天氣]").append("\n");
-    	buffer.append("查詢天氣小幫手 => 格式: 縣市名稱 + 天氣").append("\n");
-    	buffer.append("Ex: 台北市天氣").append("\n");
-    	buffer.append("\n");
-    	buffer.append("查詢一周天氣 => 格式: 縣市名稱 + 一周").append("\n");
-    	buffer.append("Ex: 台北市一周").append("\n");
+    	buffer.append("查詢天氣小幫手 => 格式: 縣市名稱 + 天氣, Ex: 台北市天氣").append("\n");
+    	buffer.append("查詢一周天氣 => 格式: 縣市名稱 + 一周, Ex: 台北市一周").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[查詢貨幣匯率]").append("\n");
     	buffer.append("<支援虛擬貨幣: btc, eth, ltc>").append("\n");
     	buffer.append("<支援真實貨幣: usd, jpy...等>").append("\n");
     	buffer.append("查詢虛擬貨幣匯率 => Ex: btc, eth, ltc").append("\n");
-    	buffer.append("\n");
     	buffer.append("查詢真實貨幣匯率 => Ex: usd, jpy...等").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[註冊虛擬貨幣到價通知]").append("\n");
     	buffer.append("註冊虛擬貨幣到價通知 => Ex: 註冊eth 40 50").append("\n");
-    	buffer.append("\n");
     	buffer.append("取消虛擬貨幣到價通知 => Ex: 取消eth").append("\n");
-    	buffer.append("\n");
     	buffer.append("查詢註冊虛擬貨幣到價通知資訊 => Ex: 查詢註冊").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[UBike]").append("\n");
-    	buffer.append("關鍵字查詢 => 格式: 縣市名稱 + 關鍵字 + ubike").append("\n");
-    	buffer.append("Ex: 台北市天母ubike, 新北市三重ubike").append("\n");
-    	buffer.append("\n");
+    	buffer.append("關鍵字查詢 => 格式: 縣市名稱 + 關鍵字 + ubike, Ex: 台北市天母ubike, 新北市三重ubike").append("\n");
     	buffer.append("查詢最近的兩個 UBike 場站資訊 => 傳送您目前的位置資訊即可").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[電影]").append("\n");
@@ -180,32 +171,23 @@ public class LineMsgHandler {
     	buffer.append("<支援華威影城: 天母華威>").append("\n");
     	buffer.append("<支援國賓影城: 西門國賓, 微風國賓, 晶冠國賓>").append("\n");
     	buffer.append("請系統更新電影時刻表 => Ex: 更新電影時刻表").append("\n");
-    	buffer.append("\n");
-    	buffer.append("查詢某一家影城上映電影 => 格式: 戲院名稱 + 上映").append("\n");
-    	buffer.append("Ex: 信義威秀上映").append("\n");
-    	buffer.append("\n");
-    	buffer.append("查詢某一部電影今日時刻表 => 格式: 戲院名稱 + 關鍵字").append("\n");
-    	buffer.append("Ex: 信義威秀羅根").append("\n");
+    	buffer.append("查詢某一家影城上映電影 => 格式: 戲院名稱 + 上映, Ex: 信義威秀上映").append("\n");
+    	buffer.append("查詢某一部電影今日時刻表 => 格式: 戲院名稱 + 關鍵字, Ex: 信義威秀羅根").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[發票]").append("\n");
     	buffer.append("更新發票開獎號碼 => Ex: 更新發票").append("\n");
     	buffer.append("查詢最近兩期發票開獎號碼 => Ex: 發票開獎").append("\n");
     	buffer.append("發票對獎功能, 直接輸入號碼即可 => Ex: 168").append("\n");
     	buffer.append("-----------------------").append("\n");
-    	buffer.append("[股票]").append("\n");
+    	buffer.append("[查詢股票]").append("\n");
     	buffer.append("更新股票資料檔 => Ex: 更新股票").append("\n");
     	buffer.append("查詢股票目前成交價 => Ex: 股票艾訊, 股票3088").append("\n");
-    	buffer.append("-----------------------").append("\n");
-    	buffer.append("[註冊股票到價通知]").append("\n");
     	buffer.append("註冊股票到價通知 => Ex: 註冊股票 3088 40 50").append("\n");
-    	buffer.append("\n");
     	buffer.append("取消股票到價通知 => Ex: 取消股票 3088").append("\n");
-    	buffer.append("\n");
     	buffer.append("查詢註冊股票到價通知資訊 => Ex: 查詢股票註冊").append("\n");
-    	buffer.append("-----------------------").append("\n");
-    	buffer.append("[新增股票買賣資訊]").append("\n");
-    	buffer.append("新增買 => Ex: 2017/3/24 買 3088 56.8 2000").append("\n");
-    	buffer.append("新增賣 => Ex: 2017/3/24 賣 3088 60 2000").append("\n");
+    	buffer.append("新增股票買進資訊 => Ex: 2017/3/24 買 3088 56.8 2000").append("\n");
+    	buffer.append("新增股票賣出資訊 => Ex: 2017/3/24 賣 3088 60 2000").append("\n");
+    	buffer.append("查詢股票庫存 => Ex: 查詢股票庫存").append("\n");
     	
     	return buffer.toString();
 	}
@@ -253,6 +235,111 @@ public class LineMsgHandler {
     		String region = inputMsg.substring(0, inputMsg.length() - 2);
     		queryResult = cwbService.getOneWeekWeatherPrediction(region);
     	}
+    	// 註冊股票到價通知
+    	else if (inputMsg.startsWith("註冊股票")) {
+    		String stockNameOrIdAndPrice = inputMsg.substring(inputMsg.indexOf("註冊股票") + "註冊股票".length(), inputMsg.length()).trim();
+    		String[] split = stockNameOrIdAndPrice.split(" ");
+    		if (split.length != 3) {
+    			queryResult = "格式範例 => 註冊股票 艾訊 60 65";
+    		}
+    		else {
+    			String stockNameOrId = split[0].trim();
+    			boolean isSupportedStock = stockService.isSupportedStock(stockNameOrId);
+    			if (!isSupportedStock) {
+    				queryResult = "你輸入的商品不支援 (" + stockNameOrId + ")";
+    			}
+    			else {
+    				try {
+	    				BigDecimal lowerPrice = new BigDecimal(Double.parseDouble(split[1]));
+						BigDecimal upperPrice = new BigDecimal(Double.parseDouble(split[2]));
+						StockPriceReached stockPriceReached = new StockPriceReached(stockNameOrId, lowerPrice, upperPrice);
+						registerService.registerStock(userId, stockPriceReached);
+						queryResult = "註冊 " + stockNameOrId + " 到價通知成功, 價格: " + lowerPrice.doubleValue() + " ~ " + upperPrice.doubleValue();
+    				}
+    				catch (Exception e) {
+    					queryResult = "格式範例 => 註冊股票 艾訊 60 65"; 
+    				}
+    			}
+    		}
+    	}
+    	// 取消股票到價通知
+    	else if (inputMsg.startsWith("取消股票")) {
+    		String stockNameOrId = inputMsg.substring(inputMsg.indexOf("取消股票") + "取消股票".length(), inputMsg.length()).trim();
+    		boolean isSupportedStock = stockService.isSupportedStock(stockNameOrId);
+			if (!isSupportedStock) {
+				queryResult = "你輸入的商品不支援 (" + stockNameOrId + ")";
+			}
+			else {
+				boolean hasRegistered = registerService.hasRegisteredStock(userId, stockNameOrId);
+				if (hasRegistered) {
+					registerService.unregisterStockPrice(userId, stockNameOrId);
+					queryResult = "取消註冊 " + stockNameOrId + " 成功";
+				}
+				else {
+					queryResult = "您未註冊 " + stockNameOrId + " 到價通知";
+				}
+			}
+    	}
+    	// 查詢註冊股票到價通知
+    	else if (inputMsg.equals("查詢股票註冊")) {
+    		boolean hasRegistered = registerService.hasRegisteredStock(userId);
+    		if (hasRegistered) {
+    			queryResult = registerService.getStockPricesReachedInfos(userId);
+    		}
+    		else {
+    			queryResult = "您未註冊任何到價通知";
+    		}
+    	}
+    	// 更新股票
+    	else if (inputMsg.equals("更新股票")) {
+    		stockService.refreshStockInfo();
+    		queryResult = "更新成功";
+    	}
+    	// 股票價格
+    	else if (inputMsg.startsWith("股票")) {
+    		String stockNameOrId = inputMsg.substring(inputMsg.indexOf("股票") + "股票".length(), inputMsg.length()).trim();
+    		queryResult = stockService.getStockPriceStrByNameOrId(stockNameOrId);
+    	}
+    	// 新增股票買賣紀錄
+    	else if (inputMsg.contains("買") || inputMsg.contains("賣")) {
+    		if (inputMsg.contains("買")) {
+    			String errorMsg = checkBuySellStockMsg("買", inputMsg);
+    			if (errorMsg != null) {
+    				queryResult = errorMsg;
+    			}
+    			else {
+    				// 新增股票買資訊
+    				String[] split = inputMsg.split(" ");
+    				String buyDate = split[0];
+					String stockNameOrId = split[2];
+					double buyPrice = Double.parseDouble(split[3]);
+					long buyShares = Long.parseLong(split[4]);
+					queryResult = stockService.addBuyStock(userId, buyDate, stockNameOrId, buyPrice, buyShares);
+    			}
+    		}
+    		else if (inputMsg.contains("賣")) {
+    			String errorMsg = checkBuySellStockMsg("賣", inputMsg);
+    			if (errorMsg != null) {
+    				queryResult = errorMsg;
+    			}
+    			else {
+    				// 新增股票賣資訊
+    				String[] split = inputMsg.split(" ");
+    				String sellDate = split[0];
+					String stockNameOrId = split[2];
+					double sellPrice = Double.parseDouble(split[3]);
+					long sellShares = Long.parseLong(split[4]);
+					queryResult = stockService.addSellStock(userId, sellDate, stockNameOrId, sellPrice, sellShares);
+    			}
+    		}
+    		else {
+    			queryResult = "格式錯誤, Ex: 2017/3/24 買 3088 56.8 2000";
+    		}
+    	}
+    	// 查詢股票庫存
+    	else if (inputMsg.equals("查詢股票庫存")) {
+    		queryResult = stockService.queryTreasuryStock(userId);
+    	}
     	// 貨幣匯率
     	else if (CurrencyCnst.isSupportedCurrency(inputMsg)) {
     		CurrencyCnst currency = CurrencyCnst.convert(inputMsg);
@@ -281,33 +368,6 @@ public class LineMsgHandler {
     			queryResult = currencyService.getRealCurrencyRatesFromTaiwanBank(currency);
     		}
     	}
-    	// 註冊股票到價通知
-    	else if (inputMsg.startsWith("註冊股票")) {
-    		String stockNameOrIdAndPrice = inputMsg.substring(inputMsg.indexOf("註冊股票") + "註冊股票".length(), inputMsg.length()).trim();
-    		String[] split = stockNameOrIdAndPrice.split(" ");
-    		if (split.length != 3) {
-    			queryResult = "格式範例 => 註冊股票 艾訊 60 65";
-    		}
-    		else {
-    			String stockNameOrId = split[0].trim();
-    			boolean isSupportedStock = stockService.isSupportedStock(stockNameOrId);
-    			if (!isSupportedStock) {
-    				queryResult = "你輸入的商品不支援 (" + stockNameOrId + ")";
-    			}
-    			else {
-    				try {
-	    				BigDecimal lowerPrice = new BigDecimal(Double.parseDouble(split[1]));
-						BigDecimal upperPrice = new BigDecimal(Double.parseDouble(split[2]));
-						StockPriceReached stockPriceReached = new StockPriceReached(stockNameOrId, lowerPrice, upperPrice);
-						registerService.registerStock(userId, stockPriceReached);
-						queryResult = "註冊 " + stockNameOrId + " 到價通知成功, 價格: " + lowerPrice.doubleValue() + " ~ " + upperPrice.doubleValue();
-    				}
-    				catch (Exception e) {
-    					queryResult = "格式範例 => 註冊股票 艾訊 60 65"; 
-    				}
-    			}
-    		}
-    	}
     	// 註冊虛擬貨幣匯率到價通知
     	else if (inputMsg.startsWith("註冊")) {
     		String cryptoCurrencyAndPrice = inputMsg.substring(inputMsg.indexOf("註冊") + "註冊".length(), inputMsg.length()).trim();
@@ -319,7 +379,7 @@ public class LineMsgHandler {
     			String code = split[0].trim();
     			boolean isCryptoCurrency = CurrencyCnst.isCryptoCurrency(code);
     			if (!isCryptoCurrency) {
-    				queryResult = "目前只支援 BTC, ETH, LTC; 格式範例 => Ex: 註冊eth 40 50";
+    				queryResult = "目前只支援 BTC, ETH, LTC, 格式範例 => Ex: 註冊eth 40 50";
     			}
     			else {
     				try {
@@ -335,24 +395,6 @@ public class LineMsgHandler {
     				}
     			}
     		}
-    	}
-    	// 取消股票到價通知
-    	else if (inputMsg.startsWith("取消股票")) {
-    		String stockNameOrId = inputMsg.substring(inputMsg.indexOf("取消股票") + "取消股票".length(), inputMsg.length()).trim();
-    		boolean isSupportedStock = stockService.isSupportedStock(stockNameOrId);
-			if (!isSupportedStock) {
-				queryResult = "你輸入的商品不支援 (" + stockNameOrId + ")";
-			}
-			else {
-				boolean hasRegistered = registerService.hasRegisteredStock(userId, stockNameOrId);
-				if (hasRegistered) {
-					registerService.unregisterStockPrice(userId, stockNameOrId);
-					queryResult = "取消註冊 " + stockNameOrId + " 成功";
-				}
-				else {
-					queryResult = "您未註冊 " + stockNameOrId + " 到價通知";
-				}
-			}
     	}
     	// 取消虛擬貨幣匯率到價通知
     	else if (inputMsg.startsWith("取消")) {
@@ -372,16 +414,6 @@ public class LineMsgHandler {
 					queryResult = "您未註冊 " + currency + " 到價通知";
 				}
 			}
-    	}
-    	// 查詢註冊股票到價通知
-    	else if (inputMsg.equals("查詢股票註冊")) {
-    		boolean hasRegistered = registerService.hasRegisteredStock(userId);
-    		if (hasRegistered) {
-    			queryResult = registerService.getStockPricesReachedInfos(userId);
-    		}
-    		else {
-    			queryResult = "您未註冊任何到價通知";
-    		}
     	}
     	// 查詢註冊虛擬貨幣匯率到價通知
     	else if (inputMsg.equals("查詢註冊")) {
@@ -524,56 +556,7 @@ public class LineMsgHandler {
     	else if (inputMsg.equals("發票開獎")) {
     		queryResult = receiptRewardService.getRecentlyRewards();
     	}
-    	// 更新股票
-    	else if (inputMsg.equals("更新股票")) {
-    		stockService.refreshStockInfo();
-    		queryResult = "更新成功";
-    	}
-    	// 股票價格
-    	else if (inputMsg.startsWith("股票")) {
-    		String stockNameOrId = inputMsg.substring(inputMsg.indexOf("股票") + "股票".length(), inputMsg.length()).trim();
-    		queryResult = stockService.getStockPriceStrByNameOrId(stockNameOrId);
-    	}
-    	// 新增股票買賣紀錄
-    	else if (inputMsg.contains("買") || inputMsg.contains("賣")) {
-    		if (inputMsg.contains("買")) {
-    			String errorMsg = checkBuySellStockMsg("買", inputMsg);
-    			if (errorMsg != null) {
-    				queryResult = errorMsg;
-    			}
-    			else {
-    				// 新增股票買資訊
-    				String[] split = inputMsg.split(" ");
-    				String buyDate = split[0];
-					String stockNameOrId = split[2];
-					double buyPrice = Double.parseDouble(split[3]);
-					long buyShares = Long.parseLong(split[4]);
-					queryResult = stockService.addBuyStock(userId, buyDate, stockNameOrId, buyPrice, buyShares);
-    			}
-    		}
-    		else if (inputMsg.contains("賣")) {
-    			String errorMsg = checkBuySellStockMsg("賣", inputMsg);
-    			if (errorMsg != null) {
-    				queryResult = errorMsg;
-    			}
-    			else {
-    				// 新增股票賣資訊
-    				String[] split = inputMsg.split(" ");
-    				String sellDate = split[0];
-					String stockNameOrId = split[2];
-					double sellPrice = Double.parseDouble(split[3]);
-					long sellShares = Long.parseLong(split[4]);
-					queryResult = stockService.addSellStock(userId, sellDate, stockNameOrId, sellPrice, sellShares);
-    			}
-    		}
-    		else {
-    			queryResult = "格式錯誤, Ex: 2017/3/24 買 3088 56.8 2000";
-    		}
-    	}
-    	// 查詢股票庫存
-    	else if (inputMsg.equals("查詢股票庫存")) {
-    		queryResult = stockService.queryTreasuryStock(userId);
-    	}
+    	
     	// 其他判斷
     	else {
     		// 若可轉換為數字
@@ -585,7 +568,6 @@ public class LineMsgHandler {
     		}
     		catch (Exception e) {}
     	}
-    	
     	// ----- 回傳查詢結果 -----
     	if (queryResult != null) {
     		if (queryResult.length() > LINE_MAXIMUM_REPLY_TEXT_MSG_LENGTH) {
