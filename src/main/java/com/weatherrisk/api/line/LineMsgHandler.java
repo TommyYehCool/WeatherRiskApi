@@ -339,7 +339,7 @@ public class LineMsgHandler {
     	}
     	// 刪除股票庫存
     	else if (inputMsg.startsWith("刪除股票庫存")) {
-    		String stockNameOrId = inputMsg.substring(inputMsg.indexOf("股票") + "股票".length(), inputMsg.length()).trim();
+    		String stockNameOrId = inputMsg.substring(inputMsg.indexOf("刪除股票庫存") + "刪除股票庫存".length(), inputMsg.length()).trim();
     		queryResult = stockService.deleteTreasuryStock(userId, stockNameOrId);
     	}
     	// 查詢股票庫存
