@@ -333,11 +333,11 @@ public class StockService {
 		if (stock == null) {
 			return "新增失敗, 你輸入的商品: " + stockNameOrId + " 找不到";
 		}
+		buyStock.setId(userId + "-" + stock.getId());
 		
 		buyStock.setStockType(stock.getStockType());
-		buyStock.setId(stock.getId());
-		buyStock.setKey(userId + "-" + stock.getId());
-		buyStock.setName(stock.getName()); 
+		buyStock.setStockId(stock.getId());
+		buyStock.setStockName(stock.getName()); 
 		buyStock.setBuyPriceAndShares(buyPrice, buyShares);
 		
 		long startTime = System.currentTimeMillis();
@@ -369,11 +369,11 @@ public class StockService {
 		if (stock == null) {
 			return "新增失敗, 你輸入的商品: " + stockNameOrId + " 找不到";
 		}
+		sellStock.setId(userId + "-" + stock.getId());
 		
 		sellStock.setStockType(stock.getStockType());
-		sellStock.setId(stock.getId());
-		sellStock.setKey(userId + "-" + stock.getId());
-		sellStock.setName(stock.getName()); 
+		sellStock.setStockId(stock.getId());
+		sellStock.setStockName(stock.getName()); 
 		sellStock.setSellPriceAndShares(sellPrice, sellShares);
 		
 		long startTime = System.currentTimeMillis();
@@ -412,7 +412,7 @@ public class StockService {
 		for (int i = 0; i < treasuryStocks.size(); i++) {
 			TreasuryStock treasuryStock = treasuryStocks.get(i);
 			
-			buffer.append("(").append(treasuryStock.getId()).append(") ").append(treasuryStock.getName()).append("\n");
+			buffer.append("(").append(treasuryStock.getId()).append(") ").append(treasuryStock.getStockName()).append("\n");
 			buffer.append("買進價: ").append(treasuryStock.getBuyPrice()).append("\n");
 			buffer.append("買進股數: ").append(treasuryStock.getBuyShares()).append("\n");
 			buffer.append("買進金額: ").append(treasuryStock.getBuyMatchAmount());

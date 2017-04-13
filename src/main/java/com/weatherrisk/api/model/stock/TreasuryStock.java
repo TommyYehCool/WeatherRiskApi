@@ -31,15 +31,15 @@ public class TreasuryStock {
 	public static final double sellTradeTaxPercent = 0.003;
 
 	@Id
-	private String key;
+	private String id;
 	
 	private String userId;
 	
 	private StockType stockType;
 	
-	private String id;
+	private String stockId;
 	
-	private String name;
+	private String stockName;
 	
 	private Date buyDate;
 
@@ -95,10 +95,9 @@ public class TreasuryStock {
 
 	@Override
 	public String toString() {
-		return "TreasuryStock [feePercent=" + feePercent + ", stockType=" + stockType + ", id=" + id + ", name=" + name
-				+ ", buyDate=" + buyDate + ", buyPrice=" + buyPrice + ", buyShares=" + buyShares + ", buyMatchAmount="
-				+ buyMatchAmount + ", sellDate=" + sellDate + ", sellPrice=" + sellPrice + ", sellShares=" + sellShares
-				+ ", sellMatchAmount=" + sellMatchAmount + "]";
+		return "TreasuryStock [id=" + id + ", userId=" + userId + ", stockType=" + stockType + ", stockId=" + stockId
+				+ ", stockName=" + stockName + ", buyDate=" + buyDate + ", buyPrice=" + buyPrice + ", buyShares="
+				+ buyShares + ", buyMatchAmount=" + buyMatchAmount + ", sellDate=" + sellDate + ", sellPrice="
+				+ sellPrice + ", sellShares=" + sellShares + ", sellMatchAmount=" + sellMatchAmount + "]";
 	}
-
 }
