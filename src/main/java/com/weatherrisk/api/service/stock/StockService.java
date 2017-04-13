@@ -423,7 +423,7 @@ public class StockService {
 				buffer.append("賣出交易稅: ").append(sellTradeTax.doubleValue()).append("\n");
 				
 				BigDecimal currentSellMatchAmount = currentAmount.subtract(fee).subtract(sellTradeTax);
-				buffer.append("目前賣出可得金額: ").append(currentSellMatchAmount.doubleValue()).append("\n");
+				buffer.append("賣出可得金額: ").append(currentSellMatchAmount.doubleValue()).append("\n");
 				
 				BigDecimal winLoseAmount = currentSellMatchAmount.subtract(new BigDecimal(treasuryStock.getBuyMatchAmount())).setScale(0, RoundingMode.CEILING);
 				buffer.append("損益試算: ").append(winLoseAmount.doubleValue());
