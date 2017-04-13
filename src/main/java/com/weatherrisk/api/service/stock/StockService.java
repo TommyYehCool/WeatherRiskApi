@@ -390,6 +390,20 @@ public class StockService {
 
 		return resultMsg;
 	}
+	
+	public String deleteTreasuryStock(String userId, String stockNameOrId) {
+		Stock stock = getStockByNameOrId(stockNameOrId);
+		if (stock == null) {
+			return "刪除失敗, 你輸入的商品: " + stockNameOrId + " 找不到";
+		}
+		
+		String key = userId + "-" + stock.getId();
+		logger.info(">>>>> Prepare to delete treasury stock with key: {}...", key);
+		treasuryStockRepo.delete(key);
+		logger.info("<<<<< Delete treasury stock with key: {} done", key);
+		
+		return "刪除成功";
+	}
 
 	public String queryTreasuryStock(String userId) {
 		List<TreasuryStock> treasuryStocks = treasuryStockRepo.findByUserId(userId);
