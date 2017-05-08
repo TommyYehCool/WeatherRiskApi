@@ -385,6 +385,9 @@ public class CurrencyService {
 		DecimalFormat decFormat = new DecimalFormat("###0.00000000");
 		
 		List<TreasuryCryptoCurrency> treasuryCryptoCurrencys = treasuryCryptoCurrencyRepo.findByUserId(userId);
+		if (treasuryCryptoCurrencys == null || treasuryCryptoCurrencys.isEmpty()) {
+			return "你無虛擬貨幣庫存紀錄";
+		}
 		
 		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < treasuryCryptoCurrencys.size(); i++) {
