@@ -43,7 +43,7 @@ public class Test_GetDataService {
 	private CwbService cwbService;
 	
 	@Autowired
-	private CurrencyService bitcoinService;
+	private CurrencyService currencyService;
 	
 	@Autowired
 	private TaipeiOpenDataService taipeiOpenDataService;
@@ -92,25 +92,31 @@ public class Test_GetDataService {
 	
 	@Test
 	public void test_03_BitcoinService_getBitcoinPriceFromWinkdex() {
-		String data = bitcoinService.getBitcoinPriceFromWinkdex();
+		String data = currencyService.getBitcoinPriceFromWinkdex();
 		System.out.println(data);
 	}
 	
 	@Test
 	public void test_04_BitcoinService_getPriceFromExchanges() {
-		String data = bitcoinService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.BTC_USD);
+		String data = currencyService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.BTC_USD);
 		System.out.println(data);
 		
-		data = bitcoinService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.ETH_USD);
+		data = currencyService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.ETH_USD);
+		System.out.println(data);
+		
+		data = currencyService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.STR_BTC);
+		System.out.println(data);
+		
+		data = currencyService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.XRP_BTC);
 		System.out.println(data);
 	}
 	
 	@Test
 	public void test_05_BitcoinService_getRatesFromTaiwanBank() throws IOException {
-		String data = bitcoinService.getRealCurrencyRatesFromTaiwanBank(CurrencyCnst.USD);
+		String data = currencyService.getRealCurrencyRatesFromTaiwanBank(CurrencyCnst.USD);
 		System.out.println(data);
 		
-		data = bitcoinService.getRealCurrencyRatesFromTaiwanBank(CurrencyCnst.JPY);
+		data = currencyService.getRealCurrencyRatesFromTaiwanBank(CurrencyCnst.JPY);
 		System.out.println(data);
 	}
 	

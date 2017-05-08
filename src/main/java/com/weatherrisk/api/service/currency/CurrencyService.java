@@ -21,7 +21,9 @@ import org.knowm.xchange.bitstamp.BitstampExchange;
 import org.knowm.xchange.btce.v3.BTCEExchange;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.Ticker;
-import org.knowm.xchange.poloniex.Poloniex;
+import org.knowm.xchange.exceptions.ExchangeException;
+import org.knowm.xchange.exceptions.NotAvailableFromExchangeException;
+import org.knowm.xchange.exceptions.NotYetImplementedForExchangeException;
 import org.knowm.xchange.poloniex.PoloniexExchange;
 import org.knowm.xchange.service.marketdata.MarketDataService;
 import org.slf4j.Logger;
@@ -80,22 +82,62 @@ public class CurrencyService {
 	 */
 	private void getCryptoCurrencyPriceFromExchange(StringBuilder buffer, String exchangeName, String exchangeClassName,
 			CurrencyCnst baseCurrency, CurrencyPair currencyPair, BigDecimal usdTwdRate) throws IOException {
+		Ticker ticker = getTickerByCurrencyPairFromExchange(exchangeClassName, currencyPair);
+		
+		DateFormat updateTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		DecimalFormat outDecFormat = new DecimalFormat("#.##");
+		
+		// Poloniex 回傳資料比較特別
+		if (exchangeClassName != PoloniexExchange.class.getName()) {
+			processNonPoloniexExchange(buffer, exchangeName, baseCurrency, usdTwdRate, ticker, updateTimeFormat, outDecFormat);
+		}
+		else {
+			processPoloniexExchange(buffer, exchangeName, baseCurrency, usdTwdRate, ticker, outDecFormat);
+		}
+	}
+
+	private Ticker getTickerByCurrencyPairFromExchange(String exchangeClassName, CurrencyPair currencyPair) throws IOException {
 		Exchange exchange = ExchangeFactory.INSTANCE.createExchange(exchangeClassName);
 
 		MarketDataService marketDataService = exchange.getMarketDataService();
 		
 		Ticker ticker = marketDataService.getTicker(currencyPair);
-		
-		DateFormat updateTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		DecimalFormat outDecFormat = new DecimalFormat("#.##");
-		
+
+		return ticker;
+	}
+
+	private void processNonPoloniexExchange(StringBuilder buffer, String exchangeName, CurrencyCnst baseCurrency, BigDecimal usdTwdRate,
+			Ticker ticker, DateFormat updateTimeFormat, DecimalFormat outDecFormat) {
 		buffer.append(exchangeName).append(":\n");
 		buffer.append("目前成交價 ").append(ticker.getCurrencyPair()).append(": ").append(ticker.getLast()).append("\n");
 		buffer.append("換算台幣價 ").append(baseCurrency).append("/TWD: ").append(outDecFormat.format(usdTwdRate.multiply(ticker.getLast()))).append("\n");
 		buffer.append("最高價 ").append(baseCurrency).append("/USD: ").append(ticker.getHigh()).append("\n");
 		buffer.append("最低價 ").append(baseCurrency).append("/USD: ").append(ticker.getLow()).append("\n");
-		buffer.append("更新時間: ").append(updateTimeFormat.format(ticker.getTimestamp())).append("\n");
+		if (ticker.getTimestamp() != null) {
+			buffer.append("更新時間: ").append(updateTimeFormat.format(ticker.getTimestamp())).append("\n");
+		}
 		buffer.append("USD/TWD: ").append(usdTwdRate).append("\n");
+		buffer.append("(備註: 美金對台幣匯率, 參考台灣銀行現金買入)\n");
+	}
+	
+	private void processPoloniexExchange(StringBuilder buffer, String exchangeName, CurrencyCnst baseCurrency,
+			BigDecimal usdTwdRate, Ticker ticker, DecimalFormat outDecFormat) throws IOException {
+		Exchange exchange = ExchangeFactory.INSTANCE.createExchange(BTCEExchange.class.getName());
+
+		MarketDataService marketDataService = exchange.getMarketDataService();
+		
+		Ticker btceExchangeBtcTicker = marketDataService.getTicker(CurrencyPair.BTC_USD);
+		
+		BigDecimal btcUsdRate = btceExchangeBtcTicker.getLast();
+
+		buffer.append(exchangeName).append(":\n");
+		buffer.append("目前成交價 ").append(ticker.getCurrencyPair()).append(": ").append(ticker.getLast()).append("\n");
+		buffer.append("換算台幣價 ").append(baseCurrency).append("/TWD: ").append(outDecFormat.format(usdTwdRate.multiply(btcUsdRate.multiply(ticker.getLast())))).append("\n");
+		buffer.append("最高價 ").append(baseCurrency).append("/USD: ").append(ticker.getHigh()).append("\n");
+		buffer.append("最低價 ").append(baseCurrency).append("/USD: ").append(ticker.getLow()).append("\n");
+		buffer.append("BTC/USD: ").append(btcUsdRate).append("\n");
+		buffer.append("USD/TWD: ").append(usdTwdRate).append("\n");
+		buffer.append("(備註: BTC對美金匯率, 參考 BTC-E)\n");
 		buffer.append("(備註: 美金對台幣匯率, 參考台灣銀行現金買入)\n");
 	}
 	
