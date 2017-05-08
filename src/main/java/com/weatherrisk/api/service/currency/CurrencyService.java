@@ -18,7 +18,6 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
-import org.knowm.xchange.bitstamp.BitstampExchange;
 import org.knowm.xchange.btce.v3.BTCEExchange;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.Ticker;
@@ -53,9 +52,10 @@ public class CurrencyService {
 			if (currencyPair.equals(CurrencyPair.BTC_USD)) {
 				getCryptoCurrencyPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), CurrencyCnst.BTC, currencyPair, usdTwdRate);
 
-				buffer.append("\n");
-				
-				getCryptoCurrencyPriceFromExchange(buffer, "Bitstamp", BitstampExchange.class.getName(), CurrencyCnst.BTC, currencyPair, usdTwdRate);
+				// 不想看 Bitstamp 的資料了
+//				buffer.append("\n");
+//				
+//				getCryptoCurrencyPriceFromExchange(buffer, "Bitstamp", BitstampExchange.class.getName(), CurrencyCnst.BTC, currencyPair, usdTwdRate);
 			}
 			else if (currencyPair.equals(CurrencyPair.ETH_USD)) {
 				getCryptoCurrencyPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), CurrencyCnst.ETH, currencyPair, usdTwdRate);
