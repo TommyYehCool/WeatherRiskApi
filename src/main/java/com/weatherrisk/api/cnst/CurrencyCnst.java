@@ -84,6 +84,15 @@ public enum CurrencyCnst {
 		return false;
 	}
 	
+	public static String getSupportedCryptoCurrency() {
+		StringBuilder buffer = new StringBuilder();
+		for (CurrencyCnst currency : crypto_currency) {
+			buffer.append(currency.toString());
+			buffer.append(", ");
+		}
+		return buffer.toString();
+	}
+	
 	public static boolean isRealCurrency(String code) {
 		for (CurrencyCnst currency : real_currency) {
 			if (currency.toString().equalsIgnoreCase(code)) {

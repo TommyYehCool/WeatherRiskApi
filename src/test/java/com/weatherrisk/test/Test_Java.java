@@ -1,5 +1,7 @@
 package com.weatherrisk.test;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -134,5 +136,17 @@ public class Test_Java {
 	public void test_10_testContain() {
 		String inputMsg = "2017/3/24 買 3088 56.8 2000";
 		System.out.println(inputMsg.contains("買"));
+	}
+	
+	@Test
+	public void test_11_testBigDecimal() {
+		double val = 0.000049;
+		DecimalFormat decFormat = new DecimalFormat("###0.00000000");
+		BigDecimal test = new BigDecimal(val);
+		System.out.println(decFormat.format(test.doubleValue()));
+		System.out.println(test);
+		System.out.println(String.valueOf(test));
+		System.out.println(test.toPlainString());
+		System.out.println(test.toEngineeringString());
 	}
 }

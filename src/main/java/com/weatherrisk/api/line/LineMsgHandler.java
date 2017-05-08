@@ -1,6 +1,7 @@
 package com.weatherrisk.api.line;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -393,7 +394,8 @@ public class LineMsgHandler {
     			String code = split[0].trim();
     			boolean isCryptoCurrency = CurrencyCnst.isCryptoCurrency(code);
     			if (!isCryptoCurrency) {
-    				queryResult = "目前只支援 BTC, ETH, LTC, 格式範例 => Ex: 註冊eth 40 50";
+    				String supportedCryptoCurrency = CurrencyCnst.getSupportedCryptoCurrency();
+    				queryResult = "目前只支援 " + supportedCryptoCurrency + "格式範例 => Ex: 註冊eth 40 50";
     			}
     			else {
     				try {
@@ -402,7 +404,10 @@ public class LineMsgHandler {
     					BigDecimal upperPrice = new BigDecimal(Double.parseDouble(split[2]));
     					CryptoCurrencyPriceReached priceReached = new CryptoCurrencyPriceReached(currency, lowerPrice, upperPrice);
 						registerService.registerCryptoCurrency(userId, priceReached);
-						queryResult = "註冊 " + currency + " 到價通知成功, 價格: " + lowerPrice.doubleValue() + " ~ " + upperPrice.doubleValue();
+						
+						DecimalFormat decFormat = new DecimalFormat("###0.00000000");
+						
+						queryResult = "註冊 " + currency + " 到價通知成功, 價格: " + decFormat.format(lowerPrice.doubleValue()) + " ~ " + decFormat.format(upperPrice.doubleValue());
     				}
     				catch (Exception e) {
     					queryResult = "格式範例 => 註冊eth 40 50"; 

@@ -1,5 +1,6 @@
 package com.weatherrisk.api.service.currency;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -166,11 +167,13 @@ public class RegisterService {
 	}
 	
 	public String getCryptoCurrencyPricesReachedInfos(String userId) {
+		DecimalFormat decFormat = new DecimalFormat("###0.00000000");
+		
 		List<CryptoCurrencyPriceReached> pricesReached = this.cryptoCurrencyRegisterMap.get(userId);
 		StringBuilder buffer = new StringBuilder();
 		for (CryptoCurrencyPriceReached priceReached : pricesReached) {
 			buffer.append("貨幣: ").append(priceReached.getCurrency()).append(" => ");
-			buffer.append(priceReached.getLowerPrice().doubleValue()).append(" ~ ").append(priceReached.getUpperPrice().doubleValue());
+			buffer.append(decFormat.format(priceReached.getLowerPrice().doubleValue())).append(" ~ ").append(decFormat.format(priceReached.getUpperPrice().doubleValue()));
 			buffer.append("\n");
 		}
 		return buffer.toString();

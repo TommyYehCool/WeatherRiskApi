@@ -1,6 +1,7 @@
 package com.weatherrisk.api.schedule;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -136,6 +137,8 @@ public class ScheduledTasks {
 	}
     
 	private void checkCryptoCurrencyPriceAndSendPushMessage(CurrencyCnst baseCurrency, CurrencyPair currencyPair, BigDecimal lastPrice) {
+		DecimalFormat decFormat = new DecimalFormat("###0.00000000");
+		
 		Map<String, List<CryptoCurrencyPriceReached>> registerInfos = registerService.getCryptoCurrencyRegisterInfos();
 		
 		String[] userIds = registerInfos.keySet().toArray(new String[0]);
@@ -146,12 +149,12 @@ public class ScheduledTasks {
 					BigDecimal lowerPrice = priceReached.getLowerPrice();
 					BigDecimal upperPrice = priceReached.getUpperPrice();
 					if (lastPrice.doubleValue() <= lowerPrice.doubleValue()) {
-						String pushMsg = currencyPair.toString() + " 目前價格: " + lastPrice.doubleValue() + " 小於 " + lowerPrice.doubleValue() + " 該買進囉!!";
+						String pushMsg = currencyPair.toString() + " 目前價格: " + decFormat.format(lastPrice.doubleValue()) + " 小於 " + decFormat.format(lowerPrice.doubleValue()) + " 該買進囉!!";
 						sendPushMessage(userId, pushMsg);
 						break;
 					}
 					else if (lastPrice.doubleValue() >= upperPrice.doubleValue()) {
-						String pushMsg = currencyPair.toString() + " 目前價格: " + lastPrice.doubleValue() + " 大於 " + upperPrice.doubleValue() + " 該賣出囉!!";
+						String pushMsg = currencyPair.toString() + " 目前價格: " + decFormat.format(lastPrice.doubleValue()) + " 大於 " + decFormat.format(upperPrice.doubleValue()) + " 該賣出囉!!";
 						sendPushMessage(userId, pushMsg);
 						break;
 					}
