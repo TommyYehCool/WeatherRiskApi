@@ -153,7 +153,7 @@ public class LineMsgHandler {
     	buffer.append("[查詢貨幣匯率]").append("\n");
     	buffer.append("<支援虛擬貨幣: ").append(CurrencyCnst.getSupportedCryptoCurrency().substring(0, CurrencyCnst.getSupportedCryptoCurrency().length() - 2)).append(">\n");
     	buffer.append("<支援真實貨幣: usd, jpy...等>").append("\n");
-    	buffer.append("查詢虛擬貨幣匯率 => Ex: btc, eth, ltc").append("\n");
+    	buffer.append("查詢虛擬貨幣匯率 => Ex: ").append(CurrencyCnst.getSupportedCryptoCurrency().substring(0, CurrencyCnst.getSupportedCryptoCurrency().length() - 2)).append("\n");
     	buffer.append("查詢真實貨幣匯率 => Ex: usd, jpy...等").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[註冊虛擬貨幣到價通知]").append("\n");
@@ -186,8 +186,8 @@ public class LineMsgHandler {
     	buffer.append("註冊股票到價通知 => Ex: 註冊股票 3088 40 50").append("\n");
     	buffer.append("取消股票到價通知 => Ex: 取消股票 3088").append("\n");
     	buffer.append("查詢註冊股票到價通知資訊 => Ex: 查詢股票註冊").append("\n");
-    	buffer.append("新增股票買進資訊 => Ex: 2017/3/24 買 3088 56.8 2000").append("\n");
-    	buffer.append("新增股票賣出資訊 => Ex: 2017/3/24 賣 3088 60 2000").append("\n");
+    	buffer.append("新增股票買進資訊 => Ex: 2017/3/24 買股票 3088 56.8 2000").append("\n");
+    	buffer.append("新增股票賣出資訊 => Ex: 2017/3/24 賣股票 3088 60 2000").append("\n");
     	buffer.append("刪除股票庫存 => Ex: 刪除股票庫存鴻海").append("\n");
     	buffer.append("查詢股票庫存 => Ex: 查詢股票庫存").append("\n");
     	
@@ -303,9 +303,9 @@ public class LineMsgHandler {
     		queryResult = stockService.getStockPriceStrByNameOrId(stockNameOrId);
     	}
     	// 新增股票買賣紀錄
-    	else if (inputMsg.contains("買") || inputMsg.contains("賣")) {
+    	else if (inputMsg.contains("買股票") || inputMsg.contains("賣股票")) {
     		if (inputMsg.contains("買")) {
-    			String errorMsg = checkBuySellStockMsg("買", inputMsg);
+    			String errorMsg = checkBuySellStockMsg("買股票", inputMsg);
     			if (errorMsg != null) {
     				queryResult = errorMsg;
     			}
@@ -320,7 +320,7 @@ public class LineMsgHandler {
     			}
     		}
     		else if (inputMsg.contains("賣")) {
-    			String errorMsg = checkBuySellStockMsg("賣", inputMsg);
+    			String errorMsg = checkBuySellStockMsg("賣股票", inputMsg);
     			if (errorMsg != null) {
     				queryResult = errorMsg;
     			}

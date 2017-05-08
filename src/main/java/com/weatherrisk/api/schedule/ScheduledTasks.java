@@ -49,7 +49,11 @@ public class ScheduledTasks {
 	
 	private Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
 	
-	private final String CRON_SCHEDULED = "0 0/5 * * * ?";
+	private final String GET_BTCE_CRON_EXP = "0 0/5 * * * ?";
+	
+	private final String GET_POLONEIX_CRON_EXP = "0/10 * * * * ?";
+	
+	private final String GET_STOCK_CRON_EXP = "0 0/5 * * * ?";
 
     @Autowired
     private CurrencyService currencyService;
@@ -63,32 +67,32 @@ public class ScheduledTasks {
     @Autowired
     private LineMessagingClient lineMessagingClient;
     
-    @Scheduled(cron = CRON_SCHEDULED)
+    @Scheduled(cron = GET_BTCE_CRON_EXP)
     public void getBTCPrice() {
     	getCryptoCurrencyLastPriceFromBtcE(CurrencyCnst.BTC, CurrencyPair.BTC_USD);
     }
 
-    @Scheduled(cron = CRON_SCHEDULED)
+    @Scheduled(cron = GET_BTCE_CRON_EXP)
     public void getETHPrice() {
     	getCryptoCurrencyLastPriceFromBtcE(CurrencyCnst.ETH, CurrencyPair.ETH_USD);
     }
     
-    @Scheduled(cron = CRON_SCHEDULED)
+    @Scheduled(cron = GET_BTCE_CRON_EXP)
     public void getLTCPrice() {
     	getCryptoCurrencyLastPriceFromBtcE(CurrencyCnst.LTC, CurrencyPair.LTC_USD);
     }
     
-    @Scheduled(cron = CRON_SCHEDULED)
+    @Scheduled(cron = GET_POLONEIX_CRON_EXP)
     public void getSTRPrice() {
     	getCryptoCurrencyLastPriceFromPoloneix(CurrencyCnst.STR, CurrencyPair.STR_BTC);
     }
     
-    @Scheduled(cron = CRON_SCHEDULED)
+    @Scheduled(cron = GET_POLONEIX_CRON_EXP)
     public void getXRPPrice() {
     	getCryptoCurrencyLastPriceFromPoloneix(CurrencyCnst.XRP, CurrencyPair.XRP_BTC);
     }
     
-    @Scheduled(cron = CRON_SCHEDULED)
+    @Scheduled(cron = GET_STOCK_CRON_EXP)
     public void getRegisteredStockPrice() {
     	Set<String> allRegisteredStockNameOrId = registerService.getAllRegisteredStockNameOrId();
     	Iterator<String> it = allRegisteredStockNameOrId.iterator();
