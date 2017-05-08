@@ -456,6 +456,7 @@ public class LineMsgHandler {
     				String[] split = inputMsg.split(" ");
     				String buyDate = split[0];
 					String currencyCode = split[2];
+					currencyCode = currencyCode.toUpperCase();
 					double buyPrice = Double.parseDouble(split[3]);
 					long buyVolumes = Long.parseLong(split[4]);
 					queryResult = currencyService.addBuyCryptoCurrency(userId, buyDate, currencyCode, buyPrice, buyVolumes);
@@ -471,6 +472,7 @@ public class LineMsgHandler {
     				String[] split = inputMsg.split(" ");
     				String sellDate = split[0];
 					String currencyCode = split[2];
+					currencyCode = currencyCode.toUpperCase();
 					double sellPrice = Double.parseDouble(split[3]);
 					long sellVolumes = Long.parseLong(split[4]);
 					queryResult = currencyService.addSellCryptoCurrency(userId, sellDate, currencyCode, sellPrice, sellVolumes);
@@ -483,6 +485,7 @@ public class LineMsgHandler {
     	// 刪除貨幣庫存
     	else if (inputMsg.startsWith("刪除貨幣庫存")) {
     		String currencyCode = inputMsg.substring(inputMsg.indexOf("刪除貨幣庫存") + "刪除貨幣庫存".length(), inputMsg.length()).trim();
+    		currencyCode = currencyCode.toUpperCase();
     		boolean isTreasurySupportedCryptoCurrency = CurrencyCnst.isTreasurySupportedCryptoCurrency(currencyCode);
     		if (!isTreasurySupportedCryptoCurrency) {
 				queryResult = "目前只支援 " + CurrencyCnst.getTreasurySupportedCryptoCurrency() + "格式範例 => 刪除貨幣庫存btc";
