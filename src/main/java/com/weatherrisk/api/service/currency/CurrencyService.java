@@ -21,9 +21,6 @@ import org.knowm.xchange.bitstamp.BitstampExchange;
 import org.knowm.xchange.btce.v3.BTCEExchange;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.Ticker;
-import org.knowm.xchange.exceptions.ExchangeException;
-import org.knowm.xchange.exceptions.NotAvailableFromExchangeException;
-import org.knowm.xchange.exceptions.NotYetImplementedForExchangeException;
 import org.knowm.xchange.poloniex.PoloniexExchange;
 import org.knowm.xchange.service.marketdata.MarketDataService;
 import org.slf4j.Logger;
@@ -81,7 +78,7 @@ public class CurrencyService {
 	 * </pre>
 	 */
 	private void getCryptoCurrencyPriceFromExchange(StringBuilder buffer, String exchangeName, String exchangeClassName,
-			CurrencyCnst baseCurrency, CurrencyPair currencyPair, BigDecimal usdTwdRate) throws IOException {
+			CurrencyCnst baseCurrency, CurrencyPair currencyPair, BigDecimal usdTwdRate) throws Exception {
 		Ticker ticker = getTickerByCurrencyPairFromExchange(exchangeClassName, currencyPair);
 		
 		DateFormat updateTimeFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -106,6 +103,17 @@ public class CurrencyService {
 		return ticker;
 	}
 
+	/**
+	 * 處理非 Poloniex 交易所回傳字串
+	 * 
+	 * @param buffer
+	 * @param exchangeName
+	 * @param baseCurrency
+	 * @param usdTwdRate
+	 * @param ticker
+	 * @param updateTimeFormat
+	 * @param outDecFormat
+	 */
 	private void processNonPoloniexExchange(StringBuilder buffer, String exchangeName, CurrencyCnst baseCurrency, BigDecimal usdTwdRate,
 			Ticker ticker, DateFormat updateTimeFormat, DecimalFormat outDecFormat) {
 		buffer.append(exchangeName).append(":\n");
@@ -120,15 +128,20 @@ public class CurrencyService {
 		buffer.append("(備註: 美金對台幣匯率, 參考台灣銀行現金買入)\n");
 	}
 	
+	/**
+	 * 處理 Poloniex 交易所回傳字串
+	 * 
+	 * @param buffer
+	 * @param exchangeName
+	 * @param baseCurrency
+	 * @param usdTwdRate
+	 * @param ticker
+	 * @param outDecFormat
+	 * @throws Exception
+	 */
 	private void processPoloniexExchange(StringBuilder buffer, String exchangeName, CurrencyCnst baseCurrency,
-			BigDecimal usdTwdRate, Ticker ticker, DecimalFormat outDecFormat) throws IOException {
-		Exchange exchange = ExchangeFactory.INSTANCE.createExchange(BTCEExchange.class.getName());
-
-		MarketDataService marketDataService = exchange.getMarketDataService();
-		
-		Ticker btceExchangeBtcTicker = marketDataService.getTicker(CurrencyPair.BTC_USD);
-		
-		BigDecimal btcUsdRate = btceExchangeBtcTicker.getLast();
+			BigDecimal usdTwdRate, Ticker ticker, DecimalFormat outDecFormat) throws Exception {
+		BigDecimal btcUsdRate = getCryptoLastPriceFromBtcE(CurrencyPair.BTC_USD);
 
 		buffer.append(exchangeName).append(":\n");
 		buffer.append("目前成交價 ").append(ticker.getCurrencyPair()).append(": ").append(ticker.getLast()).append("\n");
@@ -142,7 +155,7 @@ public class CurrencyService {
 	}
 	
 	/**
-	 * 從 BTC E 取得某一檔虛擬貨幣的價格
+	 * 從 BTC-E 取得某一檔虛擬貨幣的價格
 	 * 
 	 * @param currencyPair
 	 * @return
