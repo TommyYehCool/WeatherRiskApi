@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -270,6 +271,7 @@ public class Test_GetDataService {
 	}
 	
 	@Test
+	@Ignore
 	public void test_30_StockService_addBuyStock() {
 		String result = stockService.addBuyStock("Tommy", "2017/3/24", "3088", 56.8, 2000);
 		System.out.println(result);
@@ -278,6 +280,12 @@ public class Test_GetDataService {
 	@Test
 	public void test_31_StockService_queryTreasuryStock() {
 		String result = stockService.queryTreasuryStock("U8e1ad9783b416aa040e54575e92ef776");
+		System.out.println(result);
+	}
+	
+	@Test
+	public void test_32_CurrencyService_queryTreasuryCryptoCurrency() {
+		String result = currencyService.queryTreasuryCryptoCurrency("U8e1ad9783b416aa040e54575e92ef776");
 		System.out.println(result);
 	}
 }

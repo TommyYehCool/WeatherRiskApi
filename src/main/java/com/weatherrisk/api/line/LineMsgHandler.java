@@ -420,7 +420,7 @@ public class LineMsgHandler {
     		String cryptoCurrency = inputMsg.substring(inputMsg.indexOf("取消貨幣") + "取消貨幣".length(), inputMsg.length()).trim();
     		boolean isCryptoCurrency = CurrencyCnst.isCryptoCurrency(cryptoCurrency);
 			if (!isCryptoCurrency) {
-				queryResult = "目前只支援 BTC, ETH, LTC; 格式範例 => 取消貨幣btc";
+				queryResult = "目前只支援 " + CurrencyCnst.getSupportedCryptoCurrency() + "格式範例 => 取消貨幣btc";
 			}
 			else {
 				CurrencyCnst currency = CurrencyCnst.convert(cryptoCurrency);
@@ -483,7 +483,13 @@ public class LineMsgHandler {
     	// 刪除貨幣庫存
     	else if (inputMsg.startsWith("刪除貨幣庫存")) {
     		String currencyCode = inputMsg.substring(inputMsg.indexOf("刪除貨幣庫存") + "刪除貨幣庫存".length(), inputMsg.length()).trim();
-    		queryResult = currencyService.deleteTreasuryCryptoCurrency(userId, currencyCode);
+    		boolean isTreasurySupportedCryptoCurrency = CurrencyCnst.isTreasurySupportedCryptoCurrency(currencyCode);
+    		if (!isTreasurySupportedCryptoCurrency) {
+				queryResult = "目前只支援 " + CurrencyCnst.getTreasurySupportedCryptoCurrency() + "格式範例 => 刪除貨幣庫存btc";
+			}
+			else {
+				queryResult = currencyService.deleteTreasuryCryptoCurrency(userId, currencyCode);
+			}
     	}
     	// 查詢貨幣庫存
     	else if (inputMsg.equals("查詢貨幣庫存")) {
@@ -717,8 +723,8 @@ public class LineMsgHandler {
 			
 			// check 貨幣
 			String currencyCode = split[2];
-			boolean isSupportedStock = CurrencyCnst.isSupportedCurrency(currencyCode);
-			if (!isSupportedStock) {
+			boolean isTreasurySupportedCryptoCurrency = CurrencyCnst.isTreasurySupportedCryptoCurrency(currencyCode);
+			if (!isTreasurySupportedCryptoCurrency) {
 				return "不支援您輸入的虛擬貨幣";
 			}
 			

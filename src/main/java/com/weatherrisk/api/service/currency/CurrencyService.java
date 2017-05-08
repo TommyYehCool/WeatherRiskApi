@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -372,13 +373,94 @@ public class CurrencyService {
 	}
 
 	public String deleteTreasuryCryptoCurrency(String userId, String currencyCode) {
-		// TODO Auto-generated method stub
-		return null;
+		String key = userId + "-" + currencyCode;
+		logger.info(">>>>> Prepare to delete treasury crypto currency with key: {}...", key);
+		treasuryCryptoCurrencyRepo.delete(key);
+		logger.info("<<<<< Delete treasury crypto currency with key: {} done", key);
+		
+		return "刪除 " + currencyCode + " 庫存資訊成功";
 	}
 
 	public String queryTreasuryCryptoCurrency(String userId) {
-		// TODO Auto-generated method stub
-		return null;
+		DecimalFormat decFormat = new DecimalFormat("###0.00000000");
+		
+		List<TreasuryCryptoCurrency> treasuryCryptoCurrencys = treasuryCryptoCurrencyRepo.findByUserId(userId);
+		
+		StringBuilder buffer = new StringBuilder();
+		for (int i = 0; i < treasuryCryptoCurrencys.size(); i++) {
+			TreasuryCryptoCurrency treasuryCryptoCurrency = treasuryCryptoCurrencys.get(i);
+			
+			String currencyCode = treasuryCryptoCurrency.getCurrencyCode();
+			double buyPrice = treasuryCryptoCurrency.getBuyPrice();
+			long buyVolumes = treasuryCryptoCurrency.getBuyVolumes();
+			double buyMatchAmount = treasuryCryptoCurrency.getBuyMatchAmount();
+			
+			buffer.append("[").append(currencyCode.toUpperCase()).append("]\n");
+			buffer.append("買進價(BTC): ").append(decFormat.format(buyPrice)).append("\n");
+			buffer.append("買進數量: ").append(buyVolumes).append("\n");
+			buffer.append("買進金額(BTC): ").append(buyMatchAmount);
+			
+			CurrencyPair currencyPair = getCurrencyPairByCurrencyCode(currencyCode);
+			if (currencyPair == null) {
+				logger.error("Get CurrencyPair by currencyCode: <{}> is null, please check...", currencyCode);
+				return "不支援紀錄的虛擬貨幣, 請通知系統管理員";
+			}
+			
+			BigDecimal lastPrice = null;
+			try {
+				lastPrice = getCryptoLastPriceFromPoloneix(currencyPair);
+			} catch (Exception e) {
+				logger.error("Get Last Price from Poloneix by CurrencyPair: <{}> got exception, please check...", currencyPair, e);
+			}
+			
+			if (lastPrice != null) {
+				buffer.append("\n目前成交價(BTC): ").append(decFormat.format(lastPrice.doubleValue())).append("\n");
+				
+				BigDecimal currentSellMatchAmount = lastPrice.multiply(new BigDecimal(buyVolumes));
+				buffer.append("賣出可得金額(BTC): ").append(currentSellMatchAmount.doubleValue()).append("\n");
+				
+				BigDecimal btcWinLoseAmount = currentSellMatchAmount.subtract(new BigDecimal(buyMatchAmount));
+				buffer.append("損益試算(BTC): ").append(decFormat.format(btcWinLoseAmount.doubleValue()));
+				
+				BigDecimal btcUsdRate = null;
+				try {
+					btcUsdRate = getCryptoLastPriceFromBtcE(CurrencyPair.BTC_USD);
+				} catch (Exception e) {
+					logger.error("Get BTC Last Price from BTC-E got exception, please check...", e);
+				}
+
+				BigDecimal usdTwdRate = null;
+				try {
+					usdTwdRate = getBuyCashRatesFromTaiwanBank(CurrencyCnst.USD);
+				} catch (Exception e) {
+					logger.error("Get USD/TWD Rate from Taiwan Bank got exception, please check...", e);
+				}
+				
+				if (btcUsdRate != null && usdTwdRate != null) {
+					DecimalFormat twdFormat = new DecimalFormat("#");
+					buffer.append("\n損益試算(TWD): ").append(twdFormat.format(btcWinLoseAmount.multiply(btcUsdRate).multiply(usdTwdRate))).append("\n");
+					buffer.append("BTC/USD: ").append(btcUsdRate).append("\n");
+					buffer.append("USD/TWD: ").append(usdTwdRate).append("\n");
+					buffer.append("(備註: BTC對美金匯率, 參考 BTC-E)\n");
+					buffer.append("(備註: 美金對台幣匯率, 參考台灣銀行現金買入)\n");
+				}
+			}
+			
+			if (i != treasuryCryptoCurrencys.size() - 1) {
+				buffer.append("\n----------------\n");
+			} 
+		}
+		
+		return buffer.toString();
 	}
 	
+	private CurrencyPair getCurrencyPairByCurrencyCode(String currencyCode) {
+		if (currencyCode.equalsIgnoreCase(CurrencyCnst.STR.toString())) {
+			return CurrencyPair.STR_BTC;
+		}
+		else if (currencyCode.equalsIgnoreCase(CurrencyCnst.XRP.toString())) {
+			return CurrencyPair.XRP_BTC;
+		}
+		return null;
+	}
 }

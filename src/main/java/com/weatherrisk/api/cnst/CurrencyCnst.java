@@ -56,11 +56,16 @@ public enum CurrencyCnst {
 	
 	private static EnumSet<CurrencyCnst> crypto_currency;
 	
+	private static EnumSet<CurrencyCnst> poloneix_crypto_currency;
+	
 	private static EnumSet<CurrencyCnst> real_currency;
 	
 	static {
 		crypto_currency 
 			= EnumSet.of(CurrencyCnst.BTC, CurrencyCnst.ETH, CurrencyCnst.LTC, CurrencyCnst.STR, CurrencyCnst.XRP);
+		
+		poloneix_crypto_currency
+			= EnumSet.of(CurrencyCnst.STR, CurrencyCnst.XRP);
 		
 		real_currency
 			= EnumSet.complementOf(crypto_currency);
@@ -84,9 +89,27 @@ public enum CurrencyCnst {
 		return false;
 	}
 	
+	public static boolean isTreasurySupportedCryptoCurrency(String code) {
+		for (CurrencyCnst currency : poloneix_crypto_currency) {
+			if (currency.toString().equalsIgnoreCase(code)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static String getSupportedCryptoCurrency() {
 		StringBuilder buffer = new StringBuilder();
 		for (CurrencyCnst currency : crypto_currency) {
+			buffer.append(currency.toString());
+			buffer.append(", ");
+		}
+		return buffer.toString();
+	}
+	
+	public static String getTreasurySupportedCryptoCurrency() {
+		StringBuilder buffer = new StringBuilder();
+		for (CurrencyCnst currency : poloneix_crypto_currency) {
 			buffer.append(currency.toString());
 			buffer.append(", ");
 		}
