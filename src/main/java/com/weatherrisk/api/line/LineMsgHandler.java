@@ -160,6 +160,10 @@ public class LineMsgHandler {
     	buffer.append("註冊虛擬貨幣到價通知 => Ex: 註冊貨幣eth 40 50").append("\n");
     	buffer.append("取消虛擬貨幣到價通知 => Ex: 取消貨幣eth").append("\n");
     	buffer.append("查詢註冊虛擬貨幣到價通知資訊 => Ex: 查詢貨幣註冊").append("\n");
+    	buffer.append("新增虛擬貨幣買進資訊 => Ex: 2017/5/8 買STR 0.00003800 20000").append("\n");
+    	buffer.append("新增虛擬貨幣賣出資訊 => Ex: 2017/5/8 賣STR 0.00004000 20000").append("\n");
+    	buffer.append("刪除虛擬貨幣庫存 => Ex: 刪除貨幣庫存STR").append("\n");
+    	buffer.append("查詢虛擬貨幣庫存 => Ex: 查詢貨幣庫存").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[UBike]").append("\n");
     	buffer.append("關鍵字查詢 => 格式: 縣市名稱 + 關鍵字 + ubike, Ex: 台北市天母ubike, 新北市三重ubike").append("\n");
@@ -420,7 +424,7 @@ public class LineMsgHandler {
     		String cryptoCurrency = inputMsg.substring(inputMsg.indexOf("取消貨幣") + "取消貨幣".length(), inputMsg.length()).trim();
     		boolean isCryptoCurrency = CurrencyCnst.isCryptoCurrency(cryptoCurrency);
 			if (!isCryptoCurrency) {
-				queryResult = "目前只支援 " + CurrencyCnst.getSupportedCryptoCurrency() + "格式範例 => 取消貨幣btc";
+				queryResult = "目前只支援 " + CurrencyCnst.getSupportedCryptoCurrency() + "格式範例 => 取消貨幣btc, 您輸入: " + cryptoCurrency;
 			}
 			else {
 				CurrencyCnst currency = CurrencyCnst.convert(cryptoCurrency);
