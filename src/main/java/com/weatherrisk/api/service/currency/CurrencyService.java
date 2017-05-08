@@ -25,15 +25,21 @@ import org.knowm.xchange.poloniex.PoloniexExchange;
 import org.knowm.xchange.service.marketdata.MarketDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherrisk.api.cnst.CurrencyCnst;
+import com.weatherrisk.api.model.currency.TreasuryCryptoCurrency;
+import com.weatherrisk.api.model.currency.TreasuryCryptoCurrencyRepository;
 
 @Service
 public class CurrencyService {
 	
 	private Logger logger = LoggerFactory.getLogger(CurrencyService.class);
+	
+	@Autowired
+	private TreasuryCryptoCurrencyRepository treasuryCryptoCurrencyRepo;
 	
 	/**
 	 * 從各大交易所取得指定需擬貨幣目前價格
@@ -326,6 +332,53 @@ public class CurrencyService {
 		outBuffer.append("由 WINKDEXSM 提供");
 		
 		return outBuffer.toString();
+	}
+
+	public String addBuyCryptoCurrency(String userId, String buyDate, String currencyCode, double buyPrice, long buyVolumes) {
+		DecimalFormat decFormat = new DecimalFormat("###0.00000000");
+		
+		TreasuryCryptoCurrency buyCurrency = new TreasuryCryptoCurrency();
+		buyCurrency.setUserId(userId);
+		try {
+			buyCurrency.setBuyDate(buyDate);
+		} catch (ParseException e) {
+			logger.error("Exception raised while paring buyDate, the correct format is 'yyyy/MM/dd'");
+			return "新增失敗, 因日期格式錯誤";
+		}
+		
+		buyCurrency.setCurrencyCode(currencyCode);
+		buyCurrency.setId(userId + "-" + currencyCode);
+		buyCurrency.setBuyPriceAndVolumes(buyPrice, buyVolumes);
+		
+		long startTime = System.currentTimeMillis();
+		logger.info(">>>>> Prepare to save buy currency infomation, {}...", buyCurrency);
+		treasuryCryptoCurrencyRepo.save(buyCurrency);
+		logger.info("<<<<< Save buy currency infomation done, time-spent: <{} ms>", (System.currentTimeMillis() - startTime));
+		
+		StringBuilder buffer = new StringBuilder();
+		buffer.append(buyDate);
+		buffer.append(" 買進 (").append(currencyCode).append(")");
+		buffer.append(" $").append(decFormat.format(buyPrice)).append(" ");
+		buffer.append(buyVolumes).append("顆").append(", 資訊儲存成功");
+		String resultMsg = buffer.toString();
+
+		return resultMsg;
+	}
+
+	public String addSellCryptoCurrency(String userId, String sellDate, String currencyCode, double sellPrice,
+			long sellVolumes) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String deleteTreasuryCryptoCurrency(String userId, String currencyCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String queryTreasuryCryptoCurrency(String userId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

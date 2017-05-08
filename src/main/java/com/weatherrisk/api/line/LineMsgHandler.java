@@ -335,7 +335,7 @@ public class LineMsgHandler {
     			}
     		}
     		else {
-    			queryResult = "格式錯誤, Ex: 2017/3/24 買 3088 56.8 2000";
+    			queryResult = "格式錯誤, Ex: 2017/3/24 買股票 3088 56.8 2000";
     		}
     	}
     	// 刪除股票庫存
@@ -443,6 +443,51 @@ public class LineMsgHandler {
     		else {
     			queryResult = "您未註冊任何貨幣到價通知";
     		}
+    	}
+    	// 新增貨幣買賣紀錄
+    	else if (inputMsg.contains("買貨幣") || inputMsg.contains("賣貨幣")) {
+    		if (inputMsg.contains("買")) {
+    			String errorMsg = checkBuySellCryptoCurrencyMsg("買貨幣", inputMsg);
+    			if (errorMsg != null) {
+    				queryResult = errorMsg;
+    			}
+    			else {
+    				// 新增貨幣買資訊
+    				String[] split = inputMsg.split(" ");
+    				String buyDate = split[0];
+					String currencyCode = split[2];
+					double buyPrice = Double.parseDouble(split[3]);
+					long buyVolumes = Long.parseLong(split[4]);
+					queryResult = currencyService.addBuyCryptoCurrency(userId, buyDate, currencyCode, buyPrice, buyVolumes);
+    			}
+    		}
+    		else if (inputMsg.contains("賣")) {
+    			String errorMsg = checkBuySellCryptoCurrencyMsg("賣貨幣", inputMsg);
+    			if (errorMsg != null) {
+    				queryResult = errorMsg;
+    			}
+    			else {
+    				// 新增貨幣賣資訊
+    				String[] split = inputMsg.split(" ");
+    				String sellDate = split[0];
+					String currencyCode = split[2];
+					double sellPrice = Double.parseDouble(split[3]);
+					long sellVolumes = Long.parseLong(split[4]);
+					queryResult = currencyService.addSellCryptoCurrency(userId, sellDate, currencyCode, sellPrice, sellVolumes);
+    			}
+    		}
+    		else {
+    			queryResult = "格式錯誤, Ex: 2017/5/8 買貨幣 STR 0.00004900 20000";
+    		}
+    	}
+    	// 刪除貨幣庫存
+    	else if (inputMsg.startsWith("刪除貨幣庫存")) {
+    		String currencyCode = inputMsg.substring(inputMsg.indexOf("刪除貨幣庫存") + "刪除貨幣庫存".length(), inputMsg.length()).trim();
+    		queryResult = currencyService.deleteTreasuryCryptoCurrency(userId, currencyCode);
+    	}
+    	// 查詢貨幣庫存
+    	else if (inputMsg.equals("查詢貨幣庫存")) {
+    		queryResult = currencyService.queryTreasuryCryptoCurrency(userId);
     	}
     	// UBike 場站名稱模糊搜尋
     	else if (inputMsg.endsWith("ubike")) {
@@ -620,7 +665,7 @@ public class LineMsgHandler {
 			// check 買/賣
 			String buySell = split[1];
 			if (!buySell.equals(buySellKeyWord)) {
-				return "請確認為買/賣";
+				return "請確認為買股票/賣股票";
 			}
 			
 			// check 股票
@@ -649,7 +694,53 @@ public class LineMsgHandler {
 		return null;
 	}
 	
-
+	private String checkBuySellCryptoCurrencyMsg(String buySellKeyWord, String inputMsg) {
+		String[] split = inputMsg.split(" ");
+		if (split.length != 5) {
+			return "格式範例: 2017/5/8 " + buySellKeyWord + " STR 0.00004900 20000";
+		}
+		else {
+			// check 日期
+			String dateStr = split[0];
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+			try {
+				dateFormat.parse(dateStr);
+			} catch (ParseException e) {
+				return "日期格式為 yyyy/MM/dd";
+			}
+			
+			// check 買貨幣/賣貨幣
+			String buySell = split[1];
+			if (!buySell.equals(buySellKeyWord)) {
+				return "請確認為買貨幣/賣貨幣";
+			}
+			
+			// check 貨幣
+			String currencyCode = split[2];
+			boolean isSupportedStock = CurrencyCnst.isSupportedCurrency(currencyCode);
+			if (!isSupportedStock) {
+				return "不支援您輸入的虛擬貨幣";
+			}
+			
+			// check 價格
+			String strPrice = split[3];
+			try {
+				Double.parseDouble(strPrice);
+			} catch (Exception e) {
+				return "請確認輸入的價格";
+			}
+			
+			// check 數量
+			String strVolumes = split[4];
+			try {
+				Long.parseLong(strVolumes);
+			} catch (Exception e) {
+				return "請確認輸入的數量";
+			}
+		}
+		return null;
+	}
+	
 	@EventMapping
     public void handleLocationMessageEvent(MessageEvent<LocationMessageContent> event) {
 		logger.info(">>>>> handle location message event, event: {}", event);
