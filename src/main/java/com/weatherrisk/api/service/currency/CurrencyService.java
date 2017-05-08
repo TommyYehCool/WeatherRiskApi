@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.weatherrisk.api.cnst.CryptoCurrencyExchange;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.model.currency.TreasuryCryptoCurrency;
 import com.weatherrisk.api.model.currency.TreasuryCryptoCurrencyRepository;
@@ -49,26 +50,30 @@ public class CurrencyService {
 		try {
 			BigDecimal usdTwdRate = getBuyCashRatesFromTaiwanBank(CurrencyCnst.USD);
 			
+			CryptoCurrencyExchange cryptoCurrencyExchange = null;
+			CurrencyCnst currencyCnst = null;
 			if (currencyPair.equals(CurrencyPair.BTC_USD)) {
-				getCryptoCurrencyPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), CurrencyCnst.BTC, currencyPair, usdTwdRate);
-
-				// 不想看 Bitstamp 的資料了
-//				buffer.append("\n");
-//				
-//				getCryptoCurrencyPriceFromExchange(buffer, "Bitstamp", BitstampExchange.class.getName(), CurrencyCnst.BTC, currencyPair, usdTwdRate);
+				cryptoCurrencyExchange = CryptoCurrencyExchange.BTCE;
+				currencyCnst = CurrencyCnst.BTC;
 			}
 			else if (currencyPair.equals(CurrencyPair.ETH_USD)) {
-				getCryptoCurrencyPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), CurrencyCnst.ETH, currencyPair, usdTwdRate);
+				cryptoCurrencyExchange = CryptoCurrencyExchange.BTCE;
+				currencyCnst = CurrencyCnst.ETH;
 			}
 			else if (currencyPair.equals(CurrencyPair.LTC_USD)) {
-				getCryptoCurrencyPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), CurrencyCnst.LTC, currencyPair, usdTwdRate);
+				cryptoCurrencyExchange = CryptoCurrencyExchange.BTCE;
+				currencyCnst = CurrencyCnst.LTC;
 			}
 			else if (currencyPair.equals(CurrencyPair.STR_BTC)) {
-				getCryptoCurrencyPriceFromExchange(buffer, "Poloniex", PoloniexExchange.class.getName(), CurrencyCnst.STR, currencyPair, usdTwdRate);
+				cryptoCurrencyExchange = CryptoCurrencyExchange.POLONIEX;
+				currencyCnst = CurrencyCnst.STR;
 			}
 			else if (currencyPair.equals(CurrencyPair.XRP_BTC)) {
-				getCryptoCurrencyPriceFromExchange(buffer, "Poloniex", PoloniexExchange.class.getName(), CurrencyCnst.XRP, currencyPair, usdTwdRate);
+				cryptoCurrencyExchange = CryptoCurrencyExchange.POLONIEX;
+				currencyCnst = CurrencyCnst.XRP;
 			}
+			getCryptoCurrencyPriceFromExchange(buffer, cryptoCurrencyExchange.getExchangeName(),
+					cryptoCurrencyExchange.getExchangeClassName(), currencyCnst, currencyPair, usdTwdRate);
 			
 			return buffer.toString();
 		} catch (Exception e) {
