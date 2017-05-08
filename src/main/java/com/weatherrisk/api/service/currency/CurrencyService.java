@@ -386,7 +386,7 @@ public class CurrencyService {
 		
 		List<TreasuryCryptoCurrency> treasuryCryptoCurrencys = treasuryCryptoCurrencyRepo.findByUserId(userId);
 		if (treasuryCryptoCurrencys == null || treasuryCryptoCurrencys.isEmpty()) {
-			return "你無虛擬貨幣庫存紀錄";
+			return "您無虛擬貨幣庫存紀錄";
 		}
 		
 		StringBuilder buffer = new StringBuilder();
