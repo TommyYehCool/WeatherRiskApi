@@ -151,15 +151,15 @@ public class LineMsgHandler {
     	buffer.append("查詢一周天氣 => 格式: 縣市名稱 + 一周, Ex: 台北市一周").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[查詢貨幣匯率]").append("\n");
-    	buffer.append("<支援虛擬貨幣: btc, eth, ltc>").append("\n");
+    	buffer.append("<支援虛擬貨幣: ").append(CurrencyCnst.getSupportedCryptoCurrency().substring(0, CurrencyCnst.getSupportedCryptoCurrency().length() - 2)).append(">\n");
     	buffer.append("<支援真實貨幣: usd, jpy...等>").append("\n");
     	buffer.append("查詢虛擬貨幣匯率 => Ex: btc, eth, ltc").append("\n");
     	buffer.append("查詢真實貨幣匯率 => Ex: usd, jpy...等").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[註冊虛擬貨幣到價通知]").append("\n");
-    	buffer.append("註冊虛擬貨幣到價通知 => Ex: 註冊eth 40 50").append("\n");
-    	buffer.append("取消虛擬貨幣到價通知 => Ex: 取消eth").append("\n");
-    	buffer.append("查詢註冊虛擬貨幣到價通知資訊 => Ex: 查詢註冊").append("\n");
+    	buffer.append("註冊虛擬貨幣到價通知 => Ex: 註冊貨幣eth 40 50").append("\n");
+    	buffer.append("取消虛擬貨幣到價通知 => Ex: 取消貨幣eth").append("\n");
+    	buffer.append("查詢註冊虛擬貨幣到價通知資訊 => Ex: 查詢貨幣註冊").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[UBike]").append("\n");
     	buffer.append("關鍵字查詢 => 格式: 縣市名稱 + 關鍵字 + ubike, Ex: 台北市天母ubike, 新北市三重ubike").append("\n");
@@ -384,18 +384,18 @@ public class LineMsgHandler {
     		}
     	}
     	// 註冊虛擬貨幣匯率到價通知
-    	else if (inputMsg.startsWith("註冊")) {
-    		String cryptoCurrencyAndPrice = inputMsg.substring(inputMsg.indexOf("註冊") + "註冊".length(), inputMsg.length()).trim();
+    	else if (inputMsg.startsWith("註冊貨幣")) {
+    		String cryptoCurrencyAndPrice = inputMsg.substring(inputMsg.indexOf("註冊貨幣") + "註冊貨幣".length(), inputMsg.length()).trim();
     		String[] split = cryptoCurrencyAndPrice.split(" ");
     		if (split.length != 3) {
-    			queryResult = "格式範例 => 註冊 eth 40 50";
+    			queryResult = "格式範例 => 註冊貨幣 eth 40 50";
     		}
     		else {
     			String code = split[0].trim();
     			boolean isCryptoCurrency = CurrencyCnst.isCryptoCurrency(code);
     			if (!isCryptoCurrency) {
     				String supportedCryptoCurrency = CurrencyCnst.getSupportedCryptoCurrency();
-    				queryResult = "目前只支援 " + supportedCryptoCurrency + "格式範例 => Ex: 註冊eth 40 50";
+    				queryResult = "目前只支援 " + supportedCryptoCurrency + "格式範例 => Ex: 註冊貨幣 eth 40 50";
     			}
     			else {
     				try {
@@ -410,17 +410,17 @@ public class LineMsgHandler {
 						queryResult = "註冊 " + currency + " 到價通知成功, 價格: " + decFormat.format(lowerPrice.doubleValue()) + " ~ " + decFormat.format(upperPrice.doubleValue());
     				}
     				catch (Exception e) {
-    					queryResult = "格式範例 => 註冊eth 40 50"; 
+    					queryResult = "格式範例 => 註冊貨幣 eth 40 50"; 
     				}
     			}
     		}
     	}
     	// 取消虛擬貨幣匯率到價通知
-    	else if (inputMsg.startsWith("取消")) {
-    		String cryptoCurrency = inputMsg.substring(inputMsg.indexOf("取消") + "取消".length(), inputMsg.length()).trim();
+    	else if (inputMsg.startsWith("取消貨幣")) {
+    		String cryptoCurrency = inputMsg.substring(inputMsg.indexOf("取消貨幣") + "取消貨幣".length(), inputMsg.length()).trim();
     		boolean isCryptoCurrency = CurrencyCnst.isCryptoCurrency(cryptoCurrency);
 			if (!isCryptoCurrency) {
-				queryResult = "目前只支援 BTC, ETH, LTC; 格式範例 => 取消btc";
+				queryResult = "目前只支援 BTC, ETH, LTC; 格式範例 => 取消貨幣btc";
 			}
 			else {
 				CurrencyCnst currency = CurrencyCnst.convert(cryptoCurrency);
@@ -435,13 +435,13 @@ public class LineMsgHandler {
 			}
     	}
     	// 查詢註冊虛擬貨幣匯率到價通知
-    	else if (inputMsg.equals("查詢註冊")) {
+    	else if (inputMsg.equals("查詢貨幣註冊")) {
     		boolean hasRegistered = registerService.hasRegisteredCryptoCurrency(userId);
     		if (hasRegistered) {
     			queryResult = registerService.getCryptoCurrencyPricesReachedInfos(userId);
     		}
     		else {
-    			queryResult = "您未註冊任何到價通知";
+    			queryResult = "您未註冊任何貨幣到價通知";
     		}
     	}
     	// UBike 場站名稱模糊搜尋
