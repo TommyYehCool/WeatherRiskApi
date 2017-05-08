@@ -78,6 +78,16 @@ public class ScheduledTasks {
     }
     
     @Scheduled(cron = CRON_SCHEDULED)
+    public void getSTRPrice() {
+    	getCryptoCurrencyLastPriceFromPoloneix(CurrencyCnst.STR, CurrencyPair.STR_BTC);
+    }
+    
+    @Scheduled(cron = CRON_SCHEDULED)
+    public void getXRPPrice() {
+    	getCryptoCurrencyLastPriceFromPoloneix(CurrencyCnst.XRP, CurrencyPair.XRP_BTC);
+    }
+    
+    @Scheduled(cron = CRON_SCHEDULED)
     public void getRegisteredStockPrice() {
     	Set<String> allRegisteredStockNameOrId = registerService.getAllRegisteredStockNameOrId();
     	Iterator<String> it = allRegisteredStockNameOrId.iterator();
@@ -110,6 +120,20 @@ public class ScheduledTasks {
 			logger.error("Exception raised while trying to get {} price from BTC-E", baseCurrency, e);
 		}
     }
+	
+	private void getCryptoCurrencyLastPriceFromPoloneix(CurrencyCnst baseCurrency, CurrencyPair currencyPair) {
+    	try {
+    		logger.info(">>>>> Prepare to get {} price from Poloneix...", baseCurrency);
+
+			BigDecimal lastPrice = currencyService.getCryptoLastPriceFromPoloneix(currencyPair);
+
+			logger.info("<<<<< Get {} price from Poloneix done, price: {}", baseCurrency, lastPrice);
+
+			checkCryptoCurrencyPriceAndSendPushMessage(baseCurrency, currencyPair, lastPrice);
+		} catch (Exception e) {
+			logger.error("Exception raised while trying to get {} price from BTC-E", baseCurrency, e);
+		}
+	}
     
 	private void checkCryptoCurrencyPriceAndSendPushMessage(CurrencyCnst baseCurrency, CurrencyPair currencyPair, BigDecimal lastPrice) {
 		Map<String, List<CryptoCurrencyPriceReached>> registerInfos = registerService.getCryptoCurrencyRegisterInfos();

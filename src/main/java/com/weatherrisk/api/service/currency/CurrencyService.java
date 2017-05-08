@@ -93,6 +93,16 @@ public class CurrencyService {
 		}
 	}
 
+	/**
+	 * <pre>
+	 * 從指定交易所取得對應貨幣的 Ticker
+	 * </pre>
+	 * 
+	 * @param exchangeClassName
+	 * @param currencyPair
+	 * @return
+	 * @throws IOException
+	 */
 	private Ticker getTickerByCurrencyPairFromExchange(String exchangeClassName, CurrencyPair currencyPair) throws IOException {
 		Exchange exchange = ExchangeFactory.INSTANCE.createExchange(exchangeClassName);
 
@@ -162,15 +172,24 @@ public class CurrencyService {
 	 * @throws Exception
 	 */
 	public BigDecimal getCryptoLastPriceFromBtcE(CurrencyPair currencyPair) throws Exception {
-		Exchange exchange = ExchangeFactory.INSTANCE.createExchange(BTCEExchange.class.getName());
-
-		MarketDataService marketDataService = exchange.getMarketDataService();
-		
-		Ticker ticker = marketDataService.getTicker(currencyPair);
+		Ticker ticker = getTickerByCurrencyPairFromExchange(BTCEExchange.class.getName(), currencyPair);
 		
 		return ticker.getLast();
 	}
 	
+	/**
+	 * 從 Poloneix 取得某一檔虛擬貨幣的價格
+	 * 
+	 * @param currencyPair
+	 * @return
+	 * @throws Exception
+	 */
+	public BigDecimal getCryptoLastPriceFromPoloneix(CurrencyPair currencyPair) throws Exception {
+		Ticker ticker = getTickerByCurrencyPairFromExchange(PoloniexExchange.class.getName(), currencyPair);
+
+		return ticker.getLast();
+	}
+
 	/**
      * <pre>
      * 從台灣銀行取得外幣對台幣匯率
