@@ -365,6 +365,14 @@ public class LineMsgHandler {
 						queryResult = currencyService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.LTC_USD);
 						break;
 						
+					case STR:
+						queryResult = currencyService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.STR_BTC);
+						break;
+						
+					case XRP:
+						queryResult = currencyService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.XRP_BTC);
+						break;
+						
 					default:
 						break;
     			}

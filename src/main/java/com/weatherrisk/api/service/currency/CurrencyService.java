@@ -21,6 +21,8 @@ import org.knowm.xchange.bitstamp.BitstampExchange;
 import org.knowm.xchange.btce.v3.BTCEExchange;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.Ticker;
+import org.knowm.xchange.poloniex.Poloniex;
+import org.knowm.xchange.poloniex.PoloniexExchange;
 import org.knowm.xchange.service.marketdata.MarketDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +56,12 @@ public class CurrencyService {
 			}
 			else if (currencyPair.equals(CurrencyPair.LTC_USD)) {
 				getCryptoCurrencyPriceFromExchange(buffer, "BTC-E", BTCEExchange.class.getName(), CurrencyCnst.LTC, currencyPair, usdTwdRate);
+			}
+			else if (currencyPair.equals(CurrencyPair.STR_BTC)) {
+				getCryptoCurrencyPriceFromExchange(buffer, "Poloniex", PoloniexExchange.class.getName(), CurrencyCnst.STR, currencyPair, usdTwdRate);
+			}
+			else if (currencyPair.equals(CurrencyPair.XRP_BTC)) {
+				getCryptoCurrencyPriceFromExchange(buffer, "Poloniex", PoloniexExchange.class.getName(), CurrencyCnst.XRP, currencyPair, usdTwdRate);
 			}
 			
 			return buffer.toString();

@@ -47,7 +47,11 @@ public enum CurrencyCnst {
 	
 	ETH,
 	
-	LTC
+	LTC,
+	
+	STR,
+	
+	XRP
 	;
 	
 	private static EnumSet<CurrencyCnst> crypto_currency;
@@ -56,7 +60,7 @@ public enum CurrencyCnst {
 	
 	static {
 		crypto_currency 
-			= EnumSet.of(CurrencyCnst.BTC, CurrencyCnst.ETH, CurrencyCnst.LTC);
+			= EnumSet.of(CurrencyCnst.BTC, CurrencyCnst.ETH, CurrencyCnst.LTC, CurrencyCnst.STR, CurrencyCnst.XRP);
 		
 		real_currency
 			= EnumSet.complementOf(crypto_currency);
