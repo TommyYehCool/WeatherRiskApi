@@ -162,7 +162,6 @@ public class LineMsgHandler {
     	buffer.append("查詢註冊虛擬貨幣到價通知資訊 => Ex: 查詢貨幣註冊").append("\n");
     	buffer.append("新增虛擬貨幣買進資訊 => Ex: 2017/5/8 買STR 0.00003800 20000").append("\n");
     	buffer.append("新增虛擬貨幣賣出資訊 => Ex: 2017/5/8 賣STR 0.00004000 20000").append("\n");
-    	buffer.append("刪除虛擬貨幣庫存 => Ex: 刪除貨幣庫存STR").append("\n");
     	buffer.append("查詢虛擬貨幣庫存 => Ex: 查詢貨幣庫存").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[UBike]").append("\n");
@@ -485,18 +484,6 @@ public class LineMsgHandler {
     		else {
     			queryResult = "格式錯誤, Ex: 2017/5/8 買貨幣 STR 0.00004900 20000";
     		}
-    	}
-    	// 刪除貨幣庫存
-    	else if (inputMsg.startsWith("刪除貨幣庫存")) {
-    		String currencyCode = inputMsg.substring(inputMsg.indexOf("刪除貨幣庫存") + "刪除貨幣庫存".length(), inputMsg.length()).trim();
-    		currencyCode = currencyCode.toUpperCase();
-    		boolean isTreasurySupportedCryptoCurrency = CurrencyCnst.isTreasurySupportedCryptoCurrency(currencyCode);
-    		if (!isTreasurySupportedCryptoCurrency) {
-				queryResult = "目前只支援 " + CurrencyCnst.getTreasurySupportedCryptoCurrency() + "格式範例 => 刪除貨幣庫存btc";
-			}
-			else {
-				queryResult = currencyService.deleteTreasuryCryptoCurrency(userId, currencyCode);
-			}
     	}
     	// 查詢貨幣庫存
     	else if (inputMsg.equals("查詢貨幣庫存")) {

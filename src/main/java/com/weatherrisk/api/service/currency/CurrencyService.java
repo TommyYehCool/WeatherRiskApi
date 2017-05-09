@@ -347,6 +347,16 @@ public class CurrencyService {
 		return outBuffer.toString();
 	}
 
+	/**
+	 * 買進虛擬貨幣
+	 * 
+	 * @param userId
+	 * @param buyDateTime
+	 * @param currencyCode
+	 * @param buyPrice
+	 * @param buyVolumes
+	 * @return
+	 */
 	public String addBuyCryptoCurrency(String userId, String buyDateTime, String currencyCode, BigDecimal buyPrice, BigDecimal buyVolumes) {
 		CryptoCurrencyBSRecord bsRecord = null;
 		
@@ -370,6 +380,20 @@ public class CurrencyService {
 		buffer.append(decFormat.format(buyVolumes)).append("顆").append(", 資訊儲存成功");
 
 		return buffer.toString();
+	}
+
+	/**
+	 * TODO 賣出虛擬貨幣
+	 * 
+	 * @param userId
+	 * @param sellDateTime
+	 * @param currencyCode
+	 * @param sellPrice
+	 * @param sellVolumes
+	 * @return
+	 */
+	public String addSellCryptoCurrency(String userId, String sellDateTime, String currencyCode, BigDecimal sellPrice, BigDecimal sellVolumes) {
+		return null;
 	}
 
 	/**
@@ -438,11 +462,6 @@ public class CurrencyService {
 		}
 	}
 
-	public String addSellCryptoCurrency(String userId, String sellDateTime, String currencyCode, BigDecimal sellPrice, BigDecimal sellVolumes) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	/**
 	 * 刪除虛擬貨幣買賣紀錄, 不開放給使用者使用
 	 */
@@ -456,6 +475,9 @@ public class CurrencyService {
 		return "刪除 " + dateTime + " " + buySell + " " + currencyCode + " 資訊成功";
 	}
 
+	/**
+	 * 刪除虛擬貨幣庫存紀錄, 不開放給使用者使用
+	 */
 	public String deleteTreasuryCryptoCurrency(String userId, String currencyCode) {
 		String id = TreasuryCryptoCurrency.getId(userId, currencyCode);
 
