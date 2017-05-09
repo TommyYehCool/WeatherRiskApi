@@ -156,19 +156,16 @@ public class LineMsgHandler {
     	buffer.append("查詢天氣小幫手 => 格式: 縣市名稱 + 天氣, Ex: 台北市天氣").append("\n");
     	buffer.append("查詢一周天氣 => 格式: 縣市名稱 + 一周, Ex: 台北市一周").append("\n");
     	buffer.append("-----------------------").append("\n");
-    	buffer.append("[查詢貨幣匯率]").append("\n");
+    	buffer.append("[貨幣]").append("\n");
+    	buffer.append("輸入 coin 可顯示小幫手").append("\n");
     	buffer.append("<支援虛擬貨幣: ").append(CurrencyCnst.getSupportedCryptoCurrency().substring(0, CurrencyCnst.getSupportedCryptoCurrency().length() - 2)).append(">\n");
     	buffer.append("<支援真實貨幣: usd, jpy...等>").append("\n");
     	buffer.append("查詢虛擬貨幣匯率 => Ex: ").append(CurrencyCnst.getSupportedCryptoCurrency().substring(0, CurrencyCnst.getSupportedCryptoCurrency().length() - 2)).append("\n");
     	buffer.append("查詢真實貨幣匯率 => Ex: usd, jpy...等").append("\n");
-    	buffer.append("-----------------------").append("\n");
-    	buffer.append("[註冊虛擬貨幣到價通知]").append("\n");
     	buffer.append("註冊虛擬貨幣到價通知 => Ex: 註冊貨幣eth 40 50").append("\n");
     	buffer.append("取消虛擬貨幣到價通知 => Ex: 取消貨幣eth").append("\n");
-    	buffer.append("查詢註冊虛擬貨幣到價通知資訊 => Ex: 查詢貨幣註冊").append("\n");
-    	buffer.append("新增虛擬貨幣買進資訊 => Ex: 2017/5/8 買STR 0.00003800 20000").append("\n");
-    	buffer.append("新增虛擬貨幣賣出資訊 => Ex: 2017/5/8 賣STR 0.00004000 20000").append("\n");
-    	buffer.append("查詢虛擬貨幣庫存 => Ex: 查詢貨幣庫存").append("\n");
+    	buffer.append("新增虛擬貨幣買進資訊 => Ex: 2017/05/08-08:07:30 買貨幣 STR 0.00004900 20000").append("\n");
+    	buffer.append("新增虛擬貨幣賣出資訊 => Ex: 2017/05/08-20:07:30 賣貨幣 STR 0.00004900 20000").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[UBike]").append("\n");
     	buffer.append("關鍵字查詢 => 格式: 縣市名稱 + 關鍵字 + ubike, Ex: 台北市天母ubike, 新北市三重ubike").append("\n");
@@ -223,8 +220,8 @@ public class LineMsgHandler {
     	String queryResult = null;
     	
     	// template message
-    	if (inputMsg.equalsIgnoreCase("hi")) {
-    		createTemplateMsg(event);
+    	if (inputMsg.equalsIgnoreCase("coin")) {
+    		createCoinTemplateMsg(event);
     		queryResult = "";
     	}
     	
@@ -449,16 +446,6 @@ public class LineMsgHandler {
 				}
 			}
     	}
-    	// 查詢註冊虛擬貨幣匯率到價通知
-    	else if (inputMsg.equals("查詢貨幣註冊")) {
-    		boolean hasRegistered = registerService.hasRegisteredCryptoCurrency(userId);
-    		if (hasRegistered) {
-    			queryResult = registerService.getCryptoCurrencyPricesReachedInfos(userId);
-    		}
-    		else {
-    			queryResult = "您未註冊任何貨幣到價通知";
-    		}
-    	}
     	// 新增貨幣買賣紀錄
     	else if (inputMsg.contains("買貨幣") || inputMsg.contains("賣貨幣")) {
     		if (inputMsg.contains("買")) {
@@ -496,10 +483,6 @@ public class LineMsgHandler {
     		else {
     			queryResult = "格式錯誤, Ex: 2017/5/8 買貨幣 STR 0.00004900 20000";
     		}
-    	}
-    	// 查詢貨幣庫存
-    	else if (inputMsg.equals("查詢貨幣庫存")) {
-    		queryResult = currencyService.queryTreasuryCryptoCurrency(userId);
     	}
     	// UBike 場站名稱模糊搜尋
     	else if (inputMsg.endsWith("ubike")) {
@@ -659,7 +642,7 @@ public class LineMsgHandler {
     	}
     }
 
-	private void createTemplateMsg(MessageEvent<TextMessageContent> event) {
+	private void createCoinTemplateMsg(MessageEvent<TextMessageContent> event) {
 		// 參考: https://github.com/line/line-bot-sdk-java/blob/master/sample-spring-boot-kitchensink/src/main/java/com/example/bot/spring/KitchenSinkController.java
 		String imageUrl = createUri("/buttons/bitcoin.jpeg");
 		logger.info(">>>>> TemplateMsg, imageUrl: <{}>", imageUrl);
@@ -668,9 +651,9 @@ public class LineMsgHandler {
                 "你好呀",
                 "我提供下列功能",
                 Arrays.asList(
-                        new PostbackAction("查詢貨幣註冊",
+                        new PostbackAction("虛擬貨幣到價資訊",
                                            "查詢貨幣註冊"),
-                        new PostbackAction("查詢貨幣庫存",
+                        new PostbackAction("查詢虛擬貨幣庫存",
                                 		   "查詢貨幣庫存")
                 )); 
 		TemplateMessage message = new TemplateMessage("Button alt text", buttonsTemplate);
