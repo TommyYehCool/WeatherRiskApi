@@ -54,6 +54,7 @@ public class Test_Line_MessageHandler {
 		sendLineMsg(text);
 	}
 	
+	// 測試 templateMsg
 	@Test
 	public void test_04_testTemplateMsg() {
 		String text = "testTemplate";
