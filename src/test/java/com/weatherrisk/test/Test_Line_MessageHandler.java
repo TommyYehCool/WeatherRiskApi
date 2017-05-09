@@ -37,6 +37,7 @@ public class Test_Line_MessageHandler {
 	@Test
 	public void test_01_deleteTestingData() {
 		deleteTestingData();
+		System.out.println("test_01_deleteTestingData done");
 	}
 	
 	@Test
