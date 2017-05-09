@@ -21,10 +21,12 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.ReplyMessage;
 import com.linecorp.bot.model.action.PostbackAction;
-import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
+import com.linecorp.bot.model.event.PostbackEvent;
 import com.linecorp.bot.model.event.message.LocationMessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
+import com.linecorp.bot.model.event.postback.PostbackContent;
+import com.linecorp.bot.model.event.source.UserSource;
 import com.linecorp.bot.model.message.LocationMessage;
 import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TemplateMessage;
@@ -659,7 +661,7 @@ public class LineMsgHandler {
 
 	private void createTemplateMsg(MessageEvent<TextMessageContent> event) {
 		// 參考: https://github.com/line/line-bot-sdk-java/blob/master/sample-spring-boot-kitchensink/src/main/java/com/example/bot/spring/KitchenSinkController.java
-		String imageUrl = createUri("/buttons/bitcoin.jpg");
+		String imageUrl = createUri("/buttons/bitcoin.jpeg");
 		logger.info(">>>>> TemplateMsg, imageUrl: <{}>", imageUrl);
 		ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
                 imageUrl,
@@ -847,8 +849,34 @@ public class LineMsgHandler {
 	}
 
 	@EventMapping
-    public void handleDefaultMessageEvent(Event event) {
+    public void handleDefaultMessageEvent(PostbackEvent event) {
         logger.info(">>>>> handle default message event, event: {}", event);
+        
+        UserSource source = (UserSource) event.getSource();
+        PostbackContent postbackContent = event.getPostbackContent();
+        
+        String userId = source.getUserId();
+        String replyToken = event.getReplyToken();
+        String postBackMsg = postbackContent.getData();
+        
+        String replyMsg = null;
+        
+        // 查詢註冊虛擬貨幣匯率到價通知
+    	if (postBackMsg.equals("查詢貨幣註冊")) {
+    		boolean hasRegistered = registerService.hasRegisteredCryptoCurrency(userId);
+    		if (hasRegistered) {
+    			replyMsg = registerService.getCryptoCurrencyPricesReachedInfos(userId);
+    		}
+    		else {
+    			replyMsg = "您未註冊任何貨幣到價通知";
+    		}
+    		reply(replyToken, new TextMessage(replyMsg));
+    	}
+    	// 查詢貨幣庫存
+    	else if (postBackMsg.equals("查詢貨幣庫存")) {
+    		replyMsg = currencyService.queryTreasuryCryptoCurrency(userId);
+    		reply(replyToken, new TextMessage(replyMsg));
+    	}
     }
     
     private void reply(@NonNull String replyToken, @NonNull Message message) {
