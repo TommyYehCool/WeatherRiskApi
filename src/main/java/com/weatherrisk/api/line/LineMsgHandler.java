@@ -16,16 +16,22 @@ import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.ReplyMessage;
+import com.linecorp.bot.model.action.MessageAction;
+import com.linecorp.bot.model.action.PostbackAction;
+import com.linecorp.bot.model.action.URIAction;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.LocationMessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.LocationMessage;
 import com.linecorp.bot.model.message.Message;
+import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.message.template.ButtonsTemplate;
 import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
@@ -215,6 +221,11 @@ public class LineMsgHandler {
     	String inputMsg = event.getMessage().getText();
     	
     	String queryResult = null;
+    	
+    	// TEST
+    	if (inputMsg.equals("testTemplate")) {
+    		testTemplateMsg(event);
+    	}
     	
     	// 功能查詢
     	if (isQueryFunctionMsg(inputMsg)) {
@@ -646,6 +657,29 @@ public class LineMsgHandler {
     		return new TextMessage(getRandomMsg());
     	}
     }
+
+	private void testTemplateMsg(MessageEvent<TextMessageContent> event) {
+		// 參考: https://github.com/line/line-bot-sdk-java/blob/master/sample-spring-boot-kitchensink/src/main/java/com/example/bot/spring/KitchenSinkController.java
+		String imageUrl = createUri("/static/buttons/1040.jpg");
+		ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
+                imageUrl,
+                "My button sample",
+                "Hello, my button",
+                Arrays.asList(
+                        new URIAction("Go to line.me",
+                                      "https://line.me"),
+                        new PostbackAction("Say hello1",
+                                           "hello こんにちは"),
+                        new PostbackAction("言 hello2",
+                                           "hello こんにちは",
+                                           "hello こんにちは"),
+                        new MessageAction("Say message",
+                                          "Rice=米")
+                )); 
+		TemplateMessage message = new TemplateMessage("Button alt text", buttonsTemplate);
+		String replyToken = event.getReplyToken();
+		reply(replyToken, message);
+	}
 	
 	private String checkBuySellStockMsg(String buySellKeyWord, String inputMsg) {
 		String[] split = inputMsg.split(" ");
@@ -848,5 +882,11 @@ public class LineMsgHandler {
         } catch (InterruptedException | ExecutionException e) {
             logger.error("Exception raised while tring to reply", e);
         }
+    }
+    
+    private static String createUri(String path) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath()
+                                          .path(path).build()
+                                          .toUriString();
     }
 }
