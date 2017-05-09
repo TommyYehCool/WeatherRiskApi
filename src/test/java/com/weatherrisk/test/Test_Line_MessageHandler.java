@@ -35,14 +35,18 @@ public class Test_Line_MessageHandler {
 	private CurrencyService currencyService;
 
 	@Test
-	@Ignore
-	public void test_01_addBuyCurrenct() {
+	public void test_01_deleteTestingData() {
 		deleteTestingData();
-		
+	}
+	
+	@Test
+	@Ignore
+	public void test_02_sendAddBuyCurrency() {
 		sendAddBuyCurrency();
 	}
 	
 	@Test
+	@Ignore
 	public void test_02_queryTreasuryCurrency() {
 		String text = "查詢貨幣庫存";
 		sendLineMsg(text);

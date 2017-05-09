@@ -366,8 +366,8 @@ public class CurrencyService {
 		StringBuilder buffer = new StringBuilder();
 		buffer.append(buyDateTime);
 		buffer.append(" 買進 (").append(currencyCode).append(")");
-		buffer.append(" $").append(decFormat.format(buyPrice)).append(" ");
-		buffer.append(buyVolumes).append("顆").append(", 資訊儲存成功");
+		buffer.append(" $").append(decFormat.format(buyPrice.doubleValue())).append(" ");
+		buffer.append(decFormat.format(buyVolumes)).append("顆").append(", 資訊儲存成功");
 
 		return buffer.toString();
 	}
