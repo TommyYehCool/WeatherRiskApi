@@ -35,6 +35,7 @@ public class Test_Line_MessageHandler {
 	private CurrencyService currencyService;
 
 	@Test
+	@Ignore
 	public void test_01_deleteTestingData() {
 		deleteTestingData();
 		System.out.println("test_01_deleteTestingData done");
@@ -48,8 +49,14 @@ public class Test_Line_MessageHandler {
 	
 	@Test
 	@Ignore
-	public void test_02_queryTreasuryCurrency() {
+	public void test_03_queryTreasuryCurrency() {
 		String text = "查詢貨幣庫存";
+		sendLineMsg(text);
+	}
+	
+	@Test
+	public void test_04_testTemplateMsg() {
+		String text = "testTemplate";
 		sendLineMsg(text);
 	}
 
