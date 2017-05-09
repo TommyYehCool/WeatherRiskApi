@@ -660,7 +660,7 @@ public class LineMsgHandler {
 
 	private void testTemplateMsg(MessageEvent<TextMessageContent> event) {
 		// 參考: https://github.com/line/line-bot-sdk-java/blob/master/sample-spring-boot-kitchensink/src/main/java/com/example/bot/spring/KitchenSinkController.java
-		String imageUrl = createUri("/static/buttons/1040.jpg");
+		String imageUrl = createUri("/buttons/1040.jpg");
 		logger.info(">>>>> TemplateMsg, imageUrl: <{}>", imageUrl);
 		ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
                 imageUrl,
