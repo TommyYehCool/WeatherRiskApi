@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
@@ -503,7 +504,7 @@ public class CurrencyService {
 			if (lastPrice != null) {
 				buffer.append("\n目前成交價(BTC): ").append(decFormat.format(lastPrice.doubleValue())).append("\n");
 				
-				BigDecimal currentSellMatchAmount = lastPrice.multiply(new BigDecimal(totalVolumes));
+				BigDecimal currentSellMatchAmount = lastPrice.multiply(new BigDecimal(totalVolumes)).setScale(8, RoundingMode.DOWN);
 				buffer.append("賣出可得金額(BTC): ").append(currentSellMatchAmount.doubleValue()).append("\n");
 				
 				BigDecimal btcWinLoseAmount = currentSellMatchAmount.subtract(new BigDecimal(amount));
