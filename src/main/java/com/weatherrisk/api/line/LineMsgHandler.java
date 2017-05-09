@@ -458,12 +458,12 @@ public class LineMsgHandler {
     			else {
     				// 新增貨幣買資訊
     				String[] split = inputMsg.split(" ");
-    				String buyDate = split[0];
+    				String buyDateTime = split[0];
 					String currencyCode = split[2];
 					currencyCode = currencyCode.toUpperCase();
-					double buyPrice = Double.parseDouble(split[3]);
-					long buyVolumes = Long.parseLong(split[4]);
-					queryResult = currencyService.addBuyCryptoCurrency(userId, buyDate, currencyCode, buyPrice, buyVolumes);
+					BigDecimal buyPrice = new BigDecimal(Double.parseDouble(split[3]));
+					BigDecimal buyVolumes = new BigDecimal(Long.parseLong(split[4]));
+					queryResult = currencyService.addBuyCryptoCurrency(userId, buyDateTime, currencyCode, buyPrice, buyVolumes);
     			}
     		}
     		else if (inputMsg.contains("賣")) {
@@ -474,12 +474,12 @@ public class LineMsgHandler {
     			else {
     				// 新增貨幣賣資訊
     				String[] split = inputMsg.split(" ");
-    				String sellDate = split[0];
+    				String sellDateTime = split[0];
 					String currencyCode = split[2];
 					currencyCode = currencyCode.toUpperCase();
-					double sellPrice = Double.parseDouble(split[3]);
-					long sellVolumes = Long.parseLong(split[4]);
-					queryResult = currencyService.addSellCryptoCurrency(userId, sellDate, currencyCode, sellPrice, sellVolumes);
+					BigDecimal sellPrice = new BigDecimal(Double.parseDouble(split[3]));
+					BigDecimal sellVolumes = new BigDecimal(Long.parseLong(split[4]));
+					queryResult = currencyService.addSellCryptoCurrency(userId, sellDateTime, currencyCode, sellPrice, sellVolumes);
     			}
     		}
     		else {

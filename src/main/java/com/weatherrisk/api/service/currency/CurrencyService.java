@@ -29,8 +29,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.weatherrisk.api.cnst.BuySell;
 import com.weatherrisk.api.cnst.CryptoCurrencyExchange;
 import com.weatherrisk.api.cnst.CurrencyCnst;
+import com.weatherrisk.api.model.currency.CryptoCurrencyBSRecord;
+import com.weatherrisk.api.model.currency.CryptoCurrencyBSRecordRepository;
 import com.weatherrisk.api.model.currency.TreasuryCryptoCurrency;
 import com.weatherrisk.api.model.currency.TreasuryCryptoCurrencyRepository;
 
@@ -38,6 +41,9 @@ import com.weatherrisk.api.model.currency.TreasuryCryptoCurrencyRepository;
 public class CurrencyService {
 	
 	private Logger logger = LoggerFactory.getLogger(CurrencyService.class);
+	
+	@Autowired
+	private CryptoCurrencyBSRecordRepository cryptoCurrencyBSRecordRepo;
 	
 	@Autowired
 	private TreasuryCryptoCurrencyRepository treasuryCryptoCurrencyRepo;
@@ -340,48 +346,116 @@ public class CurrencyService {
 		return outBuffer.toString();
 	}
 
-	public String addBuyCryptoCurrency(String userId, String buyDate, String currencyCode, double buyPrice, long buyVolumes) {
-		DecimalFormat decFormat = new DecimalFormat("###0.00000000");
-		
-		TreasuryCryptoCurrency buyCurrency = new TreasuryCryptoCurrency();
-		buyCurrency.setUserId(userId);
+	public String addBuyCryptoCurrency(String userId, String buyDateTime, String currencyCode, BigDecimal buyPrice, BigDecimal buyVolumes) {
+		// 新增買進紀錄
 		try {
-			buyCurrency.setBuyDate(buyDate);
+			addBuySellRecord(userId, currencyCode, BuySell.BUY, buyDateTime, buyPrice, buyVolumes);
 		} catch (ParseException e) {
-			logger.error("Exception raised while paring buyDate, the correct format is 'yyyy/MM/dd'");
-			return "新增失敗, 因日期格式錯誤";
+			return "新增失敗, 因日期時間格式錯誤, 格式:yyyy/MM/dd-HH:mm";
 		}
 		
-		buyCurrency.setCurrencyCode(currencyCode);
-		buyCurrency.setId(userId + "-" + currencyCode);
-		buyCurrency.setBuyPriceAndVolumes(buyPrice, buyVolumes);
-		
-		long startTime = System.currentTimeMillis();
-		logger.info(">>>>> Prepare to save buy currency infomation, {}...", buyCurrency);
-		treasuryCryptoCurrencyRepo.save(buyCurrency);
-		logger.info("<<<<< Save buy currency infomation done, time-spent: <{} ms>", (System.currentTimeMillis() - startTime));
+		// 更新庫存資訊
+		updateTreasuryCurrency(userId, currencyCode, buyPrice, buyVolumes);
+
+		// 回傳訊息
+		DecimalFormat decFormat = new DecimalFormat("###0.00000000");
 		
 		StringBuilder buffer = new StringBuilder();
-		buffer.append(buyDate);
+		buffer.append(buyDateTime);
 		buffer.append(" 買進 (").append(currencyCode).append(")");
 		buffer.append(" $").append(decFormat.format(buyPrice)).append(" ");
 		buffer.append(buyVolumes).append("顆").append(", 資訊儲存成功");
-		String resultMsg = buffer.toString();
 
-		return resultMsg;
+		return buffer.toString();
 	}
 
-	public String addSellCryptoCurrency(String userId, String sellDate, String currencyCode, double sellPrice,
-			long sellVolumes) {
+	/**
+	 * 新增虛擬貨幣買賣紀錄
+	 * 
+	 * @param userId
+	 * @param currencyCode
+	 * @param buySell
+	 * @param buyDateTime
+	 * @param buyPrice
+	 * @param buyVolumes
+	 * @throws ParseException
+	 */
+	private void addBuySellRecord(String userId, String currencyCode, BuySell buySell, String buyDateTime, BigDecimal buyPrice, BigDecimal buyVolumes) throws ParseException {
+		CryptoCurrencyBSRecord currencyRecord = new CryptoCurrencyBSRecord();
+		try {
+			currencyRecord.setData(userId, currencyCode, buySell, buyDateTime, buyPrice, buyVolumes);
+		} catch (ParseException e) {
+			logger.error("Exception raised while paring buyDateTime, the correct format is 'yyyy/MM/dd-HH:mm'");
+			throw e;
+		}
+		
+		long startTime = System.currentTimeMillis();
+		logger.info(">>>>> Prepare to save currency record, {}...", currencyRecord);
+		cryptoCurrencyBSRecordRepo.save(currencyRecord);
+		logger.info("<<<<< Save currency record done, time-spent: <{} ms>", (System.currentTimeMillis() - startTime));
+	}
+
+	/**
+	 * 更新虛擬貨幣庫存紀錄
+	 * 
+	 * @param userId
+	 * @param currencyCode
+	 * @param buyPrice
+	 * @param buyVolumes
+	 */
+	private void updateTreasuryCurrency(String userId, String currencyCode, BigDecimal buyPrice, BigDecimal buyVolumes) {
+		String id = TreasuryCryptoCurrency.getId(userId, currencyCode);
+		
+		long startTime = System.currentTimeMillis();
+		logger.info(">>>>> Prepare to get treasury currency by id: <{}>...", id);
+		TreasuryCryptoCurrency existData = treasuryCryptoCurrencyRepo.findOne(id);
+		logger.info("<<<<< Get treasury currency by id: <{}> done, time-spent: <{} ms>", id, (System.currentTimeMillis() - startTime));
+		
+		// 代表全新, 要新增
+		if (existData == null) {
+			TreasuryCryptoCurrency newData = new TreasuryCryptoCurrency();
+			newData.setNewData(userId, currencyCode, buyPrice, buyVolumes);
+			
+			startTime = System.currentTimeMillis();
+			logger.info(">>>>> Prepare to insert treasury currency: <{}>...", newData);
+			treasuryCryptoCurrencyRepo.insert(newData);
+			logger.info("<<<<< Insert treasury currency: <{}> done, time-spent: <{} ms>", newData, (System.currentTimeMillis() - startTime));
+		}
+		// 代表已有資料要更新
+		else {
+			existData.buyUpdateExistData(buyPrice, buyVolumes);
+			
+			startTime = System.currentTimeMillis();
+			logger.info(">>>>> Prepare to update treasury currency: <{}>...", existData);
+			treasuryCryptoCurrencyRepo.save(existData);
+			logger.info("<<<<< Update treasury currency: <{}> done, time-spent: <{} ms>", existData, (System.currentTimeMillis() - startTime));
+		}
+	}
+
+	public String addSellCryptoCurrency(String userId, String sellDateTime, String currencyCode, BigDecimal sellPrice, BigDecimal sellVolumes) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	/**
+	 * 刪除虛擬貨幣買賣紀錄, 不開放給使用者使用
+	 */
+	public String deleteCryptoCurrencyBuySellRecord(String userId, String currencyCode, String dateTime, BuySell buySell) {
+		String id = CryptoCurrencyBSRecord.getId(userId, currencyCode, dateTime, buySell);
+		
+		logger.info(">>>>> Prepare to delete crypto currency buy sell record with id: {}...", id);
+		cryptoCurrencyBSRecordRepo.delete(id);
+		logger.info("<<<<< Delete crypto currency buy sell record with id: {} done", id);
+		
+		return "刪除 " + dateTime + " " + buySell + " " + currencyCode + " 資訊成功";
+	}
 
 	public String deleteTreasuryCryptoCurrency(String userId, String currencyCode) {
-		String key = userId + "-" + currencyCode;
-		logger.info(">>>>> Prepare to delete treasury crypto currency with key: {}...", key);
-		treasuryCryptoCurrencyRepo.delete(key);
-		logger.info("<<<<< Delete treasury crypto currency with key: {} done", key);
+		String id = TreasuryCryptoCurrency.getId(userId, currencyCode);
+
+		logger.info(">>>>> Prepare to delete treasury crypto currency with id: {}...", id);
+		treasuryCryptoCurrencyRepo.delete(id);
+		logger.info("<<<<< Delete treasury crypto currency with id: {} done", id);
 		
 		return "刪除 " + currencyCode + " 庫存資訊成功";
 	}
@@ -399,14 +473,14 @@ public class CurrencyService {
 			TreasuryCryptoCurrency treasuryCryptoCurrency = treasuryCryptoCurrencys.get(i);
 			
 			String currencyCode = treasuryCryptoCurrency.getCurrencyCode();
-			double buyPrice = treasuryCryptoCurrency.getBuyPrice();
-			long buyVolumes = treasuryCryptoCurrency.getBuyVolumes();
-			double buyMatchAmount = treasuryCryptoCurrency.getBuyMatchAmount();
+			double avgPrice = treasuryCryptoCurrency.getAvgPrice();
+			long totalVolumes = treasuryCryptoCurrency.getTotalVolumes();
+			double amount = treasuryCryptoCurrency.getAmount();
 			
 			buffer.append("[").append(currencyCode.toUpperCase()).append("]\n");
-			buffer.append("買進價(BTC): ").append(decFormat.format(buyPrice)).append("\n");
-			buffer.append("買進數量: ").append(buyVolumes).append("\n");
-			buffer.append("買進金額(BTC): ").append(buyMatchAmount);
+			buffer.append("均價(BTC): ").append(decFormat.format(avgPrice)).append("\n");
+			buffer.append("總數量: ").append(totalVolumes).append("\n");
+			buffer.append("總金額(BTC): ").append(amount);
 			
 			CurrencyPair currencyPair = getCurrencyPairByCurrencyCode(currencyCode);
 			if (currencyPair == null) {
@@ -424,10 +498,10 @@ public class CurrencyService {
 			if (lastPrice != null) {
 				buffer.append("\n目前成交價(BTC): ").append(decFormat.format(lastPrice.doubleValue())).append("\n");
 				
-				BigDecimal currentSellMatchAmount = lastPrice.multiply(new BigDecimal(buyVolumes));
+				BigDecimal currentSellMatchAmount = lastPrice.multiply(new BigDecimal(totalVolumes));
 				buffer.append("賣出可得金額(BTC): ").append(currentSellMatchAmount.doubleValue()).append("\n");
 				
-				BigDecimal btcWinLoseAmount = currentSellMatchAmount.subtract(new BigDecimal(buyMatchAmount));
+				BigDecimal btcWinLoseAmount = currentSellMatchAmount.subtract(new BigDecimal(amount));
 				buffer.append("損益試算(BTC): ").append(decFormat.format(btcWinLoseAmount.doubleValue()));
 				
 				BigDecimal btcUsdRate = null;

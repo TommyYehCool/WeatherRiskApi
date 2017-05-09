@@ -1,6 +1,7 @@
 package com.weatherrisk.test;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.ParseException;
@@ -118,6 +119,7 @@ public class Test_Java {
 	}
 	
 	@Test
+	@Ignore
 	public void test_08_testDateFormat() throws ParseException {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		String str = "2017/3/24";
@@ -126,6 +128,7 @@ public class Test_Java {
 	}
 	
 	@Test
+	@Ignore
 	public void test_09_testStringUtils() {
 		String price = "56.8";
 		boolean isNumeric = StringUtils.isNumeric(price);
@@ -133,12 +136,14 @@ public class Test_Java {
 	}
 	
 	@Test
+	@Ignore
 	public void test_10_testContain() {
 		String inputMsg = "2017/3/24 買 3088 56.8 2000";
 		System.out.println(inputMsg.contains("買"));
 	}
 	
 	@Test
+	@Ignore
 	public void test_11_testBigDecimal() {
 		double val = 0.000049;
 		DecimalFormat decFormat = new DecimalFormat("###0.00000000");
@@ -148,5 +153,17 @@ public class Test_Java {
 		System.out.println(String.valueOf(test));
 		System.out.println(test.toPlainString());
 		System.out.println(test.toEngineeringString());
+	}
+	
+	@Test
+	public void test_12_testBigDecimal() {
+		BigDecimal amount = new BigDecimal(0.78812);
+		System.out.println(amount);
+		
+		BigDecimal totalVolumes = new BigDecimal(21480);
+		System.out.println(totalVolumes);
+		
+		BigDecimal avgPrice = amount.divide(totalVolumes, 8, RoundingMode.UP);
+		System.out.println(avgPrice);
 	}
 }
