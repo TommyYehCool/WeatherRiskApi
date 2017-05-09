@@ -20,9 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.ReplyMessage;
-import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.action.PostbackAction;
-import com.linecorp.bot.model.action.URIAction;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.LocationMessageContent;
@@ -222,9 +220,10 @@ public class LineMsgHandler {
     	
     	String queryResult = null;
     	
-    	// TEST
-    	if (inputMsg.equals("testTemplate")) {
-    		testTemplateMsg(event);
+    	// template message
+    	if (inputMsg.equalsIgnoreCase("hi")) {
+    		createTemplateMsg(event);
+    		queryResult = "";
     	}
     	
     	// 功能查詢
@@ -658,24 +657,19 @@ public class LineMsgHandler {
     	}
     }
 
-	private void testTemplateMsg(MessageEvent<TextMessageContent> event) {
+	private void createTemplateMsg(MessageEvent<TextMessageContent> event) {
 		// 參考: https://github.com/line/line-bot-sdk-java/blob/master/sample-spring-boot-kitchensink/src/main/java/com/example/bot/spring/KitchenSinkController.java
-		String imageUrl = createUri("/buttons/1040.jpg");
+		String imageUrl = createUri("/buttons/bitcoin.jpg");
 		logger.info(">>>>> TemplateMsg, imageUrl: <{}>", imageUrl);
 		ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
                 imageUrl,
-                "My button sample",
-                "Hello, my button",
+                "你好呀",
+                "我提供下列功能",
                 Arrays.asList(
-                        new URIAction("Go to line.me",
-                                      "https://line.me"),
-                        new PostbackAction("Say hello1",
-                                           "hello こんにちは"),
-                        new PostbackAction("言 hello2",
-                                           "hello こんにちは",
-                                           "hello こんにちは"),
-                        new MessageAction("Say message",
-                                          "Rice=米")
+                        new PostbackAction("查詢貨幣註冊",
+                                           "查詢貨幣註冊"),
+                        new PostbackAction("查詢貨幣庫存",
+                                		   "查詢貨幣庫存")
                 )); 
 		TemplateMessage message = new TemplateMessage("Button alt text", buttonsTemplate);
 		String replyToken = event.getReplyToken();
