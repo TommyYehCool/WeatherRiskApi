@@ -19,7 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         	.authorizeRequests()
         	.antMatchers("/restricted").fullyAuthenticated()
         	.antMatchers("/swagger*").fullyAuthenticated()
-        	.antMatchers("/static/*").permitAll()
+        	.antMatchers("/static/**").permitAll()
         	.antMatchers("/**").permitAll();
     }
 	
