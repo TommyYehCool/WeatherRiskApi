@@ -462,7 +462,7 @@ public class LineMsgHandler {
 					String currencyCode = split[2];
 					currencyCode = currencyCode.toUpperCase();
 					BigDecimal buyPrice = new BigDecimal(Double.parseDouble(split[3]));
-					BigDecimal buyVolumes = new BigDecimal(Long.parseLong(split[4]));
+					BigDecimal buyVolumes = new BigDecimal(Double.parseDouble(split[4]));
 					queryResult = currencyService.addBuyCryptoCurrency(userId, buyDateTime, currencyCode, buyPrice, buyVolumes);
     			}
     		}
@@ -478,7 +478,7 @@ public class LineMsgHandler {
 					String currencyCode = split[2];
 					currencyCode = currencyCode.toUpperCase();
 					BigDecimal sellPrice = new BigDecimal(Double.parseDouble(split[3]));
-					BigDecimal sellVolumes = new BigDecimal(Long.parseLong(split[4]));
+					BigDecimal sellVolumes = new BigDecimal(Double.parseDouble(split[4]));
 					queryResult = currencyService.addSellCryptoCurrency(userId, sellDateTime, currencyCode, sellPrice, sellVolumes);
     			}
     		}
@@ -710,16 +710,16 @@ public class LineMsgHandler {
 	private String checkBuySellCryptoCurrencyMsg(String buySellKeyWord, String inputMsg) {
 		String[] split = inputMsg.split(" ");
 		if (split.length != 5) {
-			return "格式範例: 2017/5/8 " + buySellKeyWord + " STR 0.00004900 20000";
+			return "格式範例: 2017/05/08-08:07:30 " + buySellKeyWord + " STR 0.00004900 20000";
 		}
 		else {
-			// check 日期
+			// check 日期時間
 			String dateStr = split[0];
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
 			try {
 				dateFormat.parse(dateStr);
 			} catch (ParseException e) {
-				return "日期格式為 yyyy/MM/dd";
+				return "日期時間格式為 yyyy/MM/dd-HH:mm:ss";
 			}
 			
 			// check 買貨幣/賣貨幣
@@ -746,7 +746,7 @@ public class LineMsgHandler {
 			// check 數量
 			String strVolumes = split[4];
 			try {
-				Long.parseLong(strVolumes);
+				Double.parseDouble(strVolumes);
 			} catch (Exception e) {
 				return "請確認輸入的數量";
 			}

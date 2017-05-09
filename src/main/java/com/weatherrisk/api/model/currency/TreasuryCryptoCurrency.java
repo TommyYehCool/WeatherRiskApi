@@ -18,7 +18,7 @@ public class TreasuryCryptoCurrency {
 	
 	private double avgPrice;
 
-	private long totalVolumes;
+	private double totalVolumes;
 	
 	private double amount;
 	
@@ -26,27 +26,35 @@ public class TreasuryCryptoCurrency {
 		return userId + "-" + currencyCode;
 	}
 	
-	public void setNewData(String userId, String currencyCode, BigDecimal price, BigDecimal volumes) {
-		this.id = getId(userId, currencyCode);
-		this.userId = userId;
-		this.currencyCode = currencyCode;
-		this.avgPrice = price.setScale(8, RoundingMode.DOWN).doubleValue();
-		this.totalVolumes = volumes.setScale(8, RoundingMode.DOWN).longValue();
-		this.amount = price.multiply(volumes).setScale(8, RoundingMode.DOWN).doubleValue();
+	public void setNewData(CryptoCurrencyBSRecord bsRecord) {
+		this.id = getId(bsRecord.getUserId(), bsRecord.getCurrencyCode());
+		this.userId = bsRecord.getUserId();
+		this.currencyCode = bsRecord.getCurrencyCode();
+		this.avgPrice = bsRecord.getPrice();
+		// 數量要扣掉手續費
+		double volumeSubstractFee = new BigDecimal(bsRecord.getVolumes()).subtract(new BigDecimal(bsRecord.getFee())).doubleValue();
+		this.totalVolumes = volumeSubstractFee;
+		this.amount = bsRecord.getAmount();
 	}
 	
-	public void buyUpdateExistData(BigDecimal price, BigDecimal volumes) {
+	public void buyUpdateExistData(CryptoCurrencyBSRecord bsRecord) {
 		// 更新總數量
-		this.totalVolumes = new BigDecimal(this.totalVolumes).add(volumes).longValue();
-		
-		// 算出新的一筆價金
-		BigDecimal newAmount = price.multiply(volumes).setScale(8, RoundingMode.DOWN);
+		double volumeSubstractFee = new BigDecimal(bsRecord.getVolumes()).subtract(new BigDecimal(bsRecord.getFee())).doubleValue();
+		addTotalVolumes(volumeSubstractFee);
 		
 		// 加到原有的
-		this.amount = new BigDecimal(this.amount).add(newAmount).setScale(8, RoundingMode.DOWN).doubleValue();
+		addAmount(bsRecord.getAmount());
 		
 		// 算出平均價格
 		this.avgPrice = new BigDecimal(this.amount).divide(new BigDecimal(this.totalVolumes), 8, RoundingMode.DOWN).doubleValue();	
+	}
+	
+	private void addTotalVolumes(double newVolume) {
+		this.totalVolumes = new BigDecimal(this.totalVolumes).add(new BigDecimal(newVolume)).doubleValue();
+	}
+	
+	private void addAmount(double newAmount) {
+		this.amount = new BigDecimal(this.amount).add(new BigDecimal(newAmount)).doubleValue();
 	}
 
 	public String getId() {
@@ -65,7 +73,7 @@ public class TreasuryCryptoCurrency {
 		return avgPrice;
 	}
 
-	public long getTotalVolumes() {
+	public double getTotalVolumes() {
 		return totalVolumes;
 	}
 

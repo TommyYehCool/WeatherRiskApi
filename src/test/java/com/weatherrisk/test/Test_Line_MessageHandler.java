@@ -48,21 +48,26 @@ public class Test_Line_MessageHandler {
 		sendLineMsg(text);
 	}
 
+	private void deleteTestingData() {
+		currencyService.deleteCryptoCurrencyBuySellRecord(userId, "STR", "2017/05/08-08:07:30", BuySell.BUY);
+		currencyService.deleteCryptoCurrencyBuySellRecord(userId, "STR", "2017/05/08-08:07:31", BuySell.BUY);
+		currencyService.deleteCryptoCurrencyBuySellRecord(userId, "STR", "2017/05/09-04:08:46", BuySell.BUY);
+		currencyService.deleteTreasuryCryptoCurrency(userId, "STR");
+	}
+
 	private void sendAddBuyCurrency() {
 		String text = "";
 		
-		text = "2017/05/08-08:00 買貨幣 STR 0.00003800 20000";
+		text = "2017/05/08-08:07:30 買貨幣 STR 0.00003800 12147.70723887";
+		sendLineMsg(text);
+		
+		text = "2017/05/08-08:07:31 買貨幣 STR 0.00003800 5852.29276113";
 		sendLineMsg(text);
 
-		text = "2017/05/09-04:00 買貨幣 STR 0.00001900 1480";
+		text = "2017/05/09-04:08:46 買貨幣 STR 0.00001900 1480";
 		sendLineMsg(text);
 	}
 
-	private void deleteTestingData() {
-		currencyService.deleteCryptoCurrencyBuySellRecord(userId, "STR", "2017/05/08-08:00", BuySell.BUY);
-		currencyService.deleteCryptoCurrencyBuySellRecord(userId, "STR", "2017/05/09-04:00", BuySell.BUY);
-		currencyService.deleteTreasuryCryptoCurrency(userId, "STR");
-	}
 	
 	private void sendLineMsg(String text) {
 		Source src = getSource();

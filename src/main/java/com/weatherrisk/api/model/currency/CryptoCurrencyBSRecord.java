@@ -16,7 +16,10 @@ import com.weatherrisk.api.cnst.BuySell;
 public class CryptoCurrencyBSRecord {
 	
 	@Transient
-	private final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm");
+	private final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
+	
+	@Transient
+	private final BigDecimal feePercent = new BigDecimal(0.0015);
 	
 	@Id
 	private String id;
@@ -31,7 +34,9 @@ public class CryptoCurrencyBSRecord {
 	
 	private double price;
 	
-	private long volumes;
+	private double volumes;
+	
+	private double fee;
 	
 	private double amount;
 	
@@ -46,7 +51,8 @@ public class CryptoCurrencyBSRecord {
 		this.dateTime = dateTimeFormat.parse(dateTime);
 		this.buySell = buySell;
 		this.price = price.setScale(8, RoundingMode.DOWN).doubleValue();
-		this.volumes = volumes.setScale(8, RoundingMode.DOWN).longValue();
+		this.volumes = volumes.doubleValue();
+		this.fee = volumes.multiply(feePercent).setScale(8, RoundingMode.HALF_UP).doubleValue();
 		this.amount = price.multiply(volumes).setScale(8, RoundingMode.DOWN).doubleValue();
 	}
 
@@ -74,8 +80,12 @@ public class CryptoCurrencyBSRecord {
 		return price;
 	}
 
-	public long getVolumes() {
+	public double getVolumes() {
 		return volumes;
+	}
+	
+	public double getFee() {
+		return fee;
 	}
 
 	public double getAmount() {
@@ -86,7 +96,7 @@ public class CryptoCurrencyBSRecord {
 	public String toString() {
 		return "CryptoCurrencyBSRecord [id=" + id + ", userId=" + userId + ", currencyCode=" + currencyCode
 				+ ", dateTime=" + dateTime + ", buySell=" + buySell + ", price=" + price + ", volumes=" + volumes
-				+ ", amount=" + amount + "]";
+				+ ", fee=" + fee + ", amount=" + amount + "]";
 	}
 
 }
