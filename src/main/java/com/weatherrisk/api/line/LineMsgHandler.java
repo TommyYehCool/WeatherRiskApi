@@ -831,7 +831,8 @@ public class LineMsgHandler {
 		List<Action> postbackActions = new ArrayList<>();
 		LineSubFunction[] lineSubFuncs = lineFunc.getLineSubFuncs();
 		for (LineSubFunction lineSubFunc : lineSubFuncs) {
-			postbackActions.add(new PostbackAction(lineSubFunc.getLabel(), lineFunc.toString(), lineSubFunc.toString()));
+			PostbackAction postbackAction = new PostbackAction(lineSubFunc.getLabel(), lineFunc.toString() + "&" + lineSubFunc.toString());
+			postbackActions.add(postbackAction);
 		}
 		
 		ButtonsTemplate buttonsTemplate 
