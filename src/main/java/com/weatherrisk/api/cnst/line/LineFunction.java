@@ -27,7 +27,16 @@ public enum LineFunction {
 		"/buttons/bitcoin.jpeg",
 		CryptoCurrencySubFunction.values(),
 		"虛擬貨幣"
-	);
+	), 
+	RECEIPT_REWARD(
+		Arrays.asList("receipt", "發票"),
+		"統一發票",
+		"提供下列功能",
+		"/buttons/bitcoin.jpeg",
+		ReceiptRewardSubFunction.values(),
+		"統一發票"
+	)
+	;
 	
 	private List<String> keywords;
 	private String title;

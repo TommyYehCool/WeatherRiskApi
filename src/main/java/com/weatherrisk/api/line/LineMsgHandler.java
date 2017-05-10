@@ -49,6 +49,7 @@ import com.weatherrisk.api.cnst.line.CryptoCurrencySubFunction;
 import com.weatherrisk.api.cnst.line.LineFunction;
 import com.weatherrisk.api.cnst.line.LineSubFunction;
 import com.weatherrisk.api.cnst.line.ParkingLotSubFunction;
+import com.weatherrisk.api.cnst.line.ReceiptRewardSubFunction;
 import com.weatherrisk.api.cnst.line.WeatherSubFunction;
 import com.weatherrisk.api.service.currency.CurrencyService;
 import com.weatherrisk.api.service.currency.RegisterService;
@@ -204,8 +205,7 @@ public class LineMsgHandler {
     	buffer.append("查詢某一部電影今日時刻表 => 格式: 戲院名稱 + 關鍵字, Ex: 信義威秀羅根").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[發票]").append("\n");
-    	buffer.append("更新發票開獎號碼 => Ex: 更新發票").append("\n");
-    	buffer.append("查詢最近兩期發票開獎號碼 => Ex: 發票開獎").append("\n");
+    	buffer.append("輸入 receipt 可顯示小幫手").append("\n");
     	buffer.append("發票對獎功能, 直接輸入號碼即可 => Ex: 168").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[查詢股票]").append("\n");
@@ -862,7 +862,7 @@ public class LineMsgHandler {
         
         String[] split = postBackData.split("&");
 		String strLineFunc = split[0];
-        String strLineSunFunc = split[1];
+        String strLineSubFunc = split[1];
         
         LineFunction lineFunc = LineFunction.convertByName(strLineFunc);
 
@@ -870,20 +870,24 @@ public class LineMsgHandler {
         if (lineFunc != null) {
 	        switch (lineFunc) {
 		        case PARKING_LOT_INFO:
-		        	ParkingLotSubFunction parkingLotSubFunc = ParkingLotSubFunction.convertByName(strLineSunFunc);
+		        	ParkingLotSubFunction parkingLotSubFunc = ParkingLotSubFunction.convertByName(strLineSubFunc);
 		        	replyMsg = handleParkingLotSubFunction(parkingLotSubFunc, userId);
 		        	break;
 		        
 		        case WEATHER:
-		        	WeatherSubFunction weatherSubFunc = WeatherSubFunction.convertByName(strLineSunFunc);
+		        	WeatherSubFunction weatherSubFunc = WeatherSubFunction.convertByName(strLineSubFunc);
 		        	replyMsg = handleWeatherSubFunction(weatherSubFunc, userId);
 		        	break;
 		        	
 				case CRYPTO_CURRENCY:
-					CryptoCurrencySubFunction cryptoCurrencySubFunc = CryptoCurrencySubFunction.convertByName(strLineSunFunc);
+					CryptoCurrencySubFunction cryptoCurrencySubFunc = CryptoCurrencySubFunction.convertByName(strLineSubFunc);
 					replyMsg = handleCryptoCurrencySubFunction(cryptoCurrencySubFunc, userId);
 					break;
-	
+			
+				case RECEIPT_REWARD:
+					ReceiptRewardSubFunction receiptRewardSubFunc = ReceiptRewardSubFunction.convertByName(strLineSubFunc);
+					replyMsg = handleReceiptRewardSubFunction(receiptRewardSubFunc, userId);
+					break;
 	        }
         }
         else {
@@ -978,6 +982,31 @@ public class LineMsgHandler {
 	}
     
     /**
+	 * 處理發票子功能
+	 * 
+	 * @param lineSubFunc
+	 * @param userId
+	 * @return
+	 */
+    private String handleReceiptRewardSubFunction(ReceiptRewardSubFunction lineSubFunc, String userId) {
+    	logger.info("----> Prepare to process receipt reward, SubFunction: <{}>, UserId: <{}>", lineSubFunc, userId);
+    	
+    	String replyMsg = ERROR_MSG;
+    	switch (lineSubFunc) {
+	    	case UPDATE_NUMBERS:
+	    		receiptRewardService.getNewestReceiptRewards();
+	    		replyMsg = "更新成功";
+	    		break;
+
+			case GET_LAST_TWO_NUMBERS:
+				replyMsg = receiptRewardService.getRecentlyRewards();
+				break;
+    	}
+    	
+    	return replyMsg;
+	}
+
+	/**
 	 * 紀錄目前使用者在進行的功能 
 	 * 
 	 * @param userId
@@ -1054,6 +1083,9 @@ public class LineMsgHandler {
 
 			case CRYPTO_CURRENCY:
 				// TODO other sub func
+				break;
+
+			default:
 				break;
 		}
 		
