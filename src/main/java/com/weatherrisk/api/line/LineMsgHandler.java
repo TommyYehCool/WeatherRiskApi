@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.ReplyMessage;
+import com.linecorp.bot.model.action.Action;
 import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.PostbackEvent;
@@ -42,6 +43,8 @@ import com.weatherrisk.api.cnst.ShowTimeTheater;
 import com.weatherrisk.api.cnst.UBikeCity;
 import com.weatherrisk.api.cnst.ViewshowTheater;
 import com.weatherrisk.api.cnst.WovieTheater;
+import com.weatherrisk.api.cnst.line.LineFunction;
+import com.weatherrisk.api.cnst.line.LineSubFunction;
 import com.weatherrisk.api.service.currency.CurrencyService;
 import com.weatherrisk.api.service.currency.RegisterService;
 import com.weatherrisk.api.service.movie.AmbassadorMovieService;
@@ -215,18 +218,20 @@ public class LineMsgHandler {
     	
     	String userId = event.getSource().getUserId();
 
+    	String replyToken = event.getReplyToken();
+
     	String inputMsg = event.getMessage().getText();
     	
     	String queryResult = null;
     	
-    	// template message
-    	if (inputMsg.equalsIgnoreCase("coin")) {
-    		createCoinTemplateMsg(event);
+    	// 功能表
+    	LineFunction lineFunc = LineFunction.convertByKeyword(inputMsg);
+    	if (lineFunc != null) {
+    		createTemplateMsg(replyToken, lineFunc);
     		queryResult = "";
     	}
-    	
     	// 功能查詢
-    	if (isQueryFunctionMsg(inputMsg)) {
+    	else if (isQueryFunctionMsg(inputMsg)) {
     		queryResult = constructHelpMsg();
     	}
     	// 停車場-精準搜尋
@@ -642,25 +647,6 @@ public class LineMsgHandler {
     	}
     }
 
-	private void createCoinTemplateMsg(MessageEvent<TextMessageContent> event) {
-		// 參考: https://github.com/line/line-bot-sdk-java/blob/master/sample-spring-boot-kitchensink/src/main/java/com/example/bot/spring/KitchenSinkController.java
-		String imageUrl = createUri("/buttons/bitcoin.jpeg");
-		logger.info(">>>>> TemplateMsg, imageUrl: <{}>", imageUrl);
-		ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
-                imageUrl,
-                "你好呀",
-                "我提供下列功能",
-                Arrays.asList(
-                        new PostbackAction("虛擬貨幣到價資訊",
-                                           "查詢貨幣註冊"),
-                        new PostbackAction("查詢虛擬貨幣庫存",
-                                		   "查詢貨幣庫存")
-                )); 
-		TemplateMessage message = new TemplateMessage("Button alt text", buttonsTemplate);
-		String replyToken = event.getReplyToken();
-		reply(replyToken, message);
-	}
-	
 	private String checkBuySellStockMsg(String buySellKeyWord, String inputMsg) {
 		String[] split = inputMsg.split(" ");
 		if (split.length != 5) {
@@ -831,6 +817,30 @@ public class LineMsgHandler {
 		return buffer.toString();
 	}
 
+	/**
+	 * <pre>
+	 * 建立 LINE 功能表
+	 * 
+	 * 參考: <a href="https://github.com/line/line-bot-sdk-java/blob/master/sample-spring-boot-kitchensink/src/main/java/com/example/bot/spring/KitchenSinkController.java">KitchenSinkController</a>
+	 * </pre>
+	 * 
+	 * @param replyToken
+	 */
+	private void createTemplateMsg(String replyToken, LineFunction lineFunc) {
+		// Create sub functions menu
+		List<Action> postbackActions = new ArrayList<>();
+		LineSubFunction[] lineSubFuncs = lineFunc.getLineSubFuncs();
+		for (LineSubFunction lineSubFunc : lineSubFuncs) {
+			postbackActions.add(new PostbackAction(lineSubFunc.getLabel(), lineFunc.toString(), lineSubFunc.toString()));
+		}
+		
+		ButtonsTemplate buttonsTemplate 
+			= new ButtonsTemplate(createUri(lineFunc.getImagePath()), lineFunc.getTitle(), lineFunc.getText(), postbackActions);
+	
+		TemplateMessage message = new TemplateMessage(lineFunc.getAltText(), buttonsTemplate);
+		reply(replyToken, message);
+	}
+
 	@EventMapping
     public void handleDefaultMessageEvent(PostbackEvent event) {
         logger.info(">>>>> handle default message event, event: {}", event);
@@ -840,12 +850,12 @@ public class LineMsgHandler {
         
         String userId = source.getUserId();
         String replyToken = event.getReplyToken();
-        String postBackMsg = postbackContent.getData();
+        String data = postbackContent.getData();
         
         String replyMsg = null;
         
         // 查詢註冊虛擬貨幣匯率到價通知
-    	if (postBackMsg.equals("查詢貨幣註冊")) {
+    	if (data.equals("查詢貨幣註冊")) {
     		boolean hasRegistered = registerService.hasRegisteredCryptoCurrency(userId);
     		if (hasRegistered) {
     			replyMsg = registerService.getCryptoCurrencyPricesReachedInfos(userId);
@@ -856,7 +866,7 @@ public class LineMsgHandler {
     		reply(replyToken, new TextMessage(replyMsg));
     	}
     	// 查詢貨幣庫存
-    	else if (postBackMsg.equals("查詢貨幣庫存")) {
+    	else if (data.equals("查詢貨幣庫存")) {
     		replyMsg = currencyService.queryTreasuryCryptoCurrency(userId);
     		reply(replyToken, new TextMessage(replyMsg));
     	}

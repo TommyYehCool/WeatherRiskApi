@@ -57,7 +57,7 @@ public class Test_Line_MessageHandler {
 	// 測試 templateMsg
 	@Test
 	public void test_04_testTemplateMsg() {
-		String text = "testTemplate";
+		String text = "coin";
 		sendLineMsg(text);
 	}
 
