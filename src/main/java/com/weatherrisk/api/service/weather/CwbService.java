@@ -35,7 +35,7 @@ public class CwbService {
 	@Autowired
 	private CwbConfig cwbConfig;
 	
-	public String getWeatherLitteleHelperByCity(String city) {
+	public String getWeatherLittleHelperByCity(String city) {
 		try {
 			city = checkCityName(city);
 			

@@ -78,7 +78,7 @@ public class Test_GetDataService {
 	
 	@Test
 	public void test_01_CwbService_getWeatherLittleHelperByCity() {
-		String data = cwbService.getWeatherLitteleHelperByCity("台北市");
+		String data = cwbService.getWeatherLittleHelperByCity("台北市");
 		System.out.println(data);
 	}
 	

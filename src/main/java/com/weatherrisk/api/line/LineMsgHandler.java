@@ -49,6 +49,7 @@ import com.weatherrisk.api.cnst.line.CryptoCurrencySubFunction;
 import com.weatherrisk.api.cnst.line.LineFunction;
 import com.weatherrisk.api.cnst.line.LineSubFunction;
 import com.weatherrisk.api.cnst.line.ParkingLotSubFunction;
+import com.weatherrisk.api.cnst.line.WeatherSubFunction;
 import com.weatherrisk.api.service.currency.CurrencyService;
 import com.weatherrisk.api.service.currency.RegisterService;
 import com.weatherrisk.api.service.movie.AmbassadorMovieService;
@@ -172,12 +173,10 @@ public class LineMsgHandler {
     	buffer.append("我能做到下列事情:").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[查詢台北市及新北市停車場資訊]").append("\n");
-    	buffer.append("模糊搜尋 => Ex: @士林").append("\n");
-    	buffer.append("停車場名稱搜尋 => Ex: #停車場名稱").append("\n");
+    	buffer.append("輸入 park 可顯示小幫手").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[查詢天氣]").append("\n");
-    	buffer.append("查詢天氣小幫手 => 格式: 縣市名稱 + 天氣, Ex: 台北市天氣").append("\n");
-    	buffer.append("查詢一周天氣 => 格式: 縣市名稱 + 一周, Ex: 台北市一周").append("\n");
+    	buffer.append("輸入 weather 可顯示小幫手").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[貨幣]").append("\n");
     	buffer.append("輸入 coin 可顯示小幫手").append("\n");
@@ -261,26 +260,6 @@ public class LineMsgHandler {
     	// 功能查詢
     	if (isQueryFunctionMsg(inputMsg)) {
     		queryResult = constructHelpMsg();
-    	}
-    	// 停車場-精準搜尋
-    	else if (inputMsg.startsWith("#")) {
-    		String name = inputMsg.substring(1, inputMsg.length());
-    		queryResult = parkingLotService.findByName(name);
-    	}
-    	// 停車場-模糊搜尋
-    	else if (inputMsg.startsWith("@")) {
-    		String name = inputMsg.substring(1, inputMsg.length());
-    		queryResult = parkingLotService.findByNameLike(name);
-    	}
-    	// 天氣-城市小幫手
-    	else if (inputMsg.endsWith("天氣")) {
-    		String city = inputMsg.substring(0, inputMsg.length() - 2);
-    		queryResult = cwbService.getWeatherLitteleHelperByCity(city);
-    	}
-    	// 天氣-一周資訊
-    	else if (inputMsg.endsWith("一週") || inputMsg.endsWith("一周")) {
-    		String region = inputMsg.substring(0, inputMsg.length() - 2);
-    		queryResult = cwbService.getOneWeekWeatherPrediction(region);
     	}
     	// 註冊股票到價通知
     	else if (inputMsg.startsWith("註冊股票")) {
@@ -890,15 +869,21 @@ public class LineMsgHandler {
         String replyMsg = "";
         if (lineFunc != null) {
 	        switch (lineFunc) {
+		        case PARKING_LOT_INFO:
+		        	ParkingLotSubFunction parkingLotSubFunc = ParkingLotSubFunction.convertByName(strLineSunFunc);
+		        	replyMsg = handleParkingLotSubFunction(parkingLotSubFunc, userId);
+		        	break;
+		        
+		        case WEATHER:
+		        	WeatherSubFunction weatherSubFunc = WeatherSubFunction.convertByName(strLineSunFunc);
+		        	replyMsg = handleWeatherSubFunction(weatherSubFunc, userId);
+		        	break;
+		        	
 				case CRYPTO_CURRENCY:
 					CryptoCurrencySubFunction cryptoCurrencySubFunc = CryptoCurrencySubFunction.convertByName(strLineSunFunc);
 					replyMsg = handleCryptoCurrencySubFunction(cryptoCurrencySubFunc, userId);
 					break;
 	
-				case PARKING_LOT_INFO:
-					ParkingLotSubFunction parkingLotSubFunc = ParkingLotSubFunction.convertByName(strLineSunFunc);
-					replyMsg = handleParkingLotSubFunction(parkingLotSubFunc, userId);
-					break;
 	        }
         }
         else {
@@ -909,6 +894,60 @@ public class LineMsgHandler {
     	reply(replyToken, new TextMessage(replyMsg));
     }
 	
+	/**
+	 * 處理停車場子功能
+	 * 
+	 * @param parkingLotSubFunc
+	 * @param userId
+	 * @return
+	 */
+	private String handleParkingLotSubFunction(ParkingLotSubFunction linSubFunc, String userId) {
+		LineFunction lineFunc = LineFunction.PARKING_LOT_INFO;
+		
+		logger.info("----> Prepare to process parking lot, SubFunction: <{}>, UserId: <{}>", linSubFunc, userId);
+		
+		String replyMsg = ERROR_MSG;
+		switch (linSubFunc) {
+			case FIND_PARKING_LOT_BY_FUZZY_SEARCH:
+				replyMsg = "請輸入關鍵字";
+				break;
+	
+			case FIND_PARING_LOT_BY_NAME:
+				replyMsg = "請輸入停車場名稱";
+				break;
+		}
+		
+		recordUserCurrentAction(userId, lineFunc, linSubFunc);
+		
+		return replyMsg;
+	}
+
+	/**
+	 * 處理天氣子功能
+	 * 
+	 * @param weatherSubFunc
+	 * @param userId
+	 * @return
+	 */
+	private String handleWeatherSubFunction(WeatherSubFunction lineSubFunc, String userId) {
+		LineFunction lineFunc = LineFunction.WEATHER;
+		
+		logger.info("----> Prepare to process weather, SubFunction: <{}>, UserId: <{}>", lineSubFunc, userId);
+		
+		String replyMsg = ERROR_MSG;
+		String letUserInputMsg = "請輸入縣市名稱";
+		switch (lineSubFunc) {
+			case LITTLE_HELPER:
+			case ONE_WEEK_PREDICTION:
+				replyMsg = letUserInputMsg;
+				break;
+		}
+		
+		recordUserCurrentAction(userId, lineFunc, lineSubFunc);
+		
+		return replyMsg;
+	}
+
 	/**
 	 * 處理虛擬貨幣子功能
 	 * 
@@ -939,34 +978,6 @@ public class LineMsgHandler {
 	}
     
     /**
-	 * 處理停車場子功能
-	 * 
-	 * @param parkingLotSubFunc
-	 * @param userId
-	 * @return
-	 */
-	private String handleParkingLotSubFunction(ParkingLotSubFunction linSubFunc, String userId) {
-		LineFunction lineFunc = LineFunction.PARKING_LOT_INFO;
-		
-		logger.info("----> Prepare to process parking lot, SubFunction: <{}>, UserId: <{}>", linSubFunc, userId);
-		
-		String replyMsg = ERROR_MSG;
-		switch (linSubFunc) {
-			case FIND_PARKING_LOT_BY_FUZZY_SEARCH:
-				replyMsg = "請輸入關鍵字";
-				break;
-
-			case FIND_PARING_LOT_BY_NAME:
-				replyMsg = "請輸入停車場名稱";
-				break;
-		}
-		
-		recordUserCurrentAction(userId, lineFunc, linSubFunc);
-		
-		return replyMsg;
-	}
-	
-	/**
 	 * 紀錄目前使用者在進行的功能 
 	 * 
 	 * @param userId
@@ -1015,21 +1026,34 @@ public class LineMsgHandler {
 		String replyMsg = ERROR_MSG;
 		
 		switch (lineFunc) {
-			case CRYPTO_CURRENCY:
-				// TODO other sub func
-				break;
-
 			case PARKING_LOT_INFO:
 				ParkingLotSubFunction parkingLotSubFunc = (ParkingLotSubFunction) lineSubFunc;
 				switch (parkingLotSubFunc) {
 					case FIND_PARKING_LOT_BY_FUZZY_SEARCH:
 						replyMsg = parkingLotService.findByNameLike(inputMsg);
 						break;
-
+						
 					case FIND_PARING_LOT_BY_NAME:
 						replyMsg = parkingLotService.findByName(inputMsg);
 						break;
 				}
+				break;
+				
+			case WEATHER:
+				WeatherSubFunction weatherSubFunction = (WeatherSubFunction) lineSubFunc;
+				switch (weatherSubFunction) {
+					case LITTLE_HELPER:
+						replyMsg = cwbService.getWeatherLittleHelperByCity(inputMsg);
+						break;
+
+					case ONE_WEEK_PREDICTION:
+						replyMsg = cwbService.getOneWeekWeatherPrediction(inputMsg);
+						break;
+				}
+				break;
+
+			case CRYPTO_CURRENCY:
+				// TODO other sub func
 				break;
 		}
 		

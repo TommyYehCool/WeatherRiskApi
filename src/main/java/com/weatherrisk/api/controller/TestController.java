@@ -38,7 +38,7 @@ public class TestController {
 	@RequestMapping(value = "/testGetCityWeatherLittleHelper", method = RequestMethod.GET)
 	@ApiOperation(value = "測試 GET City Weather Little Helper by RequestParam")
 	public @ResponseBody String testGetWeatherLittleHelperByCity(@RequestParam(value = "city", required = true) String city) {
-		return cwbService.getWeatherLitteleHelperByCity(city);
+		return cwbService.getWeatherLittleHelperByCity(city);
 	}
 	
 	/**

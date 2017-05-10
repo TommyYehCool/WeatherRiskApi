@@ -12,6 +12,14 @@ public enum LineFunction {
 		ParkingLotSubFunction.values(),
 		"停車場資訊"
 	),
+	WEATHER(
+		Arrays.asList("weather", "天氣"),
+		"天氣資訊查詢",
+		"提供下列功能",
+		"/buttons/bitcoin.jpeg",
+		WeatherSubFunction.values(),
+		"天氣資訊"
+	),
 	CRYPTO_CURRENCY(
 		Arrays.asList("coin", "虛擬貨幣"),
 		"虛擬貨幣",
