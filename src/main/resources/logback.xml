@@ -44,7 +44,7 @@
     </appender>
 
 	<logger name="com.weatherrisk.api" additivity="false">
-		<level value="DEBUG" />
+		<level value="INFO" />
 		<!-- <appender-ref ref="CONSOLE" /> -->
 		<!-- <appender-ref ref="DAILY_ROLLING_FILE" /> -->
 		<appender-ref ref="HEROKU_CONSOLE" />
@@ -52,7 +52,7 @@
 	</logger>
 
 	<root>
-		<level value="INFO" />
+		<level value="WARN" />
 		<!-- <appender-ref ref="CONSOLE" /> -->
 		<!-- <appender-ref ref="DAILY_ROLLING_FILE" /> -->
 		<appender-ref ref="HEROKU_CONSOLE" />
