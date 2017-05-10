@@ -148,6 +148,13 @@ public class LineMsgHandler {
 		private LineSubFunction lineSubFunc;
 	}
 	
+	private final String[] openMainFunctionKeywords
+		= new String[] {
+				"hi",
+				"來吧",
+				"come on"
+		  };
+	
 	private final String[] helpTemplateMsgs
 		= new String[] {
 				"支援功能",
@@ -179,6 +186,10 @@ public class LineMsgHandler {
     	buffer.append("[查詢天氣]").append("\n");
     	buffer.append("輸入 weather 可顯示小幫手").append("\n");
     	buffer.append("-----------------------").append("\n");
+    	buffer.append("[發票]").append("\n");
+    	buffer.append("輸入 receipt 可顯示小幫手").append("\n");
+    	buffer.append("發票對獎功能, 直接輸入號碼即可 => Ex: 168").append("\n");
+    	buffer.append("-----------------------").append("\n");
     	buffer.append("[貨幣]").append("\n");
     	buffer.append("輸入 coin 可顯示小幫手").append("\n");
     	buffer.append("<支援虛擬貨幣: ").append(CurrencyCnst.getSupportedCryptoCurrency().substring(0, CurrencyCnst.getSupportedCryptoCurrency().length() - 2)).append(">\n");
@@ -204,10 +215,6 @@ public class LineMsgHandler {
     	buffer.append("查詢某一家影城上映電影 => 格式: 戲院名稱 + 上映, Ex: 信義威秀上映").append("\n");
     	buffer.append("查詢某一部電影今日時刻表 => 格式: 戲院名稱 + 關鍵字, Ex: 信義威秀羅根").append("\n");
     	buffer.append("-----------------------").append("\n");
-    	buffer.append("[發票]").append("\n");
-    	buffer.append("輸入 receipt 可顯示小幫手").append("\n");
-    	buffer.append("發票對獎功能, 直接輸入號碼即可 => Ex: 168").append("\n");
-    	buffer.append("-----------------------").append("\n");
     	buffer.append("[查詢股票]").append("\n");
     	buffer.append("更新股票資料檔 => Ex: 更新股票").append("\n");
     	buffer.append("查詢股票目前成交價 => Ex: 股票艾訊, 股票3088").append("\n");
@@ -230,6 +237,15 @@ public class LineMsgHandler {
     	}
     	return false;
     }
+	
+	private boolean isOpenMainFunctionMsg(String inputMsg) {
+		for (String openMainFunctionKeyword : openMainFunctionKeywords) {
+			if (openMainFunctionKeyword.contains(inputMsg)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
@@ -243,10 +259,16 @@ public class LineMsgHandler {
     	
     	String queryResult = null;
     	
-    	// 功能表
+    	// 主功能表
+    	if (isOpenMainFunctionMsg(inputMsg)) {
+    		createMainFuncTemplateMsg(replyToken);
+    		queryResult = "";
+    	}
+    	
+    	// 子功能表
     	LineFunction lineFunc = LineFunction.convertByKeyword(inputMsg);
     	if (lineFunc != null) {
-    		createTemplateMsg(replyToken, lineFunc);
+    		createSubFuncTemplateMsg(lineFunc, replyToken);
     		queryResult = "";
     	}
     	
@@ -826,14 +848,38 @@ public class LineMsgHandler {
 
 	/**
 	 * <pre>
-	 * 建立 LINE 功能表
+	 * 建立主功能表
+	 * </pre>
+	 * 
+	 * @param replyToken
+	 */
+	private void createMainFuncTemplateMsg(String replyToken) {
+		// Create main functions menu
+		List<Action> postbackActions = new ArrayList<>();
+		
+		LineFunction[] lineMainFuncs = LineFunction.values();
+		for (LineFunction lineMainFunc : lineMainFuncs) {
+			PostbackAction postbackAction = new PostbackAction(lineMainFunc.getSubItemName(), lineMainFunc.toString());
+			postbackActions.add(postbackAction);
+		}
+		
+		ButtonsTemplate buttonsTemplate 
+			= new ButtonsTemplate(createUri(LineFunction.MAIN_MENU_IMG_PATH), LineFunction.MAIN_MENU_TITLE, LineFunction.MAIN_MENU_TITLE, postbackActions);
+		
+		TemplateMessage message = new TemplateMessage(LineFunction.MAIN_ALT_TEXT, buttonsTemplate);
+		reply(replyToken, message);
+	}
+
+	/**
+	 * <pre>
+	 * 建立每個功能及其子功能表
 	 * 
 	 * 參考: <a href="https://github.com/line/line-bot-sdk-java/blob/master/sample-spring-boot-kitchensink/src/main/java/com/example/bot/spring/KitchenSinkController.java">KitchenSinkController</a>
 	 * </pre>
 	 * 
 	 * @param replyToken
 	 */
-	private void createTemplateMsg(String replyToken, LineFunction lineFunc) {
+	private void createSubFuncTemplateMsg(LineFunction lineFunc, String replyToken) {
 		// Create sub functions menu
 		List<Action> postbackActions = new ArrayList<>();
 		LineSubFunction[] lineSubFuncs = lineFunc.getLineSubFuncs();
@@ -843,9 +889,9 @@ public class LineMsgHandler {
 		}
 		
 		ButtonsTemplate buttonsTemplate 
-			= new ButtonsTemplate(createUri(lineFunc.getImagePath()), lineFunc.getTitle(), lineFunc.getText(), postbackActions);
+			= new ButtonsTemplate(createUri(lineFunc.getSubImagePath()), lineFunc.getSubMenuTitle(), lineFunc.getSubMenuText(), postbackActions);
 	
-		TemplateMessage message = new TemplateMessage(lineFunc.getAltText(), buttonsTemplate);
+		TemplateMessage message = new TemplateMessage(lineFunc.getSubAltText(), buttonsTemplate);
 		reply(replyToken, message);
 	}
 
@@ -853,6 +899,8 @@ public class LineMsgHandler {
     public void handleDefaultMessageEvent(PostbackEvent event) {
         logger.info(">>>>> handle default message event, event: {}", event);
         
+        String replyMsg = "";
+
         UserSource source = (UserSource) event.getSource();
         PostbackContent postbackContent = event.getPostbackContent();
         
@@ -865,8 +913,6 @@ public class LineMsgHandler {
         String strLineSubFunc = split[1];
         
         LineFunction lineFunc = LineFunction.convertByName(strLineFunc);
-
-        String replyMsg = "";
         if (lineFunc != null) {
 	        switch (lineFunc) {
 		        case PARKING_LOT_INFO:
