@@ -7,7 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -46,6 +48,7 @@ import com.weatherrisk.api.cnst.WovieTheater;
 import com.weatherrisk.api.cnst.line.CryptoCurrencySubFunction;
 import com.weatherrisk.api.cnst.line.LineFunction;
 import com.weatherrisk.api.cnst.line.LineSubFunction;
+import com.weatherrisk.api.cnst.line.ParkingLotSubFunction;
 import com.weatherrisk.api.service.currency.CurrencyService;
 import com.weatherrisk.api.service.currency.RegisterService;
 import com.weatherrisk.api.service.movie.AmbassadorMovieService;
@@ -126,6 +129,10 @@ public class LineMsgHandler {
 	
 	@Autowired
 	private StockService stockService;
+	/**
+	 * 紀錄使用者目前選擇到的功能
+	 */
+	private Map<String, Map<LineFunction, LineSubFunction>> userCurrentFunc = new HashMap<>();
 	
 	private final String[] helpTemplateMsgs
 		= new String[] {
@@ -864,12 +871,13 @@ public class LineMsgHandler {
         if (lineFunc != null) {
 	        switch (lineFunc) {
 				case CRYPTO_CURRENCY:
-					CryptoCurrencySubFunction subFunc = CryptoCurrencySubFunction.convertByName(strLineSunFunc);
-					replyMsg = handleCryptoCurrencySubFunction(subFunc, userId);
+					CryptoCurrencySubFunction cryptoCurrencySubFunc = CryptoCurrencySubFunction.convertByName(strLineSunFunc);
+					replyMsg = handleCryptoCurrencySubFunction(cryptoCurrencySubFunc, userId);
 					break;
 	
 				case PARKING_LOT_INFO:
-					// TODO
+					ParkingLotSubFunction parkingLotSubFunc = ParkingLotSubFunction.convertByName(strLineSunFunc);
+					replyMsg = handleParkingLotSubFunction(parkingLotSubFunc, userId);
 					break;
 	        }
         }
@@ -880,7 +888,7 @@ public class LineMsgHandler {
         // 回應給 user
     	reply(replyToken, new TextMessage(replyMsg));
     }
-    
+	
 	/**
 	 * 處理虛擬貨幣子功能
 	 * 
@@ -908,6 +916,18 @@ public class LineMsgHandler {
 				break;
     	}
 		return replyMsg;
+	}
+    
+    /**
+	 * 處理停車場子功能
+	 * 
+	 * @param parkingLotSubFunc
+	 * @param userId
+	 * @return
+	 */
+	private String handleParkingLotSubFunction(ParkingLotSubFunction parkingLotSubFunc, String userId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
     /**

@@ -15,9 +15,9 @@ public enum ParkingLotSubFunction implements LineSubFunction {
 		return label;
 	}
 
-	public static ParkingLotSubFunction convertByMsg(String msg) {
+	public static ParkingLotSubFunction convertByName(String msg) {
 		for (ParkingLotSubFunction e : ParkingLotSubFunction.values()) {
-			if (e.toString().equalsIgnoreCase(msg)) {
+			if (e.toString().equals(msg)) {
 				return e;
 			}
 		}
