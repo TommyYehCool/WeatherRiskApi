@@ -1029,6 +1029,7 @@ public class LineMsgHandler {
 	    	case QUERY_CRYPTO_CURRENCY_PRICE:
 	    		// 選擇查詢貨幣匯率, 顯示可以的貨幣供選擇
 	    		if (currencyCode == null) {
+	    			// FIXME 一次只能 reply 四個, 所以也不用 reply 多次了
 		    		int nextIndexToProcess = 0;
 		    		CurrencyCnst[] cryptoCurrencys = CurrencyCnst.getCryptoCurrency();
 		    		while (nextIndexToProcess < cryptoCurrencys.length) {
