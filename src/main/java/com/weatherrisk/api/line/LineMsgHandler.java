@@ -899,45 +899,64 @@ public class LineMsgHandler {
     public void handleDefaultMessageEvent(PostbackEvent event) {
         logger.info(">>>>> handle default message event, event: {}", event);
         
-        String replyMsg = "";
+        String replyMsg = ERROR_MSG;
 
         UserSource source = (UserSource) event.getSource();
         PostbackContent postbackContent = event.getPostbackContent();
         
         String userId = source.getUserId();
         String replyToken = event.getReplyToken();
-        String postBackData = postbackContent.getData();
-        
-        String[] split = postBackData.split("&");
-		String strLineFunc = split[0];
-        String strLineSubFunc = split[1];
-        
-        LineFunction lineFunc = LineFunction.convertByName(strLineFunc);
-        if (lineFunc != null) {
-	        switch (lineFunc) {
-		        case PARKING_LOT_INFO:
-		        	ParkingLotSubFunction parkingLotSubFunc = ParkingLotSubFunction.convertByName(strLineSubFunc);
-		        	replyMsg = handleParkingLotSubFunction(parkingLotSubFunc, userId);
-		        	break;
-		        
-		        case WEATHER:
-		        	WeatherSubFunction weatherSubFunc = WeatherSubFunction.convertByName(strLineSubFunc);
-		        	replyMsg = handleWeatherSubFunction(weatherSubFunc, userId);
-		        	break;
-		        	
-				case CRYPTO_CURRENCY:
-					CryptoCurrencySubFunction cryptoCurrencySubFunc = CryptoCurrencySubFunction.convertByName(strLineSubFunc);
-					replyMsg = handleCryptoCurrencySubFunction(cryptoCurrencySubFunc, userId);
-					break;
-			
-				case RECEIPT_REWARD:
-					ReceiptRewardSubFunction receiptRewardSubFunc = ReceiptRewardSubFunction.convertByName(strLineSubFunc);
-					replyMsg = handleReceiptRewardSubFunction(receiptRewardSubFunc, userId);
-					break;
-	        }
+        String postbackData = postbackContent.getData();
+
+        // 處理選擇主功能
+        if (!postbackData.contains("&")) {
+        	String strLineFunc = postbackData;
+        	
+        	LineFunction lineFunc = LineFunction.convertByName(strLineFunc);
+        	if (lineFunc != null) {
+        		// 建立對應子功能表
+        		createSubFuncTemplateMsg(lineFunc, replyToken);
+        		return;
+        	}
         }
-        else {
-        	replyMsg = ERROR_MSG;
+        // 處理選擇子功能
+        else if (postbackData.contains("&")) {
+	        String[] split = postbackData.split("&");
+			String strLineFunc = split[0];
+	        String strLineSubFunc = split[1];
+	        
+	        LineFunction lineFunc = LineFunction.convertByName(strLineFunc);
+	        if (lineFunc != null) {
+		        switch (lineFunc) {
+			        case PARKING_LOT_INFO:
+			        	ParkingLotSubFunction parkingLotSubFunc = ParkingLotSubFunction.convertByName(strLineSubFunc);
+			        	if (parkingLotSubFunc != null) {
+			        		replyMsg = handleParkingLotSubFunction(parkingLotSubFunc, userId);
+			        	}
+			        	break;
+			        
+			        case WEATHER:
+			        	WeatherSubFunction weatherSubFunc = WeatherSubFunction.convertByName(strLineSubFunc);
+			        	if (weatherSubFunc != null) {
+			        		replyMsg = handleWeatherSubFunction(weatherSubFunc, userId);
+			        	}
+			        	break;
+			        	
+			        case RECEIPT_REWARD:
+						ReceiptRewardSubFunction receiptRewardSubFunc = ReceiptRewardSubFunction.convertByName(strLineSubFunc);
+						if (receiptRewardSubFunc != null) {
+							replyMsg = handleReceiptRewardSubFunction(receiptRewardSubFunc, userId);
+						}
+						break;
+			        	
+					case CRYPTO_CURRENCY:
+						CryptoCurrencySubFunction cryptoCurrencySubFunc = CryptoCurrencySubFunction.convertByName(strLineSubFunc);
+						if (cryptoCurrencySubFunc != null) {
+							replyMsg = handleCryptoCurrencySubFunction(cryptoCurrencySubFunc, userId);
+						}
+						break;
+		        }
+	        }
         }
         
         // 回應給 user
