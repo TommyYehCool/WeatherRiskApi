@@ -99,11 +99,11 @@ public class ScheduledTasks {
     	while (it.hasNext()) {
     		String stockNameOrId = it.next();
     		try {
-	    		logger.info(">>>>> Prepare to get stock match price with stockNameOrId: <{}>", stockNameOrId);
+	    		logger.debug(">>>>> Prepare to get stock match price with stockNameOrId: <{}>", stockNameOrId);
 	    		
 	    		BigDecimal matchPrice = stockService.getStockMatchPriceByNameOrId(stockNameOrId);
 	    		
-	    		logger.info("<<<<< Get stock match price with stockNameOrId: <{}> done, match price: {}", stockNameOrId, matchPrice);
+	    		logger.debug("<<<<< Get stock match price with stockNameOrId: <{}> done, match price: {}", stockNameOrId, matchPrice);
 	    		
 	    		checkStockPriceAndSendPushMessage(stockNameOrId, matchPrice);
     		} catch (Exception e) {
@@ -114,11 +114,11 @@ public class ScheduledTasks {
     
 	private void getCryptoCurrencyLastPriceFromBtcE(CurrencyCnst baseCurrency, CurrencyPair currencyPair) {
     	try {
-    		logger.info(">>>>> Prepare to get {} price from BTC-E...", baseCurrency);
+    		logger.debug(">>>>> Prepare to get {} price from BTC-E...", baseCurrency);
 
 			BigDecimal lastPrice = currencyService.getCryptoLastPriceFromBtcE(currencyPair);
 
-			logger.info("<<<<< Get {} price from BTC-E done, price: {}", baseCurrency, lastPrice);
+			logger.debug("<<<<< Get {} price from BTC-E done, price: {}", baseCurrency, lastPrice);
 
 			checkCryptoCurrencyPriceAndSendPushMessage(baseCurrency, currencyPair, lastPrice);
 		} catch (Exception e) {
@@ -128,11 +128,11 @@ public class ScheduledTasks {
 	
 	private void getCryptoCurrencyLastPriceFromPoloneix(CurrencyCnst baseCurrency, CurrencyPair currencyPair) {
     	try {
-    		logger.info(">>>>> Prepare to get {} price from Poloneix...", baseCurrency);
+    		logger.debug(">>>>> Prepare to get {} price from Poloneix...", baseCurrency);
 
 			BigDecimal lastPrice = currencyService.getCryptoLastPriceFromPoloneix(currencyPair);
 
-			logger.info("<<<<< Get {} price from Poloneix done, price: {}", baseCurrency, lastPrice);
+			logger.debug("<<<<< Get {} price from Poloneix done, price: {}", baseCurrency, lastPrice);
 
 			checkCryptoCurrencyPriceAndSendPushMessage(baseCurrency, currencyPair, lastPrice);
 		} catch (Exception e) {

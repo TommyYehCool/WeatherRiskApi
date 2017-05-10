@@ -92,6 +92,7 @@ public class LineMsgHandler {
 	
 	private final int LINE_MAXIMUM_REPLY_TEXT_MSG_LENGTH = 2000;
 	private final int LINE_MAXIMUM_REPLY_MSG_SIZE = 5;
+	private final int LINE_TEMPLATE_MSG_MAX_ITEMS = 4;
 	
 	private static final String ERROR_MSG = "系統怪怪的, 請通知管理員";
 
@@ -1023,7 +1024,11 @@ public class LineMsgHandler {
     	String replyMsg = "";
     	switch (lineSubFunc) {
 	    	case QUERY_CRYPTO_CURRENCY_PRICE:
-	    		createQueryCrypteCurrencyPriceTemplateMsg(replyToken);
+	    		int nextIndexToProcess = 0;
+	    		CurrencyCnst[] cryptoCurrencys = CurrencyCnst.getCryptoCurrency();
+	    		while (nextIndexToProcess < cryptoCurrencys.length) {
+	    			nextIndexToProcess = createQueryCrypteCurrencyPriceTemplateMsg(nextIndexToProcess, cryptoCurrencys, replyToken);
+	    		}
 				break;
     	
 			case HIT_PRICE_INFO:
@@ -1046,24 +1051,40 @@ public class LineMsgHandler {
     /**
      * 建立查詢虛擬貨幣匯率功能表
      * 
+     * @param nextIndexToProcess
+     * @param cryptoCurrencys
      * @param replyToken
+     * @return
      */
-    private void createQueryCrypteCurrencyPriceTemplateMsg(String replyToken) {
+    private int createQueryCrypteCurrencyPriceTemplateMsg(int nextIndexToProcess, CurrencyCnst[] cryptoCurrencys, String replyToken) {
+    	final String menuTitle = "虛擬貨幣匯率查詢";
+    	final String menuText = "提供下列虛擬貨幣";
+    	final String altText = "虛擬貨幣匯率查詢";
+    	
+    	// 開始要處理的 index
+    	int indexToProcess = nextIndexToProcess != 0 ? nextIndexToProcess : 0;
+    	
+    	// 紀錄處理了幾筆
+    	int processedCounts = 0;
+    	
     	// Create sub functions menu
 		List<Action> postbackActions = new ArrayList<>();
 
-		CurrencyCnst[] cryptoCurrencys = CurrencyCnst.getCryptoCurrency();
-		for (CurrencyCnst cryptoCurrency : cryptoCurrencys) {
+		// 一次只能傳四個 menu
+		for (int i = indexToProcess; i < cryptoCurrencys.length && processedCounts < LINE_TEMPLATE_MSG_MAX_ITEMS; i++, processedCounts++, indexToProcess++) {
+			CurrencyCnst cryptoCurrency = cryptoCurrencys[i];
 			PostbackAction postbackAction = new PostbackAction(cryptoCurrency.toString(), cryptoCurrency.toString());
 			postbackActions.add(postbackAction);
 		}
 		
 		ButtonsTemplate buttonsTemplate 
-			= new ButtonsTemplate(createUri(LineFunction.MAIN_MENU_IMG_PATH), "虛擬貨幣匯率查詢", "提供下列虛擬貨幣", postbackActions);
+			= new ButtonsTemplate(createUri(LineFunction.MAIN_MENU_IMG_PATH), menuTitle, menuText, postbackActions);
 	
-		TemplateMessage message = new TemplateMessage("虛擬貨幣匯率查詢", buttonsTemplate);
+		TemplateMessage message = new TemplateMessage(altText, buttonsTemplate);
 		reply(replyToken, message);
-	}
+		
+		return indexToProcess;
+    }
 
 	/**
 	 * 處理發票子功能

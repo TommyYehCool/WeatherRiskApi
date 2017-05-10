@@ -6,8 +6,10 @@ import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -15,6 +17,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.linecorp.bot.model.action.Action;
+import com.linecorp.bot.model.action.PostbackAction;
+import com.linecorp.bot.model.message.TemplateMessage;
+import com.linecorp.bot.model.message.template.ButtonsTemplate;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.cnst.UBikeCity;
 import com.weatherrisk.api.cnst.line.LineFunction;
@@ -170,8 +176,50 @@ public class Test_Java {
 	}
 	
 	@Test
+	@Ignore
 	public void test_13_testEnum() {
 		LineFunction lineFunction = LineFunction.CRYPTO_CURRENCY;
 		System.out.println(lineFunction.toString());
 	}
+	
+	@Test
+	@Ignore
+	public void test_14_logic() {
+		int nextIndexToProcess = 0;
+		CurrencyCnst[] cryptoCurrencys = CurrencyCnst.getCryptoCurrency();
+		while (nextIndexToProcess < cryptoCurrencys.length) {
+			nextIndexToProcess = createQueryCrypteCurrencyPriceTemplateMsg(nextIndexToProcess, cryptoCurrencys, null);
+		}
+	}
+	
+	private int createQueryCrypteCurrencyPriceTemplateMsg(int nextIndexToProcess, CurrencyCnst[] cryptoCurrencys, String replyToken) {
+    	final String menuTitle = "虛擬貨幣匯率查詢";
+    	final String menuText = "提供下列虛擬貨幣";
+    	final String altText = "虛擬貨幣匯率查詢";
+    	
+    	// 開始要處理的 index
+    	int indexToProcess = nextIndexToProcess != 0 ? nextIndexToProcess : 0;
+    	
+    	// 紀錄處理了幾筆
+    	int processedCounts = 0;
+    	
+    	// Create sub functions menu
+		List<Action> postbackActions = new ArrayList<>();
+
+		// 一次只能傳四個 menu
+		for (int i = indexToProcess; i < cryptoCurrencys.length && processedCounts < 4; i++, processedCounts++, indexToProcess++) {
+			CurrencyCnst cryptoCurrency = cryptoCurrencys[i];
+			PostbackAction postbackAction = new PostbackAction(cryptoCurrency.toString(), cryptoCurrency.toString());
+			postbackActions.add(postbackAction);
+		}
+		
+		ButtonsTemplate buttonsTemplate 
+			= new ButtonsTemplate(null, menuTitle, menuText, postbackActions);
+	
+		TemplateMessage message = new TemplateMessage(altText, buttonsTemplate);
+		
+		System.out.println(buttonsTemplate.getActions());
+		
+		return indexToProcess;
+    }
 }
