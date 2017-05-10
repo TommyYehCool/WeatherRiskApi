@@ -1054,7 +1054,7 @@ public class LineMsgHandler {
 
 		CurrencyCnst[] cryptoCurrencys = CurrencyCnst.getCryptoCurrency();
 		for (CurrencyCnst cryptoCurrency : cryptoCurrencys) {
-			PostbackAction postbackAction = new PostbackAction(cryptoCurrency.toString(), null, cryptoCurrency.toString());
+			PostbackAction postbackAction = new PostbackAction(cryptoCurrency.toString(), cryptoCurrency.toString());
 			postbackActions.add(postbackAction);
 		}
 		
