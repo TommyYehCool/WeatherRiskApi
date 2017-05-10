@@ -43,6 +43,7 @@ import com.weatherrisk.api.cnst.ShowTimeTheater;
 import com.weatherrisk.api.cnst.UBikeCity;
 import com.weatherrisk.api.cnst.ViewshowTheater;
 import com.weatherrisk.api.cnst.WovieTheater;
+import com.weatherrisk.api.cnst.line.CryptoCurrencySubFunction;
 import com.weatherrisk.api.cnst.line.LineFunction;
 import com.weatherrisk.api.cnst.line.LineSubFunction;
 import com.weatherrisk.api.service.currency.CurrencyService;
@@ -851,29 +852,56 @@ public class LineMsgHandler {
         
         String userId = source.getUserId();
         String replyToken = event.getReplyToken();
-        String data = postbackContent.getData();
+        String postBackData = postbackContent.getData();
         
-        String replyMsg = null;
+        String[] split = postBackData.split("&");
+		String strLineFunc = split[0];
+        String strLineSunFunc = split[1];
         
-        // 查詢註冊虛擬貨幣匯率到價通知
-    	if (data.equals("查詢貨幣註冊")) {
-    		boolean hasRegistered = registerService.hasRegisteredCryptoCurrency(userId);
-    		if (hasRegistered) {
-    			replyMsg = registerService.getCryptoCurrencyPricesReachedInfos(userId);
-    		}
-    		else {
-    			replyMsg = "您未註冊任何貨幣到價通知";
-    		}
-    		reply(replyToken, new TextMessage(replyMsg));
-    	}
-    	// 查詢貨幣庫存
-    	else if (data.equals("查詢貨幣庫存")) {
-    		replyMsg = currencyService.queryTreasuryCryptoCurrency(userId);
-    		reply(replyToken, new TextMessage(replyMsg));
-    	}
+        LineFunction lineFunc = LineFunction.convertByName(strLineFunc);
+
+        String replyMsg = "";
+        if (lineFunc != null) {
+	        switch (lineFunc) {
+				case CRYPTO_CURRENCY:
+					CryptoCurrencySubFunction subFunc = CryptoCurrencySubFunction.convertByName(strLineSunFunc);
+					replyMsg = handleCryptoCurrencySubFunction(subFunc, userId);
+					break;
+	
+				case PARKING_LOT_INFO:
+					// TODO
+					break;
+	        }
+        }
+        else {
+        	replyMsg = "系統怪怪的, 請通知管理員";
+        }
+        
+        // 回應給 user
+    	reply(replyToken, new TextMessage(replyMsg));
     }
     
-    private void reply(@NonNull String replyToken, @NonNull Message message) {
+    private String handleCryptoCurrencySubFunction(CryptoCurrencySubFunction subFunc, String userId) {
+    	String replyMsg = "系統怪怪的, 請通知管理員";
+    	switch (subFunc) {
+			case HIT_PRICE_INFO:
+				boolean hasRegistered = registerService.hasRegisteredCryptoCurrency(userId);
+	    		if (hasRegistered) {
+	    			replyMsg = registerService.getCryptoCurrencyPricesReachedInfos(userId);
+	    		}
+	    		else {
+	    			replyMsg = "您未註冊任何貨幣到價通知";
+	    		}
+				break;
+
+			case QUERY_CRYPTO_CURRENCT_TREASURY:
+				replyMsg = currencyService.queryTreasuryCryptoCurrency(userId);
+				break;
+    	}
+		return replyMsg;
+	}
+
+	private void reply(@NonNull String replyToken, @NonNull Message message) {
         reply(replyToken, Collections.singletonList(message));
     }
 

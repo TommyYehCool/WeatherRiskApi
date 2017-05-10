@@ -15,9 +15,9 @@ public enum CryptoCurrencySubFunction implements LineSubFunction {
 		return label;
 	}
 
-	public static CryptoCurrencySubFunction convertByMsg(String msg) {
+	public static CryptoCurrencySubFunction convertByName(String name) {
 		for (CryptoCurrencySubFunction e : CryptoCurrencySubFunction.values()) {
-			if (e.toString().equalsIgnoreCase(msg)) {
+			if (e.toString().equals(name)) {
 				return e;
 			}
 		}

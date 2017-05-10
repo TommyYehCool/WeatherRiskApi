@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.cnst.UBikeCity;
+import com.weatherrisk.api.cnst.line.LineFunction;
 
 public class Test_Java {
 	
@@ -156,6 +157,7 @@ public class Test_Java {
 	}
 	
 	@Test
+	@Ignore
 	public void test_12_testBigDecimal() {
 		BigDecimal amount = new BigDecimal(0.78812);
 		System.out.println(amount);
@@ -165,5 +167,11 @@ public class Test_Java {
 		
 		BigDecimal avgPrice = amount.divide(totalVolumes, 8, RoundingMode.UP);
 		System.out.println(avgPrice);
+	}
+	
+	@Test
+	public void test_13_testEnum() {
+		LineFunction lineFunction = LineFunction.CRYPTO_CURRENCY;
+		System.out.println(lineFunction.toString());
 	}
 }
