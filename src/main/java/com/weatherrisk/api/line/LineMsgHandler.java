@@ -945,7 +945,8 @@ public class LineMsgHandler {
 					case CRYPTO_CURRENCY:
 						CryptoCurrencySubFunction cryptoCurrencySubFunc = CryptoCurrencySubFunction.convertByName(strLineSubFunc);
 						if (cryptoCurrencySubFunc != null) {
-							replyMsg = handleCryptoCurrencySubFunction(cryptoCurrencySubFunc, userId, replyToken);
+							String currencyCode = split.length == 3 ? split[2] : null;
+							replyMsg = handleCryptoCurrencySubFunction(cryptoCurrencySubFunc, userId, replyToken, currencyCode);
 						}
 						break;
 		        }
@@ -1016,18 +1017,59 @@ public class LineMsgHandler {
 	 * @param lineSubFunc
 	 * @param userId
 	 * @param replyToken
+	 * @param currencyCode
+	 * 
 	 * @return
 	 */
-    private String handleCryptoCurrencySubFunction(CryptoCurrencySubFunction lineSubFunc, String userId, String replyToken) {
-    	logger.info("----> Prepare to process crypto currency, SubFunction: <{}>, UserId: <{}>", lineSubFunc, userId);
+    private String handleCryptoCurrencySubFunction(CryptoCurrencySubFunction lineSubFunc, String userId, String replyToken, String currencyCode) {
+    	logger.info("----> Prepare to process crypto currency, SubFunction: <{}>, UserId: <{}>, Data: <{}>", lineSubFunc, userId, currencyCode);
     	
     	String replyMsg = "";
     	switch (lineSubFunc) {
 	    	case QUERY_CRYPTO_CURRENCY_PRICE:
-	    		int nextIndexToProcess = 0;
-	    		CurrencyCnst[] cryptoCurrencys = CurrencyCnst.getCryptoCurrency();
-	    		while (nextIndexToProcess < cryptoCurrencys.length) {
-	    			nextIndexToProcess = createQueryCrypteCurrencyPriceTemplateMsg(nextIndexToProcess, cryptoCurrencys, replyToken);
+	    		// 選擇查詢貨幣匯率, 顯示可以的貨幣供選擇
+	    		if (currencyCode == null) {
+		    		int nextIndexToProcess = 0;
+		    		CurrencyCnst[] cryptoCurrencys = CurrencyCnst.getCryptoCurrency();
+		    		while (nextIndexToProcess < cryptoCurrencys.length) {
+		    			nextIndexToProcess = createQueryCrypteCurrencyPriceTemplateMsg(nextIndexToProcess, cryptoCurrencys, replyToken);
+		    		}
+	    		}
+	    		// 確定選擇了貨幣
+	    		else {
+	    			CurrencyCnst currency = CurrencyCnst.convert(currencyCode);
+	    			if (CurrencyCnst.isCryptoCurrency(currencyCode)) {
+	    				CurrencyPair currencyPair = null;
+	        			switch (currency) {
+	    					case BTC:
+	    						currencyPair = CurrencyPair.BTC_USD;
+	    						break;
+	    						
+	    					case ETH:
+	    						currencyPair = CurrencyPair.ETH_USD;
+	    			    		break;
+	    			    		
+	    					case LTC:
+	    						currencyPair = CurrencyPair.LTC_USD;
+	    						break;
+	    						
+	    					case STR:
+	    						currencyPair = CurrencyPair.STR_BTC;
+	    						break;
+	    						
+	    					case XRP:
+	    						currencyPair = CurrencyPair.XRP_BTC;
+	    						break;
+
+	    					default:
+	    						// 正常程式不會到這
+	    						logger.error("handleCryptoCurrencySubFunction QUERY_CRYPTO_CURRENCY_PRICE got unexpected CurrencyCnst: <{}>", currency);
+	    						break;
+	        			}
+	        			if (currencyPair != null) {
+	        				replyMsg = currencyService.getCryptoCurrencyPriceFromExchanges(currencyPair);
+	        			}
+	         		}
 	    		}
 				break;
     	
@@ -1073,7 +1115,8 @@ public class LineMsgHandler {
 		// 一次只能傳四個 menu
 		for (int i = indexToProcess; i < cryptoCurrencys.length && processedCounts < LINE_TEMPLATE_MSG_MAX_ITEMS; i++, processedCounts++, indexToProcess++) {
 			CurrencyCnst cryptoCurrency = cryptoCurrencys[i];
-			PostbackAction postbackAction = new PostbackAction(cryptoCurrency.toString(), cryptoCurrency.toString());
+			PostbackAction postbackAction 
+				= new PostbackAction(cryptoCurrency.toString(), LineFunction.CRYPTO_CURRENCY + "&" + CryptoCurrencySubFunction.QUERY_CRYPTO_CURRENCY_PRICE + "&" + cryptoCurrency.toString());
 			postbackActions.add(postbackAction);
 		}
 		
