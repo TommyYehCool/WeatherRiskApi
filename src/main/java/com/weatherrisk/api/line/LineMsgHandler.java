@@ -881,7 +881,16 @@ public class LineMsgHandler {
     	reply(replyToken, new TextMessage(replyMsg));
     }
     
+	/**
+	 * 處理虛擬貨幣子功能
+	 * 
+	 * @param subFunc
+	 * @param userId
+	 * @return
+	 */
     private String handleCryptoCurrencySubFunction(CryptoCurrencySubFunction subFunc, String userId) {
+    	logger.info("----> Prepare to process crypto currency, SubFunction: <{}>, UserId: <{}>", subFunc, userId);
+    	
     	String replyMsg = "系統怪怪的, 請通知管理員";
     	switch (subFunc) {
 			case HIT_PRICE_INFO:
@@ -901,10 +910,22 @@ public class LineMsgHandler {
 		return replyMsg;
 	}
 
+    /**
+     * 回應單則訊息
+     * 
+     * @param replyToken
+     * @param message
+     */
 	private void reply(@NonNull String replyToken, @NonNull Message message) {
         reply(replyToken, Collections.singletonList(message));
     }
 
+	/**
+	 * 回應多則訊息
+	 * 
+	 * @param replyToken
+	 * @param messages
+	 */
     private void reply(@NonNull String replyToken, @NonNull List<Message> messages) {
         try {
         	BotApiResponse apiResponse = null;
@@ -929,6 +950,12 @@ public class LineMsgHandler {
         }
     }
     
+    /**
+     * 建立圖檔 uri
+     * 
+     * @param path
+     * @return
+     */
     private static String createUri(String path) {
         return ServletUriComponentsBuilder
         			.fromCurrentContextPath()
