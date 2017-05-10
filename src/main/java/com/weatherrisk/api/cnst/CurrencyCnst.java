@@ -80,6 +80,10 @@ public enum CurrencyCnst {
 		return false;
 	}
 	
+	public static CurrencyCnst[] getCryptoCurrency() {
+		return crypto_currency.toArray(new CurrencyCnst[0]);
+	}
+	
 	public static boolean isCryptoCurrency(String code) {
 		for (CurrencyCnst currency : crypto_currency) {
 			if (currency.toString().equalsIgnoreCase(code)) {

@@ -178,20 +178,12 @@ public class LineMsgHandler {
     private String constructHelpMsg() {
     	StringBuilder buffer = new StringBuilder();
 
-    	buffer.append("我能做到下列事情:").append("\n");
-    	buffer.append("-----------------------").append("\n");
-    	buffer.append("[查詢台北市及新北市停車場資訊]").append("\n");
-    	buffer.append("輸入 park 可顯示小幫手").append("\n");
-    	buffer.append("-----------------------").append("\n");
-    	buffer.append("[查詢天氣]").append("\n");
-    	buffer.append("輸入 weather 可顯示小幫手").append("\n");
+    	buffer.append("說聲 hi").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[發票]").append("\n");
-    	buffer.append("輸入 receipt 可顯示小幫手").append("\n");
     	buffer.append("發票對獎功能, 直接輸入號碼即可 => Ex: 168").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[貨幣]").append("\n");
-    	buffer.append("輸入 coin 可顯示小幫手").append("\n");
     	buffer.append("<支援虛擬貨幣: ").append(CurrencyCnst.getSupportedCryptoCurrency().substring(0, CurrencyCnst.getSupportedCryptoCurrency().length() - 2)).append(">\n");
     	buffer.append("<支援真實貨幣: usd, jpy...等>").append("\n");
     	buffer.append("查詢虛擬貨幣匯率 => Ex: ").append(CurrencyCnst.getSupportedCryptoCurrency().substring(0, CurrencyCnst.getSupportedCryptoCurrency().length() - 2)).append("\n");
@@ -952,7 +944,7 @@ public class LineMsgHandler {
 					case CRYPTO_CURRENCY:
 						CryptoCurrencySubFunction cryptoCurrencySubFunc = CryptoCurrencySubFunction.convertByName(strLineSubFunc);
 						if (cryptoCurrencySubFunc != null) {
-							replyMsg = handleCryptoCurrencySubFunction(cryptoCurrencySubFunc, userId);
+							replyMsg = handleCryptoCurrencySubFunction(cryptoCurrencySubFunc, userId, replyToken);
 						}
 						break;
 		        }
@@ -1022,13 +1014,18 @@ public class LineMsgHandler {
 	 * 
 	 * @param lineSubFunc
 	 * @param userId
+	 * @param replyToken
 	 * @return
 	 */
-    private String handleCryptoCurrencySubFunction(CryptoCurrencySubFunction lineSubFunc, String userId) {
+    private String handleCryptoCurrencySubFunction(CryptoCurrencySubFunction lineSubFunc, String userId, String replyToken) {
     	logger.info("----> Prepare to process crypto currency, SubFunction: <{}>, UserId: <{}>", lineSubFunc, userId);
     	
-    	String replyMsg = ERROR_MSG;
+    	String replyMsg = "";
     	switch (lineSubFunc) {
+	    	case QUERY_CRYPTO_CURRENCY_PRICE:
+	    		createQueryCrypteCurrencyPriceTemplateMsg(replyToken);
+				break;
+    	
 			case HIT_PRICE_INFO:
 				boolean hasRegistered = registerService.hasRegisteredCryptoCurrency(userId);
 	    		if (hasRegistered) {
@@ -1045,8 +1042,30 @@ public class LineMsgHandler {
     	}
 		return replyMsg;
 	}
-    
+
     /**
+     * 建立查詢虛擬貨幣匯率功能表
+     * 
+     * @param replyToken
+     */
+    private void createQueryCrypteCurrencyPriceTemplateMsg(String replyToken) {
+    	// Create sub functions menu
+		List<Action> postbackActions = new ArrayList<>();
+
+		CurrencyCnst[] cryptoCurrencys = CurrencyCnst.getCryptoCurrency();
+		for (CurrencyCnst cryptoCurrency : cryptoCurrencys) {
+			PostbackAction postbackAction = new PostbackAction(cryptoCurrency.toString(), null, cryptoCurrency.toString());
+			postbackActions.add(postbackAction);
+		}
+		
+		ButtonsTemplate buttonsTemplate 
+			= new ButtonsTemplate(createUri(LineFunction.MAIN_MENU_IMG_PATH), "虛擬貨幣匯率查詢", "提供下列虛擬貨幣", postbackActions);
+	
+		TemplateMessage message = new TemplateMessage("虛擬貨幣匯率查詢", buttonsTemplate);
+		reply(replyToken, message);
+	}
+
+	/**
 	 * 處理發票子功能
 	 * 
 	 * @param lineSubFunc
