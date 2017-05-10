@@ -66,6 +66,8 @@ import com.weatherrisk.api.vo.CryptoCurrencyPriceReached;
 import com.weatherrisk.api.vo.StockPriceReached;
 import com.weatherrisk.api.vo.json.tpeopendata.ubike.UBikeInfo;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NonNull;
 
 /**
@@ -83,11 +85,14 @@ import lombok.NonNull;
  */
 @LineMessageHandler
 public class LineMsgHandler {
+
 	private final Logger logger = LoggerFactory.getLogger(LineMsgHandler.class);
 	
 	private final int LINE_MAXIMUM_REPLY_TEXT_MSG_LENGTH = 2000;
 	private final int LINE_MAXIMUM_REPLY_MSG_SIZE = 5;
 	
+	private static final String ERROR_MSG = "系統怪怪的, 請通知管理員";
+
 	@Autowired
     private LineMessagingClient lineMessagingClient;
 	
@@ -132,7 +137,14 @@ public class LineMsgHandler {
 	/**
 	 * 紀錄使用者目前選擇到的功能
 	 */
-	private Map<String, Map<LineFunction, LineSubFunction>> userCurrentFunc = new HashMap<>();
+	private Map<String, CurrentFunction> userCurrentFunc = Collections.synchronizedMap(new HashMap<>());
+	
+	@Data
+	@AllArgsConstructor
+	private class CurrentFunction {
+		private LineFunction lineFunc;
+		private LineSubFunction lineSubFunc;
+	}
 	
 	private final String[] helpTemplateMsgs
 		= new String[] {
@@ -238,8 +250,16 @@ public class LineMsgHandler {
     		createTemplateMsg(replyToken, lineFunc);
     		queryResult = "";
     	}
+    	
+    	// 處理使用者目前在進行的子功能
+    	CurrentFunction currentFunction = getUserCurrentFunction(userId);
+    	if (currentFunction != null) {
+    		processUserCurrentFunction(userId, currentFunction.getLineFunc(), currentFunction.getLineSubFunc(), inputMsg);
+    		queryResult = "";
+    	}
+    	
     	// 功能查詢
-    	else if (isQueryFunctionMsg(inputMsg)) {
+    	if (isQueryFunctionMsg(inputMsg)) {
     		queryResult = constructHelpMsg();
     	}
     	// 停車場-精準搜尋
@@ -882,7 +902,7 @@ public class LineMsgHandler {
 	        }
         }
         else {
-        	replyMsg = "系統怪怪的, 請通知管理員";
+        	replyMsg = ERROR_MSG;
         }
         
         // 回應給 user
@@ -892,15 +912,15 @@ public class LineMsgHandler {
 	/**
 	 * 處理虛擬貨幣子功能
 	 * 
-	 * @param subFunc
+	 * @param lineSubFunc
 	 * @param userId
 	 * @return
 	 */
-    private String handleCryptoCurrencySubFunction(CryptoCurrencySubFunction subFunc, String userId) {
-    	logger.info("----> Prepare to process crypto currency, SubFunction: <{}>, UserId: <{}>", subFunc, userId);
+    private String handleCryptoCurrencySubFunction(CryptoCurrencySubFunction lineSubFunc, String userId) {
+    	logger.info("----> Prepare to process crypto currency, SubFunction: <{}>, UserId: <{}>", lineSubFunc, userId);
     	
-    	String replyMsg = "系統怪怪的, 請通知管理員";
-    	switch (subFunc) {
+    	String replyMsg = ERROR_MSG;
+    	switch (lineSubFunc) {
 			case HIT_PRICE_INFO:
 				boolean hasRegistered = registerService.hasRegisteredCryptoCurrency(userId);
 	    		if (hasRegistered) {
@@ -925,12 +945,66 @@ public class LineMsgHandler {
 	 * @param userId
 	 * @return
 	 */
-	private String handleParkingLotSubFunction(ParkingLotSubFunction parkingLotSubFunc, String userId) {
-		// TODO Auto-generated method stub
-		return null;
+	private String handleParkingLotSubFunction(ParkingLotSubFunction linSubFunc, String userId) {
+		LineFunction lineFunc = LineFunction.PARKING_LOT_INFO;
+		
+		logger.info("----> Prepare to process parking lot, SubFunction: <{}>, UserId: <{}>", linSubFunc, userId);
+		
+		String replyMsg = ERROR_MSG;
+		switch (linSubFunc) {
+			case FIND_PARKING_LOT_BY_FUZZY_SEARCH:
+				replyMsg = "請輸入關鍵字";
+				break;
+
+			case FIND_PARING_LOT_BY_NAME:
+				replyMsg = "請輸入停車場名稱";
+				break;
+		}
+		
+		recordUserCurrentAction(userId, lineFunc, linSubFunc);
+		
+		return replyMsg;
+	}
+	
+	/**
+	 * 紀錄目前使用者在進行的功能 
+	 * 
+	 * @param userId
+	 * @param lineFunc
+	 * @param subFunc
+	 */
+	private void recordUserCurrentAction(String userId, LineFunction lineFunc, LineSubFunction lineSubFunc) {
+		CurrentFunction currentFunc = userCurrentFunc.get(userId);
+		if (currentFunc == null) {
+			currentFunc = new CurrentFunction(lineFunc, lineSubFunc);
+		}
+		else {
+			currentFunc.setLineFunc(lineFunc);
+			currentFunc.setLineSubFunc(lineSubFunc);
+		}
+		userCurrentFunc.put(userId, currentFunc);
+	}
+	
+	/**
+	 * 取得目前使用者在進行的功能
+	 */
+	private CurrentFunction getUserCurrentFunction(String userId) {
+		return userCurrentFunc.get(userId);
+	}
+ 
+	/**
+	 * 處理目前使用者在進行的子功能
+	 * 
+	 * @param userId 
+	 * @param lineFunc
+	 * @param lineSubFunc
+	 * @param inputMsg 
+	 */
+    private void processUserCurrentFunction(String userId, LineFunction lineFunc, LineSubFunction lineSubFunc, String inputMsg) {
+		logger.info("----> Prepare to process userId: <{}>, LineFunction: <{}>, LineSubFunction: <{}>, input: <{}>", userId, lineFunc, lineSubFunc, inputMsg);		
 	}
 
-    /**
+	/**
      * 回應單則訊息
      * 
      * @param replyToken
