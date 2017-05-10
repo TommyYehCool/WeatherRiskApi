@@ -254,7 +254,7 @@ public class LineMsgHandler {
     	// 處理使用者目前在進行的子功能
     	CurrentFunction currentFunction = getUserCurrentFunction(userId);
     	if (currentFunction != null) {
-    		processUserCurrentFunction(userId, currentFunction.getLineFunc(), currentFunction.getLineSubFunc(), inputMsg);
+    		processUserCurrentFunction(userId, replyToken, currentFunction.getLineFunc(), currentFunction.getLineSubFunc(), inputMsg);
     		queryResult = "";
     	}
     	
@@ -991,17 +991,51 @@ public class LineMsgHandler {
 	private CurrentFunction getUserCurrentFunction(String userId) {
 		return userCurrentFunc.get(userId);
 	}
+	
+	/**
+	 * 移除目前使用者在進行的功能
+	 */
+	private void removeUserCurrentFunction(String userId) {
+		CurrentFunction remove = userCurrentFunc.remove(userId);
+		logger.info("~~~~ UserId: <{}> finish current function: <{}>", userId, remove);
+	}
  
 	/**
 	 * 處理目前使用者在進行的子功能
 	 * 
 	 * @param userId 
+	 * @param replyToken 
 	 * @param lineFunc
 	 * @param lineSubFunc
 	 * @param inputMsg 
 	 */
-    private void processUserCurrentFunction(String userId, LineFunction lineFunc, LineSubFunction lineSubFunc, String inputMsg) {
-		logger.info("----> Prepare to process userId: <{}>, LineFunction: <{}>, LineSubFunction: <{}>, input: <{}>", userId, lineFunc, lineSubFunc, inputMsg);		
+    private void processUserCurrentFunction(String userId, String replyToken, LineFunction lineFunc, LineSubFunction lineSubFunc, String inputMsg) {
+		logger.info("----> Prepare to process userId: <{}>, LineFunction: <{}>, LineSubFunction: <{}>, input: <{}>", userId, lineFunc, lineSubFunc, inputMsg);
+		
+		String replyMsg = ERROR_MSG;
+		
+		switch (lineFunc) {
+			case CRYPTO_CURRENCY:
+				// TODO other sub func
+				break;
+
+			case PARKING_LOT_INFO:
+				ParkingLotSubFunction parkingLotSubFunc = (ParkingLotSubFunction) lineSubFunc;
+				switch (parkingLotSubFunc) {
+					case FIND_PARKING_LOT_BY_FUZZY_SEARCH:
+						replyMsg = parkingLotService.findByNameLike(inputMsg);
+						break;
+
+					case FIND_PARING_LOT_BY_NAME:
+						replyMsg = parkingLotService.findByName(inputMsg);
+						break;
+				}
+				break;
+		}
+		
+		removeUserCurrentFunction(userId);
+		
+		reply(replyToken, new TextMessage(replyMsg));
 	}
 
 	/**
