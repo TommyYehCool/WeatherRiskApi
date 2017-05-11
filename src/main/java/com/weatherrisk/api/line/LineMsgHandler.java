@@ -46,7 +46,9 @@ import com.weatherrisk.api.cnst.UBikeCity;
 import com.weatherrisk.api.cnst.ViewshowTheater;
 import com.weatherrisk.api.cnst.WovieTheater;
 import com.weatherrisk.api.cnst.line.CryptoCurrencySubFunction;
+import com.weatherrisk.api.cnst.line.LineFinancialFunction;
 import com.weatherrisk.api.cnst.line.LineFunction;
+import com.weatherrisk.api.cnst.line.LineQueryFunction;
 import com.weatherrisk.api.cnst.line.LineSubFunction;
 import com.weatherrisk.api.cnst.line.ParkingLotSubFunction;
 import com.weatherrisk.api.cnst.line.ReceiptRewardSubFunction;
@@ -145,25 +147,34 @@ public class LineMsgHandler {
 	@Data
 	@AllArgsConstructor
 	private class CurrentFunction {
-		private LineFunction lineFunc;
+		private LineQueryFunction lineQueryFunc;
+		private LineFinancialFunction lineFincFunc;
 		private LineSubFunction lineSubFunc;
 	}
 	
-	private final String[] openMainFunctionKeywords
+	private final String[] openQueryFunctionKeywords
 		= new String[] {
-				"hi",
-				"來吧",
-				"come on"
+				"1",
+				"query",
+				"查詢"
 		  };
 	
-	private final String[] helpTemplateMsgs
+	private final String[] openFinancialFunctionKeywords 
+		 = new String[] {
+				"2",
+				"$",
+				"finc",
+				"金融"
+		   };
+	
+	private final String[] helpMsgs
 		= new String[] {
 				"支援功能",
 				"幹嘛",
 				"What can you do"
 		  };
 	
-	private final String[] templateMsgs 
+	private final String[] randomRespMsgs 
 		= new String[] {
 				"你覺得今天天氣如何呀?",
 				"看你運勢不錯去簽一張樂透試試手氣如何",
@@ -171,9 +182,9 @@ public class LineMsgHandler {
 				"假日快到了, 有沒有安排去哪走走呢?"
 		  };
 	
-    private String getRandomMsg() {
+    private String getRandomResponseMsg() {
 		Random random = new Random();
-		return String.valueOf(templateMsgs[random.nextInt(templateMsgs.length)]);
+		return String.valueOf(randomRespMsgs[random.nextInt(randomRespMsgs.length)]);
 	}
     
     private String constructHelpMsg() {
@@ -222,24 +233,33 @@ public class LineMsgHandler {
     	return buffer.toString();
 	}
 
-	private boolean isQueryFunctionMsg(String inputMsg) { 
-    	for (String helpTemplateMsg : helpTemplateMsgs) {
-    		if (inputMsg.contains(helpTemplateMsg)) {
+	private boolean isHelpMsg(String inputMsg) { 
+    	for (String helpMsg : helpMsgs) {
+    		if (inputMsg.contains(helpMsg)) {
     			return true;
     		}
     	}
     	return false;
     }
 	
-	private boolean isOpenMainFunctionMsg(String inputMsg) {
-		for (String openMainFunctionKeyword : openMainFunctionKeywords) {
-			if (openMainFunctionKeyword.contains(inputMsg)) {
+	private boolean isOpenQueryFunctionMsg(String inputMsg) {
+		for (String openQueryFunctionKeyword : openQueryFunctionKeywords) {
+			if (openQueryFunctionKeyword.contains(inputMsg)) {
 				return true;
 			}
 		}
 		return false;
 	}
-
+	
+	private boolean isOpenFinancialFunctionMsg(String inputMsg) {
+		for (String openFinancialFunctionKeyword : openFinancialFunctionKeywords) {
+			if (openFinancialFunctionKeyword.contains(inputMsg)) {
+				return true;
+			}
+		}
+		return false;
+	}
+ 
 	@EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
     	logger.info(">>>>> handle text message event, event: {}", event);
@@ -252,14 +272,20 @@ public class LineMsgHandler {
     	
     	String queryResult = null;
     	
-    	// 主功能表
-    	if (isOpenMainFunctionMsg(inputMsg)) {
-    		createMainFuncTemplateMsg(replyToken);
+    	// 查詢功能表
+    	if (isOpenQueryFunctionMsg(inputMsg)) {
+    		createQueryFuncTemplateMsg(replyToken);
+    		queryResult = "";
+    	}
+    	
+    	// 金融功能表
+    	if (isOpenFinancialFunctionMsg(inputMsg)) {
+    		createFinancialFuncTemplateMsg(replyToken);
     		queryResult = "";
     	}
     	
     	// 子功能表
-    	LineFunction lineFunc = LineFunction.convertByKeyword(inputMsg);
+    	LineQueryFunction lineFunc = LineQueryFunction.convertByKeyword(inputMsg);
     	if (lineFunc != null) {
     		createSubFuncTemplateMsg(lineFunc, replyToken);
     		queryResult = "";
@@ -268,12 +294,14 @@ public class LineMsgHandler {
     	// 處理使用者目前在進行的子功能
     	CurrentFunction currentFunction = getUserCurrentFunction(userId);
     	if (currentFunction != null) {
-    		processUserCurrentFunction(userId, replyToken, currentFunction.getLineFunc(), currentFunction.getLineSubFunc(), inputMsg);
+    		if (currentFunction.getLineQueryFunc() != null) {
+    			processUserCurrentQryFunction(userId, replyToken, currentFunction.getLineQueryFunc(), currentFunction.getLineSubFunc(), inputMsg);
+    		}
     		queryResult = "";
     	}
     	
     	// 功能查詢
-    	if (isQueryFunctionMsg(inputMsg)) {
+    	if (isHelpMsg(inputMsg)) {
     		queryResult = constructHelpMsg();
     	}
     	// 註冊股票到價通知
@@ -665,7 +693,7 @@ public class LineMsgHandler {
     	}
     	// ----- 不支援的指令, 回傳灌頭訊息 -----
     	else {
-    		return new TextMessage(getRandomMsg());
+    		return new TextMessage(getRandomResponseMsg());
     	}
     }
 
@@ -841,25 +869,49 @@ public class LineMsgHandler {
 
 	/**
 	 * <pre>
-	 * 建立主功能表
+	 * 建立查詢功能表
 	 * </pre>
 	 * 
 	 * @param replyToken
 	 */
-	private void createMainFuncTemplateMsg(String replyToken) {
-		// Create main functions menu
+	private void createQueryFuncTemplateMsg(String replyToken) {
+		// Create query functions menu
 		List<Action> postbackActions = new ArrayList<>();
 		
-		LineFunction[] lineMainFuncs = LineFunction.values();
-		for (LineFunction lineMainFunc : lineMainFuncs) {
-			PostbackAction postbackAction = new PostbackAction(lineMainFunc.getSubItemName(), lineMainFunc.toString());
+		LineQueryFunction[] lineQueryFuncs = LineQueryFunction.values();
+		for (LineQueryFunction lineQueryFunc : lineQueryFuncs) {
+			PostbackAction postbackAction = new PostbackAction(lineQueryFunc.getSubItemName(), lineQueryFunc.toString());
 			postbackActions.add(postbackAction);
 		}
 		
 		ButtonsTemplate buttonsTemplate 
-			= new ButtonsTemplate(createUri(LineFunction.MAIN_MENU_IMG_PATH), LineFunction.MAIN_MENU_TITLE, LineFunction.MAIN_MENU_TITLE, postbackActions);
+			= new ButtonsTemplate(createUri(LineQueryFunction.QUERY_MENU_IMG_PATH), LineQueryFunction.QUERY_MENU_TITLE, LineQueryFunction.QUERY_MENU_TITLE, postbackActions);
 		
-		TemplateMessage message = new TemplateMessage(LineFunction.MAIN_ALT_TEXT, buttonsTemplate);
+		TemplateMessage message = new TemplateMessage(LineQueryFunction.QUERY_ALT_TEXT, buttonsTemplate);
+		reply(replyToken, message);
+	}
+
+	/**
+	 * <pre>
+	 * 建立金融功能表
+	 * </pre>
+	 * 
+	 * @param replyToken
+	 */
+	private void createFinancialFuncTemplateMsg(String replyToken) {
+		// Create financial functions menu
+		List<Action> postbackActions = new ArrayList<>();
+		
+		LineFinancialFunction[] lineFincFuncs = LineFinancialFunction.values();
+		for (LineFinancialFunction lineFincFunc : lineFincFuncs) {
+			PostbackAction postbackAction = new PostbackAction(lineFincFunc.getSubItemName(), lineFincFunc.toString());
+			postbackActions.add(postbackAction);
+		}
+		
+		ButtonsTemplate buttonsTemplate 
+			= new ButtonsTemplate(createUri(LineFinancialFunction.FINANCIAL_MENU_IMG_PATH), LineFinancialFunction.FINANCIAL_MENU_TITLE, LineFinancialFunction.FINANCIAL_MENU_TITLE, postbackActions);
+		
+		TemplateMessage message = new TemplateMessage(LineFinancialFunction.FINANCIAL_ALT_TEXT, buttonsTemplate);
 		reply(replyToken, message);
 	}
 
@@ -869,7 +921,8 @@ public class LineMsgHandler {
 	 * 
 	 * 參考: <a href="https://github.com/line/line-bot-sdk-java/blob/master/sample-spring-boot-kitchensink/src/main/java/com/example/bot/spring/KitchenSinkController.java">KitchenSinkController</a>
 	 * </pre>
-	 * 
+	 *
+	 * @param lineFunc 
 	 * @param replyToken
 	 */
 	private void createSubFuncTemplateMsg(LineFunction lineFunc, String replyToken) {
@@ -905,12 +958,19 @@ public class LineMsgHandler {
         if (!postbackData.contains("&")) {
         	String strLineFunc = postbackData;
         	
-        	LineFunction lineFunc = LineFunction.convertByName(strLineFunc);
-        	if (lineFunc != null) {
-        		// 建立對應子功能表
-        		createSubFuncTemplateMsg(lineFunc, replyToken);
-        		return;
+        	LineQueryFunction lineQryFunc = LineQueryFunction.convertByName(strLineFunc);
+        	LineFinancialFunction lineFincFunc = LineFinancialFunction.convertByName(strLineFunc);
+
+        	if (lineQryFunc != null) {
+        		// 建立查詢子功能表
+        		createSubFuncTemplateMsg(lineQryFunc, replyToken);
         	}
+        	else if (lineFincFunc != null) {
+        		// 建立金融子功能表
+        		createSubFuncTemplateMsg(lineFincFunc, replyToken);
+        	}
+
+    		return;
         }
         // 處理選擇子功能
         else if (postbackData.contains("&")) {
@@ -918,9 +978,9 @@ public class LineMsgHandler {
 			String strLineFunc = split[0];
 	        String strLineSubFunc = split[1];
 	        
-	        LineFunction lineFunc = LineFunction.convertByName(strLineFunc);
-	        if (lineFunc != null) {
-		        switch (lineFunc) {
+	        LineQueryFunction lineQryFunc = LineQueryFunction.convertByName(strLineFunc);
+	        if (lineQryFunc != null) {
+		        switch (lineQryFunc) {
 			        case PARKING_LOT_INFO:
 			        	ParkingLotSubFunction parkingLotSubFunc = ParkingLotSubFunction.convertByName(strLineSubFunc);
 			        	if (parkingLotSubFunc != null) {
@@ -941,7 +1001,12 @@ public class LineMsgHandler {
 							replyMsg = handleReceiptRewardSubFunction(receiptRewardSubFunc, userId);
 						}
 						break;
-			        	
+		        }
+	        }
+	        
+	        LineFinancialFunction lineFincFunc = LineFinancialFunction.convertByName(strLineFunc);
+	        if (lineFincFunc != null) {
+	        	switch (lineFincFunc) {
 					case CRYPTO_CURRENCY:
 						CryptoCurrencySubFunction cryptoCurrencySubFunc = CryptoCurrencySubFunction.convertByName(strLineSubFunc);
 						if (cryptoCurrencySubFunc != null) {
@@ -949,7 +1014,7 @@ public class LineMsgHandler {
 							replyMsg = handleCryptoCurrencySubFunction(cryptoCurrencySubFunc, userId, replyToken, currencyCode);
 						}
 						break;
-		        }
+	        	}
 	        }
         }
         
@@ -965,7 +1030,7 @@ public class LineMsgHandler {
 	 * @return
 	 */
 	private String handleParkingLotSubFunction(ParkingLotSubFunction linSubFunc, String userId) {
-		LineFunction lineFunc = LineFunction.PARKING_LOT_INFO;
+		LineQueryFunction lineFunc = LineQueryFunction.PARKING_LOT_INFO;
 		
 		logger.info("----> Prepare to process parking lot, SubFunction: <{}>, UserId: <{}>", linSubFunc, userId);
 		
@@ -980,7 +1045,7 @@ public class LineMsgHandler {
 				break;
 		}
 		
-		recordUserCurrentAction(userId, lineFunc, linSubFunc);
+		recordUserCurrentAction(userId, lineFunc, null, linSubFunc);
 		
 		return replyMsg;
 	}
@@ -993,7 +1058,7 @@ public class LineMsgHandler {
 	 * @return
 	 */
 	private String handleWeatherSubFunction(WeatherSubFunction lineSubFunc, String userId) {
-		LineFunction lineFunc = LineFunction.WEATHER;
+		LineQueryFunction lineFunc = LineQueryFunction.WEATHER;
 		
 		logger.info("----> Prepare to process weather, SubFunction: <{}>, UserId: <{}>", lineSubFunc, userId);
 		
@@ -1006,7 +1071,7 @@ public class LineMsgHandler {
 				break;
 		}
 		
-		recordUserCurrentAction(userId, lineFunc, lineSubFunc);
+		recordUserCurrentAction(userId, lineFunc, null, lineSubFunc);
 		
 		return replyMsg;
 	}
@@ -1033,7 +1098,7 @@ public class LineMsgHandler {
 		    		int nextIndexToProcess = 0;
 		    		CurrencyCnst[] cryptoCurrencys = CurrencyCnst.getCryptoCurrency();
 		    		while (nextIndexToProcess < cryptoCurrencys.length) {
-		    			nextIndexToProcess = createQueryCrypteCurrencyPriceTemplateMsg(nextIndexToProcess, cryptoCurrencys, replyToken);
+		    			nextIndexToProcess = createCrypteCurrencyPriceTemplateMsg(nextIndexToProcess, cryptoCurrencys, replyToken);
 		    		}
 	    		}
 	    		// 確定選擇了貨幣
@@ -1099,7 +1164,7 @@ public class LineMsgHandler {
      * @param replyToken
      * @return
      */
-    private int createQueryCrypteCurrencyPriceTemplateMsg(int nextIndexToProcess, CurrencyCnst[] cryptoCurrencys, String replyToken) {
+    private int createCrypteCurrencyPriceTemplateMsg(int nextIndexToProcess, CurrencyCnst[] cryptoCurrencys, String replyToken) {
     	final String menuTitle = "虛擬貨幣匯率查詢";
     	final String menuText = "提供下列虛擬貨幣";
     	final String altText = "虛擬貨幣匯率查詢";
@@ -1117,12 +1182,12 @@ public class LineMsgHandler {
 		for (int i = indexToProcess; i < cryptoCurrencys.length && processedCounts < LINE_TEMPLATE_MSG_MAX_ITEMS; i++, processedCounts++, indexToProcess++) {
 			CurrencyCnst cryptoCurrency = cryptoCurrencys[i];
 			PostbackAction postbackAction 
-				= new PostbackAction(cryptoCurrency.toString(), LineFunction.CRYPTO_CURRENCY + "&" + CryptoCurrencySubFunction.QUERY_CRYPTO_CURRENCY_PRICE + "&" + cryptoCurrency.toString());
+				= new PostbackAction(cryptoCurrency.toString(), LineFinancialFunction.CRYPTO_CURRENCY + "&" + CryptoCurrencySubFunction.QUERY_CRYPTO_CURRENCY_PRICE + "&" + cryptoCurrency.toString());
 			postbackActions.add(postbackAction);
 		}
 		
 		ButtonsTemplate buttonsTemplate 
-			= new ButtonsTemplate(createUri(LineFunction.MAIN_MENU_IMG_PATH), menuTitle, menuText, postbackActions);
+			= new ButtonsTemplate(createUri(LineQueryFunction.QUERY_MENU_IMG_PATH), menuTitle, menuText, postbackActions);
 	
 		TemplateMessage message = new TemplateMessage(altText, buttonsTemplate);
 		reply(replyToken, message);
@@ -1156,19 +1221,21 @@ public class LineMsgHandler {
 	}
 
 	/**
-	 * 紀錄目前使用者在進行的功能 
+	 * 紀錄目前使用者在進行的查詢功能 
 	 * 
 	 * @param userId
-	 * @param lineFunc
+	 * @param lineQryFunc
+	 * @param lineFincFunc
 	 * @param subFunc
 	 */
-	private void recordUserCurrentAction(String userId, LineFunction lineFunc, LineSubFunction lineSubFunc) {
+	private void recordUserCurrentAction(String userId, LineQueryFunction lineQryFunc, LineFinancialFunction lineFincFunc, LineSubFunction lineSubFunc) {
 		CurrentFunction currentFunc = userCurrentFunc.get(userId);
 		if (currentFunc == null) {
-			currentFunc = new CurrentFunction(lineFunc, lineSubFunc);
+			currentFunc = new CurrentFunction(lineQryFunc, lineFincFunc, lineSubFunc);
 		}
 		else {
-			currentFunc.setLineFunc(lineFunc);
+			currentFunc.setLineQueryFunc(lineQryFunc);
+			currentFunc.setLineFincFunc(lineFincFunc);
 			currentFunc.setLineSubFunc(lineSubFunc);
 		}
 		userCurrentFunc.put(userId, currentFunc);
@@ -1194,16 +1261,16 @@ public class LineMsgHandler {
 	 * 
 	 * @param userId 
 	 * @param replyToken 
-	 * @param lineFunc
+	 * @param lineQryFunc
 	 * @param lineSubFunc
 	 * @param inputMsg 
 	 */
-    private void processUserCurrentFunction(String userId, String replyToken, LineFunction lineFunc, LineSubFunction lineSubFunc, String inputMsg) {
-		logger.info("----> Prepare to process userId: <{}>, LineFunction: <{}>, LineSubFunction: <{}>, input: <{}>", userId, lineFunc, lineSubFunc, inputMsg);
+    private void processUserCurrentQryFunction(String userId, String replyToken, LineQueryFunction lineQryFunc, LineSubFunction lineSubFunc, String inputMsg) {
+		logger.info("----> Prepare to process userId: <{}>, LineQueryFunction: <{}>, LineSubFunction: <{}>, input: <{}>", userId, lineQryFunc, lineSubFunc, inputMsg);
 		
 		String replyMsg = ERROR_MSG;
 		
-		switch (lineFunc) {
+		switch (lineQryFunc) {
 			case PARKING_LOT_INFO:
 				ParkingLotSubFunction parkingLotSubFunc = (ParkingLotSubFunction) lineSubFunc;
 				switch (parkingLotSubFunc) {
@@ -1228,10 +1295,6 @@ public class LineMsgHandler {
 						replyMsg = cwbService.getOneWeekWeatherPrediction(inputMsg);
 						break;
 				}
-				break;
-
-			case CRYPTO_CURRENCY:
-				// TODO other sub func
 				break;
 
 			default:

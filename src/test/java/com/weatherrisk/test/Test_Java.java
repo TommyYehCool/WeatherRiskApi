@@ -23,7 +23,7 @@ import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.template.ButtonsTemplate;
 import com.weatherrisk.api.cnst.CurrencyCnst;
 import com.weatherrisk.api.cnst.UBikeCity;
-import com.weatherrisk.api.cnst.line.LineFunction;
+import com.weatherrisk.api.cnst.line.LineQueryFunction;
 
 public class Test_Java {
 	
@@ -178,7 +178,7 @@ public class Test_Java {
 	@Test
 	@Ignore
 	public void test_13_testEnum() {
-		LineFunction lineFunction = LineFunction.CRYPTO_CURRENCY;
+		LineQueryFunction lineFunction = LineQueryFunction.CRYPTO_CURRENCY;
 		System.out.println(lineFunction.toString());
 	}
 	
