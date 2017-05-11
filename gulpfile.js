@@ -5,9 +5,9 @@ var sass = require('gulp-sass');
 gulp.task('sass', function() {
     gulp.src('./public/assets/scss/**/*.scss')
         .pipe(sass({ outputStyle: 'expanded' }))
-        .pipe(gulp.dest('./assets/css/'))
+        .pipe(gulp.dest('./public/assets/css/'))
 });
 
 gulp.task('default', ['sass'], function() {
-    gulp.watch('./bublic/assets/scss/**/*.scss', ['sass']);
+    gulp.watch('./public/assets/scss/**/*.scss', ['sass']);
 });
