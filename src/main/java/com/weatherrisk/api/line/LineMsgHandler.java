@@ -672,16 +672,6 @@ public class LineMsgHandler {
     		ambassadorMovieService.refreshMovieTimes();
     		queryResult = "更新成功";
     	}
-    	// 更新發票
-    	else if (inputMsg.equals("更新發票")) {
-    		receiptRewardService.getNewestReceiptRewards();
-    		queryResult = "更新成功";
-    	}
-    	// 發票開獎
-    	else if (inputMsg.equals("發票開獎")) {
-    		queryResult = receiptRewardService.getRecentlyRewards();
-    	}
-    	
     	// 其他判斷
     	else {
     		// 若可轉換為數字
@@ -693,6 +683,7 @@ public class LineMsgHandler {
     		}
     		catch (Exception e) {}
     	}
+
     	// ----- 回傳查詢結果 -----
     	if (queryResult != null) {
     		if (queryResult.length() > LINE_MAXIMUM_REPLY_TEXT_MSG_LENGTH) {
