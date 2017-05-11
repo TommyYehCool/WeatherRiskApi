@@ -285,8 +285,16 @@ public class LineMsgHandler {
     	}
     	
     	// 子功能表
-    	LineQueryFunction lineFunc = LineQueryFunction.convertByKeyword(inputMsg);
-    	if (lineFunc != null) {
+    	LineQueryFunction lineQryFunc = LineQueryFunction.convertByKeyword(inputMsg);
+    	LineFinancialFunction lineFincFunc = LineFinancialFunction.convertByKeyword(inputMsg);
+    	if (lineQryFunc != null || lineFincFunc != null) {
+    		LineFunction lineFunc = null;
+    		if (lineQryFunc != null) {
+    			lineFunc = lineQryFunc;
+    		}
+    		else if (lineFincFunc != null) {
+    			lineFunc = lineFincFunc;
+    		}
     		createSubFuncTemplateMsg(lineFunc, replyToken);
     		queryResult = "";
     	}
@@ -296,6 +304,9 @@ public class LineMsgHandler {
     	if (currentFunction != null) {
     		if (currentFunction.getLineQueryFunc() != null) {
     			processUserCurrentQryFunction(userId, replyToken, currentFunction.getLineQueryFunc(), currentFunction.getLineSubFunc(), inputMsg);
+    		}
+    		else if (currentFunction.getLineFincFunc() != null) {
+    			processUserCurrentFincFunction(userId, replyToken, currentFunction.getLineFincFunc(), currentFunction.getLineSubFunc(), inputMsg);
     		}
     		queryResult = "";
     	}
@@ -958,17 +969,20 @@ public class LineMsgHandler {
         if (!postbackData.contains("&")) {
         	String strLineFunc = postbackData;
         	
+        	LineFunction lineFunc = null;
+        	
         	LineQueryFunction lineQryFunc = LineQueryFunction.convertByName(strLineFunc);
         	LineFinancialFunction lineFincFunc = LineFinancialFunction.convertByName(strLineFunc);
 
         	if (lineQryFunc != null) {
-        		// 建立查詢子功能表
-        		createSubFuncTemplateMsg(lineQryFunc, replyToken);
+        		lineFunc = lineQryFunc;
         	}
         	else if (lineFincFunc != null) {
-        		// 建立金融子功能表
-        		createSubFuncTemplateMsg(lineFincFunc, replyToken);
+        		lineFunc = lineFincFunc;
         	}
+
+        	// 建立子功能表
+        	createSubFuncTemplateMsg(lineFunc, replyToken);
 
     		return;
         }
@@ -979,6 +993,8 @@ public class LineMsgHandler {
 	        String strLineSubFunc = split[1];
 	        
 	        LineQueryFunction lineQryFunc = LineQueryFunction.convertByName(strLineFunc);
+	        LineFinancialFunction lineFincFunc = LineFinancialFunction.convertByName(strLineFunc);
+
 	        if (lineQryFunc != null) {
 		        switch (lineQryFunc) {
 			        case PARKING_LOT_INFO:
@@ -1003,9 +1019,7 @@ public class LineMsgHandler {
 						break;
 		        }
 	        }
-	        
-	        LineFinancialFunction lineFincFunc = LineFinancialFunction.convertByName(strLineFunc);
-	        if (lineFincFunc != null) {
+	        else if (lineFincFunc != null) {
 	        	switch (lineFincFunc) {
 					case CRYPTO_CURRENCY:
 						CryptoCurrencySubFunction cryptoCurrencySubFunc = CryptoCurrencySubFunction.convertByName(strLineSubFunc);
@@ -1257,7 +1271,7 @@ public class LineMsgHandler {
 	}
  
 	/**
-	 * 處理目前使用者在進行的子功能
+	 * 處理目前使用者在進行的查詢子功能
 	 * 
 	 * @param userId 
 	 * @param replyToken 
@@ -1304,6 +1318,20 @@ public class LineMsgHandler {
 		removeUserCurrentFunction(userId);
 		
 		reply(replyToken, new TextMessage(replyMsg));
+	}
+    
+	/**
+	 * 處理目前使用者在進行的金融子功能
+	 * 
+	 * @param userId 
+	 * @param replyToken 
+	 * @param lineQryFunc
+	 * @param lineSubFunc
+	 * @param inputMsg 
+	 */
+    private void processUserCurrentFincFunction(String userId, String replyToken, LineFinancialFunction lineFincFunc, LineSubFunction lineSubFunc, String inputMsg) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/**
