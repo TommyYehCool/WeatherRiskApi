@@ -35,8 +35,8 @@ public enum LineQueryFunction implements LineFunction {
 	
 	public static final String QUERY_MENU_IMG_PATH = "/buttons/bitcoin.jpeg";
 	public static final String QUERY_MENU_TITLE = "查詢功能";
-	public static final String QUERY_MENU_TEXT = "我提供下列查詢功能";
-	public static final String QUERY_ALT_TEXT = "查詢功能";
+	public static final String QUERY_MENU_TEXT = "查詢功能訊息";
+	public static final String QUERY_ALT_TEXT = "提供生活常用查詢功能";
 
 	private List<String> keywords;
 	private String subItemName;

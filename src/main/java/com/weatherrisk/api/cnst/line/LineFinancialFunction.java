@@ -15,9 +15,9 @@ public enum LineFinancialFunction implements LineFunction {
 	);
 	
 	public static final String FINANCIAL_MENU_IMG_PATH = "/buttons/bitcoin.jpeg";
-	public static final String FINANCIAL_MENU_TITLE = "查詢功能";
-	public static final String FINANCIAL_MENU_TEXT = "我提供下列查詢功能";
-	public static final String FINANCIAL_ALT_TEXT = "查詢功能";
+	public static final String FINANCIAL_MENU_TITLE = "金融功能";
+	public static final String FINANCIAL_MENU_TEXT = "金融功能訊息";
+	public static final String FINANCIAL_ALT_TEXT = "常用金融功能";
 	
 	private List<String> keywords;
 	private String subItemName;

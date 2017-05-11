@@ -35,14 +35,12 @@ public class Test_Line_MessageHandler {
 	private CurrencyService currencyService;
 
 	@Test
-	@Ignore
 	public void test_01_deleteTestingData() {
 		deleteTestingData();
 		System.out.println("test_01_deleteTestingData done");
 	}
 	
 	@Test
-	@Ignore
 	public void test_02_sendAddBuyCurrency() {
 		sendAddBuyCurrency();
 	}
@@ -56,6 +54,7 @@ public class Test_Line_MessageHandler {
 	
 	// 測試 templateMsg
 	@Test
+	@Ignore
 	public void test_04_testTemplateMsg() {
 		String text = "coin";
 		sendLineMsg(text);
@@ -65,6 +64,7 @@ public class Test_Line_MessageHandler {
 		currencyService.deleteCryptoCurrencyBuySellRecord(userId, "STR", "2017/05/08-08:07:30", BuySell.BUY);
 		currencyService.deleteCryptoCurrencyBuySellRecord(userId, "STR", "2017/05/08-08:07:31", BuySell.BUY);
 		currencyService.deleteCryptoCurrencyBuySellRecord(userId, "STR", "2017/05/09-04:08:46", BuySell.BUY);
+		currencyService.deleteCryptoCurrencyBuySellRecord(userId, "STR", "2017/05/09-23:33:29", BuySell.BUY);
 		currencyService.deleteTreasuryCryptoCurrency(userId, "STR");
 	}
 
@@ -79,9 +79,11 @@ public class Test_Line_MessageHandler {
 
 		text = "2017/05/09-04:08:46 買貨幣 STR 0.00001900 1480";
 		sendLineMsg(text);
+		
+		text = "2017/05/09-23:33:29 買貨幣 STR 0.00001800 17";
+		sendLineMsg(text);
 	}
 
-	
 	private void sendLineMsg(String text) {
 		Source src = getSource();
 		String msgId = "xxxxxxxxxxxxx";

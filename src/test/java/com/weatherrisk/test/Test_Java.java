@@ -163,22 +163,22 @@ public class Test_Java {
 	}
 	
 	@Test
-	@Ignore
 	public void test_12_testBigDecimal() {
-		BigDecimal amount = new BigDecimal(0.78812);
-		System.out.println(amount);
+		BigDecimal amount = new BigDecimal(0.7124259);
+		System.out.println(amount.doubleValue());
 		
-		BigDecimal totalVolumes = new BigDecimal(21480);
-		System.out.println(totalVolumes);
+		BigDecimal totalVolumes = new BigDecimal(19467.7545);
+		System.out.println(totalVolumes.doubleValue());
 		
-		BigDecimal avgPrice = amount.divide(totalVolumes, 8, RoundingMode.UP);
-		System.out.println(avgPrice);
-	}
+		BigDecimal avgPrice = amount.divide(totalVolumes, 8, RoundingMode.CEILING);
+		
+		DecimalFormat decFormat = new DecimalFormat("0.00000000");
+		System.out.println(decFormat.format(avgPrice.doubleValue()));	}
 	
 	@Test
 	@Ignore
 	public void test_13_testEnum() {
-		LineQueryFunction lineFunction = LineQueryFunction.CRYPTO_CURRENCY;
+		LineQueryFunction lineFunction = LineQueryFunction.PARKING_LOT_INFO;
 		System.out.println(lineFunction.toString());
 	}
 	

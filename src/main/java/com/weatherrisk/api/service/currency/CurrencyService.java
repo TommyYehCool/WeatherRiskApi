@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
@@ -42,6 +41,8 @@ import com.weatherrisk.api.model.currency.TreasuryCryptoCurrencyRepository;
 public class CurrencyService {
 	
 	private Logger logger = LoggerFactory.getLogger(CurrencyService.class);
+	
+	private final DecimalFormat cryptoCurrencyDecFormat = new DecimalFormat("0.00000000");
 	
 	@Autowired
 	private CryptoCurrencyBSRecordRepository cryptoCurrencyBSRecordRepo;
@@ -489,8 +490,6 @@ public class CurrencyService {
 	}
 
 	public String queryTreasuryCryptoCurrency(String userId) {
-		DecimalFormat decFormat = new DecimalFormat("###0.00000000");
-		
 		List<TreasuryCryptoCurrency> treasuryCryptoCurrencys = treasuryCryptoCurrencyRepo.findByUserId(userId);
 		if (treasuryCryptoCurrencys == null || treasuryCryptoCurrencys.isEmpty()) {
 			return "您無虛擬貨幣庫存紀錄";
@@ -506,7 +505,7 @@ public class CurrencyService {
 			double amount = treasuryCryptoCurrency.getAmount();
 			
 			buffer.append("[").append(currencyCode.toUpperCase()).append("]\n");
-			buffer.append("均價(BTC): ").append(decFormat.format(avgPrice)).append("\n");
+			buffer.append("均價(BTC): ").append(cryptoCurrencyDecFormat.format(avgPrice)).append("\n");
 			buffer.append("總數量: ").append(totalVolumes).append("\n");
 			buffer.append("總金額(BTC): ").append(amount);
 			
@@ -524,13 +523,13 @@ public class CurrencyService {
 			}
 			
 			if (lastPrice != null) {
-				buffer.append("\n目前成交價(BTC): ").append(decFormat.format(lastPrice.doubleValue())).append("\n");
+				buffer.append("\n目前成交價(BTC): ").append(cryptoCurrencyDecFormat.format(lastPrice)).append("\n");
 				
-				BigDecimal currentSellMatchAmount = lastPrice.multiply(new BigDecimal(totalVolumes)).setScale(8, RoundingMode.DOWN);
-				buffer.append("賣出可得金額(BTC): ").append(currentSellMatchAmount.doubleValue()).append("\n");
+				BigDecimal currentSellMatchAmount = getCurrentSellMatcAmount(lastPrice, totalVolumes);
+				buffer.append("賣出可得金額(BTC): ").append(cryptoCurrencyDecFormat.format(currentSellMatchAmount)).append("\n");
 				
-				BigDecimal btcWinLoseAmount = currentSellMatchAmount.subtract(new BigDecimal(amount));
-				buffer.append("損益試算(BTC): ").append(decFormat.format(btcWinLoseAmount.doubleValue()));
+				BigDecimal btcWinLoseAmount = getBtcWinLoseAmount(currentSellMatchAmount, amount);
+				buffer.append("損益試算(BTC): ").append(cryptoCurrencyDecFormat.format(btcWinLoseAmount));
 				
 				BigDecimal btcUsdRate = null;
 				try {
@@ -562,6 +561,18 @@ public class CurrencyService {
 		}
 		
 		return buffer.toString();
+	}
+	
+	private BigDecimal getCurrentSellMatcAmount(BigDecimal lastPrice, double totalVolumes) {
+		BigDecimal bTotalVoumes = new BigDecimal(String.valueOf(totalVolumes));
+		BigDecimal bCurrentSellMatchAmount = lastPrice.multiply(bTotalVoumes);
+		return bCurrentSellMatchAmount;
+	}
+
+	private BigDecimal getBtcWinLoseAmount(BigDecimal currentSellMatchAmount, double amount) {
+		BigDecimal bAmount = new BigDecimal(String.valueOf(amount));
+		BigDecimal bBtcWinLostAmount = currentSellMatchAmount.subtract(bAmount);
+		return bBtcWinLostAmount;
 	}
 	
 	private CurrencyPair getCurrencyPairByCurrencyCode(String currencyCode) {

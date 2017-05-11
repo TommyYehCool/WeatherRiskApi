@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -271,7 +270,6 @@ public class Test_GetDataService {
 	}
 	
 	@Test
-	@Ignore
 	public void test_30_StockService_addBuyStock() {
 		String result = stockService.addBuyStock("Tommy", "2017/3/24", "3088", 56.8, 2000);
 		System.out.println(result);
