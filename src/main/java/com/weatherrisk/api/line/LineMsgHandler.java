@@ -1330,8 +1330,19 @@ public class LineMsgHandler {
 	 * @param inputMsg 
 	 */
     private void processUserCurrentFincFunction(String userId, String replyToken, LineFinancialFunction lineFincFunc, LineSubFunction lineSubFunc, String inputMsg) {
-		// TODO Auto-generated method stub
+    	logger.info("----> Prepare to process userId: <{}>, LineFinancialFunction: <{}>, LineSubFunction: <{}>, input: <{}>", userId, lineFincFunc, lineSubFunc, inputMsg);
 		
+		String replyMsg = ERROR_MSG;
+		
+		switch (lineFincFunc) {
+			case CRYPTO_CURRENCY:
+				// TODO other sub func
+				break;
+		}
+		
+		removeUserCurrentFunction(userId);
+		
+		reply(replyToken, new TextMessage(replyMsg));
 	}
 
 	/**
