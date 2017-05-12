@@ -39,14 +39,15 @@ import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import com.weatherrisk.api.cnst.currency.CurrencyCnst;
-import com.weatherrisk.api.cnst.line.CryptoCurrencySubFunction;
-import com.weatherrisk.api.cnst.line.LineFinancialFunction;
-import com.weatherrisk.api.cnst.line.LineFunction;
-import com.weatherrisk.api.cnst.line.LineQueryFunction;
-import com.weatherrisk.api.cnst.line.LineSubFunction;
-import com.weatherrisk.api.cnst.line.ParkingLotSubFunction;
-import com.weatherrisk.api.cnst.line.ReceiptRewardSubFunction;
-import com.weatherrisk.api.cnst.line.WeatherSubFunction;
+import com.weatherrisk.api.cnst.line.main.LineFinancialFunction;
+import com.weatherrisk.api.cnst.line.main.LineFunction;
+import com.weatherrisk.api.cnst.line.main.LineQueryFunction;
+import com.weatherrisk.api.cnst.line.sub.LineSubFunction;
+import com.weatherrisk.api.cnst.line.sub.financial.CryptoCurrencySubFunction;
+import com.weatherrisk.api.cnst.line.sub.financial.StockSubFunction;
+import com.weatherrisk.api.cnst.line.sub.query.ParkingLotSubFunction;
+import com.weatherrisk.api.cnst.line.sub.query.ReceiptRewardSubFunction;
+import com.weatherrisk.api.cnst.line.sub.query.WeatherSubFunction;
 import com.weatherrisk.api.cnst.movie.AmbassadorTheater;
 import com.weatherrisk.api.cnst.movie.MiramarTheater;
 import com.weatherrisk.api.cnst.movie.ShowTimeTheater;
@@ -220,8 +221,6 @@ public class LineMsgHandler {
     	buffer.append("查詢某一部電影今日時刻表 => 格式: 戲院名稱 + 關鍵字, Ex: 信義威秀羅根").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[查詢股票]").append("\n");
-    	buffer.append("更新股票資料檔 => Ex: 更新股票").append("\n");
-    	buffer.append("查詢股票目前成交價 => Ex: 股票艾訊, 股票3088").append("\n");
     	buffer.append("註冊股票到價通知 => Ex: 註冊股票 3088 40 50").append("\n");
     	buffer.append("取消股票到價通知 => Ex: 取消股票 3088").append("\n");
     	buffer.append("查詢註冊股票到價通知資訊 => Ex: 查詢股票註冊").append("\n");
@@ -887,7 +886,7 @@ public class LineMsgHandler {
 		}
 		
 		ButtonsTemplate buttonsTemplate 
-			= new ButtonsTemplate(createUri(LineQueryFunction.QUERY_MENU_IMG_PATH), LineQueryFunction.QUERY_MENU_TITLE, LineQueryFunction.QUERY_MENU_TITLE, postbackActions);
+			= new ButtonsTemplate(createUri(LineQueryFunction.QUERY_MENU_IMG_PATH), LineQueryFunction.QUERY_MENU_TITLE, LineQueryFunction.QUERY_MENU_TEXT, postbackActions);
 		
 		TemplateMessage message = new TemplateMessage(LineQueryFunction.QUERY_ALT_TEXT, buttonsTemplate);
 		reply(replyToken, message);
@@ -911,7 +910,7 @@ public class LineMsgHandler {
 		}
 		
 		ButtonsTemplate buttonsTemplate 
-			= new ButtonsTemplate(createUri(LineFinancialFunction.FINANCIAL_MENU_IMG_PATH), LineFinancialFunction.FINANCIAL_MENU_TITLE, LineFinancialFunction.FINANCIAL_MENU_TITLE, postbackActions);
+			= new ButtonsTemplate(createUri(LineFinancialFunction.FINANCIAL_MENU_IMG_PATH), LineFinancialFunction.FINANCIAL_MENU_TITLE, LineFinancialFunction.FINANCIAL_MENU_TEXT, postbackActions);
 		
 		TemplateMessage message = new TemplateMessage(LineFinancialFunction.FINANCIAL_ALT_TEXT, buttonsTemplate);
 		reply(replyToken, message);
@@ -1012,6 +1011,14 @@ public class LineMsgHandler {
 	        }
 	        else if (lineFincFunc != null) {
 	        	switch (lineFincFunc) {
+		        	case STOCK:
+		        		StockSubFunction stockSubFunc = StockSubFunction.convertByName(strLineSubFunc);
+		        		if (stockSubFunc != null) {
+		        			// TODO 看股票資訊怎麼抓出
+		        			replyMsg = handleStockSubFunction(stockSubFunc, userId, replyToken);
+		        		}
+		        		break;
+
 					case CRYPTO_CURRENCY:
 						CryptoCurrencySubFunction cryptoCurrencySubFunc = CryptoCurrencySubFunction.convertByName(strLineSubFunc);
 						if (cryptoCurrencySubFunc != null) {
@@ -1200,6 +1207,46 @@ public class LineMsgHandler {
 		return indexToProcess;
     }
 
+    /**
+	 * 處理股票子功能
+	 * 
+	 * @param lineSubFunc
+	 * @param userId
+	 * @param replyToken
+	 * 
+	 * @return
+	 */
+	private String handleStockSubFunction(StockSubFunction lineSubFunc, String userId, String replyToken) {
+		logger.info("----> Prepare to process stock, SubFunction: <{}>, UserId: <{}>, Data: <{}>", lineSubFunc, userId, null);
+		
+		String replyMsg = "";
+		switch (lineSubFunc) {
+			case UPDATE_STOCK_INFOS:
+				stockService.refreshStockInfo();
+				replyMsg = "更新成功";
+				break;
+
+			case QUERY_MATCH_PRICE:
+				// TODO 這比較麻煩待會處理
+				break;
+
+			case HIT_PRICE_INFO:
+				boolean hasRegistered = registerService.hasRegisteredStock(userId);
+	    		if (hasRegistered) {
+	    			replyMsg = registerService.getStockPricesReachedInfos(userId);
+	    		}
+	    		else {
+	    			replyMsg = "您未註冊任何到價通知";
+	    		}
+				break;
+
+			case QUERY_STOCK_TREASURY:
+				replyMsg = stockService.queryTreasuryStock(userId);
+				break;
+		}
+		return replyMsg;
+	}
+
 	/**
 	 * 處理發票子功能
 	 * 
@@ -1326,6 +1373,10 @@ public class LineMsgHandler {
 		String replyMsg = ERROR_MSG;
 		
 		switch (lineFincFunc) {
+			case STOCK:
+				// TODO other sub func
+				break;
+
 			case CRYPTO_CURRENCY:
 				// TODO other sub func
 				break;

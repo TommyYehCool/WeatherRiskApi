@@ -22,7 +22,7 @@ import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.template.ButtonsTemplate;
 import com.weatherrisk.api.cnst.currency.CurrencyCnst;
-import com.weatherrisk.api.cnst.line.LineQueryFunction;
+import com.weatherrisk.api.cnst.line.main.LineQueryFunction;
 import com.weatherrisk.api.cnst.ubike.UBikeCity;
 
 public class Test_Java {

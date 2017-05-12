@@ -1,4 +1,6 @@
-package com.weatherrisk.api.cnst.line;
+package com.weatherrisk.api.cnst.line.sub.query;
+
+import com.weatherrisk.api.cnst.line.sub.LineSubFunction;
 
 public enum WeatherSubFunction implements LineSubFunction {
 	LITTLE_HELPER("天氣小幫手"),

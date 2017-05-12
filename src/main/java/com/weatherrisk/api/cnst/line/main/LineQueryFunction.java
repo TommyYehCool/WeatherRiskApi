@@ -1,7 +1,12 @@
-package com.weatherrisk.api.cnst.line;
+package com.weatherrisk.api.cnst.line.main;
 
 import java.util.Arrays;
 import java.util.List;
+
+import com.weatherrisk.api.cnst.line.sub.LineSubFunction;
+import com.weatherrisk.api.cnst.line.sub.query.ParkingLotSubFunction;
+import com.weatherrisk.api.cnst.line.sub.query.ReceiptRewardSubFunction;
+import com.weatherrisk.api.cnst.line.sub.query.WeatherSubFunction;
 
 public enum LineQueryFunction implements LineFunction {
 	PARKING_LOT_INFO(
@@ -35,7 +40,7 @@ public enum LineQueryFunction implements LineFunction {
 	
 	public static final String QUERY_MENU_IMG_PATH = "/buttons/bitcoin.jpeg";
 	public static final String QUERY_MENU_TITLE = "查詢功能";
-	public static final String QUERY_MENU_TEXT = "查詢功能訊息";
+	public static final String QUERY_MENU_TEXT = "提供下列功能供使用";
 	public static final String QUERY_ALT_TEXT = "提供生活常用查詢功能";
 
 	private List<String> keywords;

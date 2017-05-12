@@ -1,4 +1,4 @@
-package com.weatherrisk.api.cnst.line;
+package com.weatherrisk.api.cnst.line.sub;
 
 public interface LineSubFunction {
 	

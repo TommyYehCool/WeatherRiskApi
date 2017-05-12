@@ -1,9 +1,23 @@
-package com.weatherrisk.api.cnst.line;
+package com.weatherrisk.api.cnst.line.main;
 
 import java.util.Arrays;
 import java.util.List;
 
+import com.weatherrisk.api.cnst.line.sub.LineSubFunction;
+import com.weatherrisk.api.cnst.line.sub.financial.CryptoCurrencySubFunction;
+import com.weatherrisk.api.cnst.line.sub.financial.StockSubFunction;
+
 public enum LineFinancialFunction implements LineFunction {
+	STOCK(
+		Arrays.asList("stock", "股票"),
+		"股票",
+		"股票",
+		"提供下列功能",
+		"股票",
+		"/buttons/bitcoin.jpeg",
+		StockSubFunction.values()
+	),
+
 	CRYPTO_CURRENCY(
 		Arrays.asList("coin", "虛擬貨幣"),
 		"虛擬貨幣",
@@ -16,7 +30,7 @@ public enum LineFinancialFunction implements LineFunction {
 	
 	public static final String FINANCIAL_MENU_IMG_PATH = "/buttons/bitcoin.jpeg";
 	public static final String FINANCIAL_MENU_TITLE = "金融功能";
-	public static final String FINANCIAL_MENU_TEXT = "金融功能訊息";
+	public static final String FINANCIAL_MENU_TEXT = "提供下列供使用";
 	public static final String FINANCIAL_ALT_TEXT = "常用金融功能";
 	
 	private List<String> keywords;

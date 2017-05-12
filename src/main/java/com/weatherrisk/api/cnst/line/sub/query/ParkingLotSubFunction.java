@@ -1,4 +1,6 @@
-package com.weatherrisk.api.cnst.line;
+package com.weatherrisk.api.cnst.line.sub.query;
+
+import com.weatherrisk.api.cnst.line.sub.LineSubFunction;
 
 public enum ParkingLotSubFunction implements LineSubFunction {
 	FIND_PARKING_LOT_BY_FUZZY_SEARCH("模糊搜尋"),

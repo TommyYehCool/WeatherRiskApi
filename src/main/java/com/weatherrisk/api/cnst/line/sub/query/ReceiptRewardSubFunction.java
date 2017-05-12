@@ -1,4 +1,6 @@
-package com.weatherrisk.api.cnst.line;
+package com.weatherrisk.api.cnst.line.sub.query;
+
+import com.weatherrisk.api.cnst.line.sub.LineSubFunction;
 
 public enum ReceiptRewardSubFunction implements LineSubFunction {
 	UPDATE_NUMBERS("抓取最新開獎號碼"),
