@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weatherrisk.api.cnst.movie.ShowTimeTheater;
+import com.weatherrisk.api.cnst.movie.theaters.ShowTimeTheater;
 import com.weatherrisk.api.concurrent.CountDownLatchHandler;
 import com.weatherrisk.api.config.movie.ShowTimeMovieConfig;
 import com.weatherrisk.api.model.movie.MovieDateTime;

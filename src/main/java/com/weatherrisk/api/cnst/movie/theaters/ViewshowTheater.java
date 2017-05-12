@@ -1,6 +1,8 @@
-package com.weatherrisk.api.cnst.movie;
+package com.weatherrisk.api.cnst.movie.theaters;
 
-public enum ViewshowTheater {
+import com.weatherrisk.api.cnst.movie.MovieTheater;
+
+public enum ViewshowTheater implements MovieTheater {
 	XINYI("信義威秀", "TP"),
 	
 	QSQUARE("京站威秀", "QS"),
@@ -17,6 +19,7 @@ public enum ViewshowTheater {
 		this.cid = cid;
 	}
 	
+	@Override
 	public String getChineseName() {
 		return this.chineseName;
 	}
@@ -42,4 +45,23 @@ public enum ViewshowTheater {
 		}
 		return null;
 	}
+	
+	public static ViewshowTheater convertByChineseName(String inputMsg) {
+		for (ViewshowTheater theater : ViewshowTheater.values()) {
+			if (inputMsg.equals(theater.getChineseName())) {
+				return theater;
+			}
+		}
+		return null;
+	}
+	
+	public static ViewshowTheater convertByName(String inputMsg) {
+		for (ViewshowTheater theater : ViewshowTheater.values()) {
+			if (theater.toString().equals(theater.getChineseName())) {
+				return theater;
+			}
+		}
+		return null;
+	}
+	
 }

@@ -1,6 +1,8 @@
-package com.weatherrisk.api.cnst.movie;
+package com.weatherrisk.api.cnst.movie.theaters;
 
-public enum MiramarTheater {
+import com.weatherrisk.api.cnst.movie.MovieTheater;
+
+public enum MiramarTheater implements MovieTheater {
 	TACHIH("大直美麗華", "1");
 	
 	private String chineseName;
@@ -11,6 +13,7 @@ public enum MiramarTheater {
 		this.place = place;
 	}
 
+	@Override
 	public String getChineseName() {
 		return chineseName;
 	}
@@ -31,6 +34,24 @@ public enum MiramarTheater {
 	public static MiramarTheater convertByInputMsg(String inputMsg) {
 		for (MiramarTheater theater : MiramarTheater.values()) {
 			if (inputMsg.startsWith(theater.getChineseName())) {
+				return theater;
+			}
+		}
+		return null;
+	}
+	
+	public static MiramarTheater convertByChineseName(String inputMsg) {
+		for (MiramarTheater theater : MiramarTheater.values()) {
+			if (inputMsg.equals(theater.getChineseName())) {
+				return theater;
+			}
+		}
+		return null;
+	}
+	
+	public static MiramarTheater convertByName(String inputMsg) {
+		for (MiramarTheater theater : MiramarTheater.values()) {
+			if (theater.toString().equals(theater.getChineseName())) {
 				return theater;
 			}
 		}

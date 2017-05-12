@@ -1,6 +1,8 @@
-package com.weatherrisk.api.cnst.movie;
+package com.weatherrisk.api.cnst.movie.theaters;
 
-public enum ShowTimeTheater {
+import com.weatherrisk.api.cnst.movie.MovieTheater;
+
+public enum ShowTimeTheater implements MovieTheater {
 	STARSTAR("欣欣秀泰", "2"),
 
 	TODAY("今日秀泰", "4"),
@@ -37,6 +39,24 @@ public enum ShowTimeTheater {
 	public static ShowTimeTheater convertByInputMsg(String inputMsg) {
 		for (ShowTimeTheater theater : ShowTimeTheater.values()) {
 			if (inputMsg.startsWith(theater.getChineseName())) {
+				return theater;
+			}
+		}
+		return null;
+	}
+	
+	public static ShowTimeTheater convertByChineseName(String inputMsg) {
+		for (ShowTimeTheater theater : ShowTimeTheater.values()) {
+			if (inputMsg.equals(theater.getChineseName())) {
+				return theater;
+			}
+		}
+		return null;
+	}
+	
+	public static ShowTimeTheater convertByName(String inputMsg) {
+		for (ShowTimeTheater theater : ShowTimeTheater.values()) {
+			if (theater.toString().equals(theater.getChineseName())) {
 				return theater;
 			}
 		}

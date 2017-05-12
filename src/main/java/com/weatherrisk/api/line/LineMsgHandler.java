@@ -45,14 +45,16 @@ import com.weatherrisk.api.cnst.line.main.LineQueryFunction;
 import com.weatherrisk.api.cnst.line.sub.LineSubFunction;
 import com.weatherrisk.api.cnst.line.sub.financial.CryptoCurrencySubFunction;
 import com.weatherrisk.api.cnst.line.sub.financial.StockSubFunction;
+import com.weatherrisk.api.cnst.line.sub.query.MovieSubFunction;
 import com.weatherrisk.api.cnst.line.sub.query.ParkingLotSubFunction;
 import com.weatherrisk.api.cnst.line.sub.query.ReceiptRewardSubFunction;
 import com.weatherrisk.api.cnst.line.sub.query.WeatherSubFunction;
-import com.weatherrisk.api.cnst.movie.AmbassadorTheater;
-import com.weatherrisk.api.cnst.movie.MiramarTheater;
-import com.weatherrisk.api.cnst.movie.ShowTimeTheater;
-import com.weatherrisk.api.cnst.movie.ViewshowTheater;
-import com.weatherrisk.api.cnst.movie.WovieTheater;
+import com.weatherrisk.api.cnst.movie.SupprotedTheaterCompany;
+import com.weatherrisk.api.cnst.movie.theaters.AmbassadorTheater;
+import com.weatherrisk.api.cnst.movie.theaters.MiramarTheater;
+import com.weatherrisk.api.cnst.movie.theaters.ShowTimeTheater;
+import com.weatherrisk.api.cnst.movie.theaters.ViewshowTheater;
+import com.weatherrisk.api.cnst.movie.theaters.WovieTheater;
 import com.weatherrisk.api.cnst.ubike.UBikeCity;
 import com.weatherrisk.api.service.currency.CurrencyService;
 import com.weatherrisk.api.service.currency.RegisterService;
@@ -196,6 +198,10 @@ public class LineMsgHandler {
     	buffer.append("[發票]").append("\n");
     	buffer.append("發票對獎功能, 直接輸入號碼即可 => Ex: 168").append("\n");
     	buffer.append("-----------------------").append("\n");
+    	buffer.append("[UBike]").append("\n");
+    	buffer.append("關鍵字查詢 => 格式: 縣市名稱 + 關鍵字 + ubike, Ex: 台北市天母ubike, 新北市三重ubike").append("\n");
+    	buffer.append("查詢最近的兩個 UBike 場站資訊 => 傳送您目前的位置資訊即可").append("\n");
+    	buffer.append("-----------------------").append("\n");
     	buffer.append("[貨幣]").append("\n");
     	buffer.append("<支援虛擬貨幣: ").append(CurrencyCnst.getSupportedCryptoCurrency().substring(0, CurrencyCnst.getSupportedCryptoCurrency().length() - 2)).append(">\n");
     	buffer.append("<支援真實貨幣: usd, jpy...等>").append("\n");
@@ -205,10 +211,6 @@ public class LineMsgHandler {
     	buffer.append("取消虛擬貨幣到價通知 => Ex: 取消貨幣eth").append("\n");
     	buffer.append("新增虛擬貨幣買進資訊 => Ex: 2017/05/08-08:07:30 買貨幣 STR 0.00004900 20000").append("\n");
     	buffer.append("新增虛擬貨幣賣出資訊 => Ex: 2017/05/08-20:07:30 賣貨幣 STR 0.00004900 20000").append("\n");
-    	buffer.append("-----------------------").append("\n");
-    	buffer.append("[UBike]").append("\n");
-    	buffer.append("關鍵字查詢 => 格式: 縣市名稱 + 關鍵字 + ubike, Ex: 台北市天母ubike, 新北市三重ubike").append("\n");
-    	buffer.append("查詢最近的兩個 UBike 場站資訊 => 傳送您目前的位置資訊即可").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[電影]").append("\n");
     	buffer.append("<支援威秀影城: 信義威秀, 京站威秀, 日新威秀, 板橋大遠百威秀>").append("\n");
@@ -226,7 +228,6 @@ public class LineMsgHandler {
     	buffer.append("新增股票買進資訊 => Ex: 2017/3/24 買股票 3088 56.8 2000").append("\n");
     	buffer.append("新增股票賣出資訊 => Ex: 2017/3/24 賣股票 3088 60 2000").append("\n");
     	buffer.append("刪除股票庫存 => Ex: 刪除股票庫存鴻海").append("\n");
-    	buffer.append("查詢股票庫存 => Ex: 查詢股票庫存").append("\n");
     	
     	return buffer.toString();
 	}
@@ -992,6 +993,13 @@ public class LineMsgHandler {
 							replyMsg = handleReceiptRewardSubFunction(receiptRewardSubFunc, userId);
 						}
 						break;
+						
+					case MOVIE:
+						MovieSubFunction movieSubFunc = MovieSubFunction.convertByName(strLineSubFunc);
+						if (movieSubFunc != null) {
+							replyMsg = handleMovieSubFunction(movieSubFunc, userId, replyToken, postbackData);
+						}
+						break;
 		        }
 	        }
 	        else if (lineFincFunc != null) {
@@ -1069,6 +1077,91 @@ public class LineMsgHandler {
 		recordUserCurrentAction(userId, lineFunc, null, lineSubFunc);
 		
 		return replyMsg;
+	}
+
+	/**
+	 * 處理發票子功能
+	 * 
+	 * @param lineSubFunc
+	 * @param userId
+	 * @return
+	 */
+	private String handleReceiptRewardSubFunction(ReceiptRewardSubFunction lineSubFunc, String userId) {
+		logger.info("----> Prepare to process receipt reward, SubFunction: <{}>, UserId: <{}>", lineSubFunc, userId);
+		
+		String replyMsg = ERROR_MSG;
+		switch (lineSubFunc) {
+	    	case UPDATE_NUMBERS:
+	    		receiptRewardService.getNewestReceiptRewards();
+	    		replyMsg = "更新成功";
+	    		break;
+	
+			case GET_LAST_TWO_NUMBERS:
+				replyMsg = receiptRewardService.getRecentlyRewards();
+				break;
+		}
+		
+		return replyMsg;
+	}
+
+	/**
+	 * 處理電影子功能
+	 * 
+	 * @param lineSubFunc
+	 * @param userId
+	 * @param replyToken 
+	 * @param postbackData 
+	 * @return
+	 */
+	private String handleMovieSubFunction(MovieSubFunction lineSubFunc, String userId, String replyToken, String postbackData) {
+		logger.info("----> Prepare to process movie, SubFunction: <{}>, UserId: <{}>, PostbackData: <{}>", lineSubFunc, userId, postbackData);
+		
+		String replyMsg = "";
+		
+		switch (lineSubFunc) {
+			case UPDATE_MOVIE_TIME:
+				viewshowMovieService.refreshMovieTimes();
+	    		showTimeMovieService.refreshMovieTimes();
+	    		miramarMovieService.refreshMovieTimes();
+	    		wovieMovieService.refreshMovieTimes();
+	    		ambassadorMovieService.refreshMovieTimes();
+	    		replyMsg = "更新成功";
+				break;
+
+			case QUERY_MOVIE_TIME:
+				createSupportedTheaterCompanyTemplateMsg(replyToken);
+				break;
+		}
+		
+		return replyMsg;
+	}
+
+	/**
+	 * 開啟支援的影城功能表
+	 * 
+	 * @param replyToken
+	 */
+	private void createSupportedTheaterCompanyTemplateMsg(String replyToken) {
+		final String menuTitle = "影城查詢";
+		final String menuText = "提供下列影城";
+		final String altText = "影城查詢";
+		
+		// Create sub functions menu
+		List<Action> postbackActions = new ArrayList<>();
+		
+		SupprotedTheaterCompany[] supprotedTheaterCompanies = SupprotedTheaterCompany.values();
+		for (int i = 0; i < LINE_TEMPLATE_MSG_MAX_ITEMS; i++) {
+			SupprotedTheaterCompany supprotedTheaterCompany = supprotedTheaterCompanies[i];
+			PostbackAction postbackAction
+				= new PostbackAction(supprotedTheaterCompany.getTheaterCompanyName(), LineQueryFunction.MOVIE + "&" + MovieSubFunction.QUERY_MOVIE_TIME + "&" + supprotedTheaterCompany.toString());
+			postbackActions.add(postbackAction);
+		}
+		
+		ButtonsTemplate buttonsTemplate 
+			= new ButtonsTemplate(createUri(LineQueryFunction.QUERY_MENU_IMG_PATH), menuTitle, menuText, postbackActions);
+	
+		TemplateMessage message = new TemplateMessage(altText, buttonsTemplate);
+		reply(replyToken, message);
 	}
 
 	/**
@@ -1231,31 +1324,6 @@ public class LineMsgHandler {
 				break;
 		}
 		return replyMsg;
-	}
-
-	/**
-	 * 處理發票子功能
-	 * 
-	 * @param lineSubFunc
-	 * @param userId
-	 * @return
-	 */
-    private String handleReceiptRewardSubFunction(ReceiptRewardSubFunction lineSubFunc, String userId) {
-    	logger.info("----> Prepare to process receipt reward, SubFunction: <{}>, UserId: <{}>", lineSubFunc, userId);
-    	
-    	String replyMsg = ERROR_MSG;
-    	switch (lineSubFunc) {
-	    	case UPDATE_NUMBERS:
-	    		receiptRewardService.getNewestReceiptRewards();
-	    		replyMsg = "更新成功";
-	    		break;
-
-			case GET_LAST_TWO_NUMBERS:
-				replyMsg = receiptRewardService.getRecentlyRewards();
-				break;
-    	}
-    	
-    	return replyMsg;
 	}
 
 	/**

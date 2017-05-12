@@ -1,6 +1,8 @@
-package com.weatherrisk.api.cnst.movie;
+package com.weatherrisk.api.cnst.movie.theaters;
 
-public enum WovieTheater {
+import com.weatherrisk.api.cnst.movie.MovieTheater;
+
+public enum WovieTheater implements MovieTheater {
 	TIENMOU("天母華威");
 	
 	private String chineseName;
@@ -9,6 +11,7 @@ public enum WovieTheater {
 		this.chineseName = chineseName;
 	}
 
+	@Override
 	public String getChineseName() {
 		return chineseName;
 	}
@@ -30,4 +33,23 @@ public enum WovieTheater {
 		}
 		return null;
 	}
+	
+	public static WovieTheater convertByChineseName(String inputMsg) {
+		for (WovieTheater theater : WovieTheater.values()) {
+			if (inputMsg.equals(theater.getChineseName())) {
+				return theater;
+			}
+		}
+		return null;
+	}
+	
+	public static WovieTheater convertByName(String inputMsg) {
+		for (WovieTheater theater : WovieTheater.values()) {
+			if (theater.toString().equals(theater.getChineseName())) {
+				return theater;
+			}
+		}
+		return null;
+	}
+	
 }

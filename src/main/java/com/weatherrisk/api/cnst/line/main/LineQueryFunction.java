@@ -7,6 +7,7 @@ import com.weatherrisk.api.cnst.line.sub.LineSubFunction;
 import com.weatherrisk.api.cnst.line.sub.query.ParkingLotSubFunction;
 import com.weatherrisk.api.cnst.line.sub.query.ReceiptRewardSubFunction;
 import com.weatherrisk.api.cnst.line.sub.query.WeatherSubFunction;
+import com.weatherrisk.api.cnst.line.sub.query.MovieSubFunction;
 
 public enum LineQueryFunction implements LineFunction {
 	PARKING_LOT_INFO(
@@ -30,11 +31,20 @@ public enum LineQueryFunction implements LineFunction {
 	RECEIPT_REWARD(
 		Arrays.asList("receipt", "發票"),
 		"統一發票",
-		"統一發票",
+		"統一發票開獎資訊查詢",
 		"提供下列功能",
 		"統一發票",
 		"/buttons/bitcoin.jpeg",
 		ReceiptRewardSubFunction.values()
+	),
+	MOVIE(
+		Arrays.asList("movive", "電影"),
+		"電影",
+		"電影時刻表查詢",
+		"提供下列影城",
+		"電影",
+		"/buttons/bitcoin.jpeg",
+		MovieSubFunction.values()
 	)
 	;
 	

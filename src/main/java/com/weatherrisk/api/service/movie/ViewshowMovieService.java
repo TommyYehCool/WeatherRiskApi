@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.weatherrisk.api.cnst.movie.ViewshowTheater;
+import com.weatherrisk.api.cnst.movie.theaters.ViewshowTheater;
 import com.weatherrisk.api.concurrent.CountDownLatchHandler;
 import com.weatherrisk.api.config.movie.ViewshowMovieConfig;
 import com.weatherrisk.api.model.movie.MovieDateTime;

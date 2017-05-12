@@ -4,7 +4,7 @@ import java.text.MessageFormat;
 
 import org.springframework.context.annotation.Configuration;
 
-import com.weatherrisk.api.cnst.movie.MiramarTheater;
+import com.weatherrisk.api.cnst.movie.theaters.MiramarTheater;
 
 @Configuration
 public class MiramarMovieConfig {
