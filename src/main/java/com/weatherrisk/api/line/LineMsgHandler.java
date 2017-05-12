@@ -1014,7 +1014,7 @@ public class LineMsgHandler {
 	private String handleMovieSubFunction(MovieSubFunction lineSubFunc, String userId, String replyToken, String postbackData) {
 		logger.info("----> Prepare to process movie, SubFunction: <{}>, UserId: <{}>, PostbackData: <{}>", lineSubFunc, userId, postbackData);
 		
-		String replyMsg = null;
+		String replyMsg = ERROR_MSG;
 		
 		switch (lineSubFunc) {
 			case UPDATE_MOVIE_TIME:
@@ -1283,7 +1283,7 @@ public class LineMsgHandler {
 		
 		logger.info("----> Prepare to process stock, SubFunction: <{}>, UserId: <{}>, Data: <{}>", lineSubFunc, userId, null);
 		
-		String replyMsg = "";
+		String replyMsg = ERROR_MSG;
 		switch (lineSubFunc) {
 			case UPDATE_STOCK_INFOS:
 				stockService.refreshStockInfo();
@@ -1542,7 +1542,7 @@ public class LineMsgHandler {
 	            
 	            logger.info("reply done ---> reply message done");
         	}
-            logger.info("Sent messages: {}", apiResponse);
+            logger.info("Sent messages and got response: {}", apiResponse);
 
         } catch (InterruptedException | ExecutionException e) {
             logger.error("Exception raised while tring to reply", e);
