@@ -1529,12 +1529,18 @@ public class LineMsgHandler {
             		= lineMessagingClient
                     	.replyMessage(new ReplyMessage(replyToken, errorMsg))
                     	.get();
+
+        		logger.warn("reply done ---> messages size: <{}> over LINE_MAXIMUM_REPLY_MSG_SIZE: <{}>", messages.size(), LINE_MAXIMUM_REPLY_MSG_SIZE);
         	}
         	else {
+        		logger.info("prepare to reply ---> content: {}", messages);
+        		
 	            apiResponse 
 	            	= lineMessagingClient
 	                    .replyMessage(new ReplyMessage(replyToken, messages))
 	                    .get();
+	            
+	            logger.info("reply done ---> reply message done");
         	}
             logger.info("Sent messages: {}", apiResponse);
 
