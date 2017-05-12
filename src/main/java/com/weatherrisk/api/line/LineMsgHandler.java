@@ -223,7 +223,6 @@ public class LineMsgHandler {
     	buffer.append("[查詢股票]").append("\n");
     	buffer.append("註冊股票到價通知 => Ex: 註冊股票 3088 40 50").append("\n");
     	buffer.append("取消股票到價通知 => Ex: 取消股票 3088").append("\n");
-    	buffer.append("查詢註冊股票到價通知資訊 => Ex: 查詢股票註冊").append("\n");
     	buffer.append("新增股票買進資訊 => Ex: 2017/3/24 買股票 3088 56.8 2000").append("\n");
     	buffer.append("新增股票賣出資訊 => Ex: 2017/3/24 賣股票 3088 60 2000").append("\n");
     	buffer.append("刪除股票庫存 => Ex: 刪除股票庫存鴻海").append("\n");
@@ -359,16 +358,6 @@ public class LineMsgHandler {
 				}
 			}
     	}
-    	// 查詢註冊股票到價通知
-    	else if (inputMsg.equals("查詢股票註冊")) {
-    		boolean hasRegistered = registerService.hasRegisteredStock(userId);
-    		if (hasRegistered) {
-    			queryResult = registerService.getStockPricesReachedInfos(userId);
-    		}
-    		else {
-    			queryResult = "您未註冊任何到價通知";
-    		}
-    	}
     	// 更新股票
     	else if (inputMsg.equals("更新股票")) {
     		stockService.refreshStockInfo();
@@ -419,10 +408,6 @@ public class LineMsgHandler {
     	else if (inputMsg.startsWith("刪除股票庫存")) {
     		String stockNameOrId = inputMsg.substring(inputMsg.indexOf("刪除股票庫存") + "刪除股票庫存".length(), inputMsg.length()).trim();
     		queryResult = stockService.deleteTreasuryStock(userId, stockNameOrId);
-    	}
-    	// 查詢股票庫存
-    	else if (inputMsg.equals("查詢股票庫存")) {
-    		queryResult = stockService.queryTreasuryStock(userId);
     	}
     	// 貨幣匯率
     	else if (CurrencyCnst.isSupportedCurrency(inputMsg)) {
@@ -1075,11 +1060,10 @@ public class LineMsgHandler {
 		logger.info("----> Prepare to process weather, SubFunction: <{}>, UserId: <{}>", lineSubFunc, userId);
 		
 		String replyMsg = ERROR_MSG;
-		String letUserInputMsg = "請輸入縣市名稱";
 		switch (lineSubFunc) {
 			case LITTLE_HELPER:
 			case ONE_WEEK_PREDICTION:
-				replyMsg = letUserInputMsg;
+				replyMsg = "請輸入縣市名稱";
 				break;
 		}
 		
@@ -1217,6 +1201,8 @@ public class LineMsgHandler {
 	 * @return
 	 */
 	private String handleStockSubFunction(StockSubFunction lineSubFunc, String userId, String replyToken) {
+		LineFinancialFunction lineFunc = LineFinancialFunction.STOCK;
+		
 		logger.info("----> Prepare to process stock, SubFunction: <{}>, UserId: <{}>, Data: <{}>", lineSubFunc, userId, null);
 		
 		String replyMsg = "";
@@ -1227,7 +1213,8 @@ public class LineMsgHandler {
 				break;
 
 			case QUERY_MATCH_PRICE:
-				// TODO 這比較麻煩待會處理
+				replyMsg = "請輸入股票名稱或代號";
+				recordUserCurrentAction(userId, null, lineFunc, lineSubFunc);
 				break;
 
 			case HIT_PRICE_INFO:
@@ -1374,7 +1361,17 @@ public class LineMsgHandler {
 		
 		switch (lineFincFunc) {
 			case STOCK:
-				// TODO other sub func
+				StockSubFunction stockSubFunc = (StockSubFunction) lineSubFunc;
+				switch (stockSubFunc) {
+					case QUERY_MATCH_PRICE:
+						replyMsg = stockService.getStockPriceStrByNameOrId(inputMsg);
+						break;
+
+					default:
+						// 正常程式不會到這
+						logger.error("processUserCurrentFincFunction got unexpected StockSubFunction: <{}>", stockSubFunc);
+						break;
+				}
 				break;
 
 			case CRYPTO_CURRENCY:
