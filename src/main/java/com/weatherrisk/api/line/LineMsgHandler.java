@@ -1132,6 +1132,7 @@ public class LineMsgHandler {
 			case QUERY_MOVIE_TIME:
 				String[] splits = postbackData.split("&");
 				if (splits.length == 2) {
+					logger.info("----- Create supported theater companies menu -----");
 					createSupportedTheaterCompanyTemplateMsg(replyToken);
 				}
 				else if (splits.length == 3) {
@@ -1141,6 +1142,8 @@ public class LineMsgHandler {
 						= SupprotedTheaterCompany.convertByName(theaterCompanyName);
 					
 					MovieTheater[] movieTheaters = theaterCompany.getMovieTheaters();
+					
+					logger.info("----- Create movie theaters menu, SupprotedTheaterCompany: <{}>, MovieTheater: <{}>", theaterCompany, Arrays.toString(movieTheaters));
 					
 					createMovieTheatersTemplateMsg(theaterCompany, movieTheaters, replyToken);
 				}
