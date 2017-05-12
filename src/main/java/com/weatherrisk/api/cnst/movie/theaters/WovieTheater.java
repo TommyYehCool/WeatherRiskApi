@@ -16,37 +16,37 @@ public enum WovieTheater implements MovieTheater {
 		return chineseName;
 	}
 
-	public static boolean isSupportedTheater(String inputMsg) {
-		for (WovieTheater theater : WovieTheater.values()) {
-			if (inputMsg.startsWith(theater.getChineseName())) {
+	public static boolean isSupportedTheater(String input) {
+		for (WovieTheater e : WovieTheater.values()) {
+			if (input.startsWith(e.getChineseName())) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public static WovieTheater convertByInputMsg(String inputMsg) {
-		for (WovieTheater theater : WovieTheater.values()) {
-			if (inputMsg.startsWith(theater.getChineseName())) {
-				return theater;
+	public static WovieTheater convertByChineseNameStartWith(String input) {
+		for (WovieTheater e : WovieTheater.values()) {
+			if (input.startsWith(e.getChineseName())) {
+				return e;
 			}
 		}
 		return null;
 	}
 	
-	public static WovieTheater convertByChineseName(String inputMsg) {
-		for (WovieTheater theater : WovieTheater.values()) {
-			if (inputMsg.equals(theater.getChineseName())) {
-				return theater;
+	public static WovieTheater convertByChineseNameEquals(String input) {
+		for (WovieTheater e : WovieTheater.values()) {
+			if (input.equals(e.getChineseName())) {
+				return e;
 			}
 		}
 		return null;
 	}
 	
-	public static WovieTheater convertByName(String inputMsg) {
-		for (WovieTheater theater : WovieTheater.values()) {
-			if (theater.toString().equals(theater.getChineseName())) {
-				return theater;
+	public static WovieTheater convertByName(String input) {
+		for (WovieTheater e : WovieTheater.values()) {
+			if (input.equals(e.toString())) {
+				return e;
 			}
 		}
 		return null;

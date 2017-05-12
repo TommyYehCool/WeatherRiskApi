@@ -24,37 +24,37 @@ public enum AmbassadorTheater implements MovieTheater {
 		return theaterId;
 	}
 	
-	public static boolean isSupportedTheater(String inputMsg) {
-		for (AmbassadorTheater theater : AmbassadorTheater.values()) {
-			if (inputMsg.startsWith(theater.getChineseName())) {
+	public static boolean isSupportedTheater(String input) {
+		for (AmbassadorTheater e : AmbassadorTheater.values()) {
+			if (input.startsWith(e.getChineseName())) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public static AmbassadorTheater convertByInputMsg(String inputMsg) {
-		for (AmbassadorTheater theater : AmbassadorTheater.values()) {
-			if (inputMsg.startsWith(theater.getChineseName())) {
-				return theater;
+	public static AmbassadorTheater convertByChineseNameStartWith(String input) {
+		for (AmbassadorTheater e : AmbassadorTheater.values()) {
+			if (input.startsWith(e.getChineseName())) {
+				return e;
 			}
 		}
 		return null;
 	}
 	
-	public static AmbassadorTheater convertByChineseName(String inputMsg) {
-		for (AmbassadorTheater theater : AmbassadorTheater.values()) {
-			if (inputMsg.equals(theater.getChineseName())) {
-				return theater;
+	public static AmbassadorTheater convertByChineseNameEquals(String input) {
+		for (AmbassadorTheater e : AmbassadorTheater.values()) {
+			if (input.equals(e.getChineseName())) {
+				return e;
 			}
 		}
 		return null;
 	}
 	
-	public static AmbassadorTheater convertByName(String inputMsg) {
-		for (AmbassadorTheater theater : AmbassadorTheater.values()) {
-			if (theater.toString().equals(theater.getChineseName())) {
-				return theater;
+	public static AmbassadorTheater convertByEnumName(String input) {
+		for (AmbassadorTheater e : AmbassadorTheater.values()) {
+			if (input.equals(e.toString())) {
+				return e;
 			}
 		}
 		return null;

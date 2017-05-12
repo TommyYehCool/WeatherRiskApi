@@ -567,7 +567,7 @@ public class LineMsgHandler {
     	}
     	// 威秀電影
     	else if (ViewshowTheater.isSupportedTheater(inputMsg)) {
-    		ViewshowTheater theater = ViewshowTheater.convertByInputMsg(inputMsg);
+    		ViewshowTheater theater = ViewshowTheater.convertByChineseNameStartWith(inputMsg);
     		
     		String command = inputMsg.substring(theater.getChineseName().length(), inputMsg.length()).trim();
     		
@@ -584,7 +584,7 @@ public class LineMsgHandler {
     	}
     	// 秀泰電影
     	else if (ShowTimeTheater.isSupportedTheater(inputMsg)) {
-    		ShowTimeTheater theater = ShowTimeTheater.convertByInputMsg(inputMsg);
+    		ShowTimeTheater theater = ShowTimeTheater.convertByChineseNameStartWith(inputMsg);
     		
     		String command = inputMsg.substring(theater.getChineseName().length(), inputMsg.length()).trim();
     		
@@ -601,7 +601,7 @@ public class LineMsgHandler {
     	}
     	// 美麗華電影
     	else if (MiramarTheater.isSupportedTheater(inputMsg)) {
-    		MiramarTheater theater = MiramarTheater.convertByInputMsg(inputMsg);
+    		MiramarTheater theater = MiramarTheater.convertByChineseNameStartWith(inputMsg);
     		
     		String command = inputMsg.substring(theater.getChineseName().length(), inputMsg.length()).trim();
     		
@@ -618,7 +618,7 @@ public class LineMsgHandler {
     	}
     	// 華威電影
     	else if (WovieTheater.isSupportedTheater(inputMsg)) {
-    		WovieTheater theater = WovieTheater.convertByInputMsg(inputMsg);
+    		WovieTheater theater = WovieTheater.convertByChineseNameStartWith(inputMsg);
     		
     		String command = inputMsg.substring(theater.getChineseName().length(), inputMsg.length()).trim();
     		
@@ -635,7 +635,7 @@ public class LineMsgHandler {
     	}
     	// 國賓電影
     	else if (AmbassadorTheater.isSupportedTheater(inputMsg)) {
-    		AmbassadorTheater theater = AmbassadorTheater.convertByInputMsg(inputMsg);
+    		AmbassadorTheater theater = AmbassadorTheater.convertByChineseNameStartWith(inputMsg);
     		
     		String command = inputMsg.substring(theater.getChineseName().length(), inputMsg.length()).trim();
     		
@@ -1139,10 +1139,10 @@ public class LineMsgHandler {
 					createSupportedTheaterCompanyTemplateMsg(replyToken);
 				}
 				else if (splits.length == 3) {
-					String theaterCompanyName = splits[2];
+					String theaterCompanyEnumName = splits[2];
 					
 					SupprotedTheaterCompany theaterCompany 
-						= SupprotedTheaterCompany.convertByName(theaterCompanyName);
+						= SupprotedTheaterCompany.convertByEnumName(theaterCompanyEnumName);
 					
 					MovieTheater[] movieTheaters = theaterCompany.getMovieTheaters();
 					
@@ -1153,8 +1153,8 @@ public class LineMsgHandler {
 				else if (splits.length == 4) {
 					replyMsg = "請輸入電影名稱";
 					
-					String theaterName = splits[3];
-					MovieTheater theater = getTheaterByName(theaterName);
+					String theaterEnumName = splits[3];
+					MovieTheater theater = getTheaterByEnumName(theaterEnumName);
 					
 					logger.info("---> Process theater: <{}>, ask user to input film name", theater);
 					
@@ -1166,22 +1166,22 @@ public class LineMsgHandler {
 		return replyMsg;
 	}
 
-	private MovieTheater getTheaterByName(String theaterName) {
+	private MovieTheater getTheaterByEnumName(String theaterName) {
 		MovieTheater theater = null;
 
-		AmbassadorTheater ambassadorTheater = AmbassadorTheater.convertByName(theaterName);
+		AmbassadorTheater ambassadorTheater = AmbassadorTheater.convertByEnumName(theaterName);
 		if (ambassadorTheater != null) {
 			theater = ambassadorTheater;
 		}
-		MiramarTheater miramarTheater = MiramarTheater.convertByName(theaterName);
+		MiramarTheater miramarTheater = MiramarTheater.convertByEnumName(theaterName);
 		if (miramarTheater != null) {
 			theater = miramarTheater;
 		}
-		ShowTimeTheater showTimeTheater = ShowTimeTheater.convertByName(theaterName);
+		ShowTimeTheater showTimeTheater = ShowTimeTheater.convertByEnumName(theaterName);
 		if (showTimeTheater != null) {
 			theater = showTimeTheater;
 		}
-		ViewshowTheater viewshowTheater = ViewshowTheater.convertByName(theaterName);
+		ViewshowTheater viewshowTheater = ViewshowTheater.convertByEnumName(theaterName);
 		if (viewshowTheater != null) {
 			theater = viewshowTheater;
 		}

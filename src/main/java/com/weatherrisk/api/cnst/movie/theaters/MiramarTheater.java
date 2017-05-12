@@ -22,37 +22,37 @@ public enum MiramarTheater implements MovieTheater {
 		return place;
 	}
 	
-	public static boolean isSupportedTheater(String inputMsg) {
-		for (MiramarTheater theater : MiramarTheater.values()) {
-			if (inputMsg.startsWith(theater.getChineseName())) {
+	public static boolean isSupportedTheater(String input) {
+		for (MiramarTheater e : MiramarTheater.values()) {
+			if (input.startsWith(e.getChineseName())) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public static MiramarTheater convertByInputMsg(String inputMsg) {
-		for (MiramarTheater theater : MiramarTheater.values()) {
-			if (inputMsg.startsWith(theater.getChineseName())) {
-				return theater;
+	public static MiramarTheater convertByChineseNameStartWith(String input) {
+		for (MiramarTheater e : MiramarTheater.values()) {
+			if (input.startsWith(e.getChineseName())) {
+				return e;
 			}
 		}
 		return null;
 	}
 	
-	public static MiramarTheater convertByChineseName(String inputMsg) {
-		for (MiramarTheater theater : MiramarTheater.values()) {
-			if (inputMsg.equals(theater.getChineseName())) {
-				return theater;
+	public static MiramarTheater convertByChineseNameEquals(String input) {
+		for (MiramarTheater e : MiramarTheater.values()) {
+			if (input.equals(e.getChineseName())) {
+				return e;
 			}
 		}
 		return null;
 	}
 	
-	public static MiramarTheater convertByName(String inputMsg) {
-		for (MiramarTheater theater : MiramarTheater.values()) {
-			if (theater.toString().equals(theater.getChineseName())) {
-				return theater;
+	public static MiramarTheater convertByEnumName(String input) {
+		for (MiramarTheater e : MiramarTheater.values()) {
+			if (input.equals(e.toString())) {
+				return e;
 			}
 		}
 		return null;

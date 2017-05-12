@@ -28,16 +28,16 @@ public enum SupprotedTheaterCompany {
 		return movieTheaters;
 	}
 	
-	public static SupprotedTheaterCompany convertByCompanyName(String companyName) {
+	public static SupprotedTheaterCompany convertByTheaterCompanyName(String theaterCompanyName) {
 		for (SupprotedTheaterCompany e : SupprotedTheaterCompany.values()) {
-			if (e.getTheaterCompanyName().equals(companyName)) {
+			if (e.getTheaterCompanyName().equals(theaterCompanyName)) {
 				return e;
 			}
 		}
 		return null;
 	}
 	
-	public static SupprotedTheaterCompany convertByName(String name) {
+	public static SupprotedTheaterCompany convertByEnumName(String name) {
 		for (SupprotedTheaterCompany e : SupprotedTheaterCompany.values()) {
 			if (e.toString().equals(name)) {
 				return e;

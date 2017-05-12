@@ -28,37 +28,37 @@ public enum ViewshowTheater implements MovieTheater {
 		return this.cid;
 	}
 	
-	public static boolean isSupportedTheater(String inputMsg) {
-		for (ViewshowTheater theater : ViewshowTheater.values()) {
-			if (inputMsg.startsWith(theater.getChineseName())) {
+	public static boolean isSupportedTheater(String input) {
+		for (ViewshowTheater e : ViewshowTheater.values()) {
+			if (input.startsWith(e.getChineseName())) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public static ViewshowTheater convertByInputMsg(String inputMsg) {
-		for (ViewshowTheater theater : ViewshowTheater.values()) {
-			if (inputMsg.startsWith(theater.getChineseName())) {
-				return theater;
+	public static ViewshowTheater convertByChineseNameStartWith(String input) {
+		for (ViewshowTheater e : ViewshowTheater.values()) {
+			if (input.startsWith(e.getChineseName())) {
+				return e;
 			}
 		}
 		return null;
 	}
 	
-	public static ViewshowTheater convertByChineseName(String inputMsg) {
-		for (ViewshowTheater theater : ViewshowTheater.values()) {
-			if (inputMsg.equals(theater.getChineseName())) {
-				return theater;
+	public static ViewshowTheater convertByChineseNameEquals(String input) {
+		for (ViewshowTheater e : ViewshowTheater.values()) {
+			if (input.equals(e.getChineseName())) {
+				return e;
 			}
 		}
 		return null;
 	}
 	
-	public static ViewshowTheater convertByName(String inputMsg) {
-		for (ViewshowTheater theater : ViewshowTheater.values()) {
-			if (theater.toString().equals(theater.getChineseName())) {
-				return theater;
+	public static ViewshowTheater convertByEnumName(String input) {
+		for (ViewshowTheater e : ViewshowTheater.values()) {
+			if (input.equals(e.toString())) {
+				return e;
 			}
 		}
 		return null;

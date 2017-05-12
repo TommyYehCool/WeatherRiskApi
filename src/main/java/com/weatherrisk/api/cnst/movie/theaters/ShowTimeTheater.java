@@ -27,37 +27,37 @@ public enum ShowTimeTheater implements MovieTheater {
 		return cropId;
 	}
 
-	public static boolean isSupportedTheater(String inputMsg) {
-		for (ShowTimeTheater theater : ShowTimeTheater.values()) {
-			if (inputMsg.startsWith(theater.getChineseName())) {
+	public static boolean isSupportedTheater(String input) {
+		for (ShowTimeTheater e : ShowTimeTheater.values()) {
+			if (input.startsWith(e.getChineseName())) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public static ShowTimeTheater convertByInputMsg(String inputMsg) {
-		for (ShowTimeTheater theater : ShowTimeTheater.values()) {
-			if (inputMsg.startsWith(theater.getChineseName())) {
-				return theater;
+	public static ShowTimeTheater convertByChineseNameStartWith(String input) {
+		for (ShowTimeTheater e : ShowTimeTheater.values()) {
+			if (input.startsWith(e.getChineseName())) {
+				return e;
 			}
 		}
 		return null;
 	}
 	
-	public static ShowTimeTheater convertByChineseName(String inputMsg) {
-		for (ShowTimeTheater theater : ShowTimeTheater.values()) {
-			if (inputMsg.equals(theater.getChineseName())) {
-				return theater;
+	public static ShowTimeTheater convertByChineseNameEquals(String input) {
+		for (ShowTimeTheater e : ShowTimeTheater.values()) {
+			if (input.equals(e.getChineseName())) {
+				return e;
 			}
 		}
 		return null;
 	}
 	
-	public static ShowTimeTheater convertByName(String inputMsg) {
-		for (ShowTimeTheater theater : ShowTimeTheater.values()) {
-			if (theater.toString().equals(theater.getChineseName())) {
-				return theater;
+	public static ShowTimeTheater convertByEnumName(String input) {
+		for (ShowTimeTheater e : ShowTimeTheater.values()) {
+			if (input.equals(e.toString())) {
+				return e;
 			}
 		}
 		return null;
