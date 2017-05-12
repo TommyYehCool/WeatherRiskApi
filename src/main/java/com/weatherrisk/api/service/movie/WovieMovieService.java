@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.weatherrisk.api.cnst.WovieTheater;
+import com.weatherrisk.api.cnst.movie.WovieTheater;
 import com.weatherrisk.api.concurrent.CountDownLatchHandler;
 import com.weatherrisk.api.config.movie.WovieMovieConfig;
 import com.weatherrisk.api.model.movie.MovieDateTime;

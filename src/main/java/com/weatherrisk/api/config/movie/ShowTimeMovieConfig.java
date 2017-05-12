@@ -4,7 +4,7 @@ import java.text.MessageFormat;
 
 import org.springframework.context.annotation.Configuration;
 
-import com.weatherrisk.api.cnst.ShowTimeTheater;
+import com.weatherrisk.api.cnst.movie.ShowTimeTheater;
 
 @Configuration
 public class ShowTimeMovieConfig {

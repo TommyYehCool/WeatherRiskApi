@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.PushMessage;
 import com.linecorp.bot.model.message.TextMessage;
-import com.weatherrisk.api.cnst.CurrencyCnst;
+import com.weatherrisk.api.cnst.currency.CurrencyCnst;
 import com.weatherrisk.api.service.currency.CurrencyService;
 import com.weatherrisk.api.service.currency.RegisterService;
 import com.weatherrisk.api.service.stock.StockService;

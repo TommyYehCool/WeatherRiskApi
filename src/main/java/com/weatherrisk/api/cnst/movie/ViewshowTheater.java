@@ -1,4 +1,4 @@
-package com.weatherrisk.api.cnst;
+package com.weatherrisk.api.cnst.movie;
 
 public enum ViewshowTheater {
 	XINYI("信義威秀", "TP"),

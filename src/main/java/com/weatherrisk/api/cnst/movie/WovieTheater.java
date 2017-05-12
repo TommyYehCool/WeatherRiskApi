@@ -1,4 +1,4 @@
-package com.weatherrisk.api.cnst;
+package com.weatherrisk.api.cnst.movie;
 
 public enum WovieTheater {
 	TIENMOU("天母華威");

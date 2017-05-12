@@ -30,8 +30,8 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherrisk.api.cnst.BuySell;
-import com.weatherrisk.api.cnst.CryptoCurrencyExchange;
-import com.weatherrisk.api.cnst.CurrencyCnst;
+import com.weatherrisk.api.cnst.currency.CryptoCurrencyExchange;
+import com.weatherrisk.api.cnst.currency.CurrencyCnst;
 import com.weatherrisk.api.model.currency.CryptoCurrencyBSRecord;
 import com.weatherrisk.api.model.currency.CryptoCurrencyBSRecordRepository;
 import com.weatherrisk.api.model.currency.TreasuryCryptoCurrency;

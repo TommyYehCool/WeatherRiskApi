@@ -1,6 +1,6 @@
 package com.weatherrisk.api.model.stock;
 
-import com.weatherrisk.api.cnst.StockType;
+import com.weatherrisk.api.cnst.stock.StockType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

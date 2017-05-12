@@ -10,7 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.weatherrisk.api.cnst.StockType;
+import com.weatherrisk.api.cnst.stock.StockType;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weatherrisk.api.cnst.StockType;
+import com.weatherrisk.api.cnst.stock.StockType;
 import com.weatherrisk.api.config.stock.StockConfig;
 import com.weatherrisk.api.model.stock.OtcStock;
 import com.weatherrisk.api.model.stock.OtcStockRepository;

@@ -4,7 +4,7 @@ import java.text.MessageFormat;
 
 import org.springframework.context.annotation.Configuration;
 
-import com.weatherrisk.api.cnst.AmbassadorTheater;
+import com.weatherrisk.api.cnst.movie.AmbassadorTheater;
 
 @Configuration
 public class AmbassadorMovieConfig {

@@ -1,4 +1,4 @@
-package com.weatherrisk.api.cnst;
+package com.weatherrisk.api.cnst.currency;
 
 import java.util.EnumSet;
 

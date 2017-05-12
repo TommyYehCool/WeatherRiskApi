@@ -5,7 +5,7 @@ import java.text.ParseException;
 
 import org.junit.Test;
 
-import com.weatherrisk.api.cnst.StockType;
+import com.weatherrisk.api.cnst.stock.StockType;
 import com.weatherrisk.api.model.stock.TreasuryStock;
 
 public class Test_TreasuryStock {

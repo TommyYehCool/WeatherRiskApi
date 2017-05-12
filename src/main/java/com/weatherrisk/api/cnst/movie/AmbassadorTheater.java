@@ -1,4 +1,4 @@
-package com.weatherrisk.api.cnst;
+package com.weatherrisk.api.cnst.movie;
 
 public enum AmbassadorTheater {
 	XIMEN("西門國賓", "84b87b82-b936-4a39-b91f-e88328d33b4e"),

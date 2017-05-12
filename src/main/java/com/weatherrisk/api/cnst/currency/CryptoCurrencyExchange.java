@@ -1,4 +1,4 @@
-package com.weatherrisk.api.cnst;
+package com.weatherrisk.api.cnst.currency;
 
 import org.knowm.xchange.btce.v3.BTCEExchange;
 import org.knowm.xchange.poloniex.PoloniexExchange;

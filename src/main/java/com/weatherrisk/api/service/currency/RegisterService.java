@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.weatherrisk.api.cnst.CurrencyCnst;
+import com.weatherrisk.api.cnst.currency.CurrencyCnst;
 import com.weatherrisk.api.vo.CryptoCurrencyPriceReached;
 import com.weatherrisk.api.vo.StockPriceReached;
 

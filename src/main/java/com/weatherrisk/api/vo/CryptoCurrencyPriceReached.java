@@ -1,12 +1,12 @@
 package com.weatherrisk.api.vo;
 
-import com.weatherrisk.api.cnst.CurrencyCnst;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+
+import com.weatherrisk.api.cnst.currency.CurrencyCnst;
 
 @Data
 @NoArgsConstructor

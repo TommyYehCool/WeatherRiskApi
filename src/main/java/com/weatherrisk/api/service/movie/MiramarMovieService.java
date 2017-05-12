@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.weatherrisk.api.cnst.MiramarTheater;
+import com.weatherrisk.api.cnst.movie.MiramarTheater;
 import com.weatherrisk.api.concurrent.CountDownLatchHandler;
 import com.weatherrisk.api.config.movie.MiramarMovieConfig;
 import com.weatherrisk.api.model.movie.MiramarMovie;

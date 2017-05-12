@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.weatherrisk.api.Application;
-import com.weatherrisk.api.cnst.CurrencyCnst;
+import com.weatherrisk.api.cnst.currency.CurrencyCnst;
 import com.weatherrisk.api.model.stock.Stock;
 import com.weatherrisk.api.service.currency.CurrencyService;
 import com.weatherrisk.api.service.movie.AmbassadorMovieService;

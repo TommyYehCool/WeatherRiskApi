@@ -4,7 +4,7 @@ import java.text.MessageFormat;
 
 import org.springframework.context.annotation.Configuration;
 
-import com.weatherrisk.api.cnst.ViewshowTheater;
+import com.weatherrisk.api.cnst.movie.ViewshowTheater;
 
 @Configuration
 public class ViewshowMovieConfig {

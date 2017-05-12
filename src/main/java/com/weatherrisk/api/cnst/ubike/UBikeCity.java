@@ -1,4 +1,4 @@
-package com.weatherrisk.api.cnst;
+package com.weatherrisk.api.cnst.ubike;
 
 import java.util.Arrays;
 import java.util.List;

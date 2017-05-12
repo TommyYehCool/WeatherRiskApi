@@ -1,4 +1,4 @@
-package com.weatherrisk.api.cnst;
+package com.weatherrisk.api.cnst.movie;
 
 public enum MiramarTheater {
 	TACHIH("大直美麗華", "1");

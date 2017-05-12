@@ -1,4 +1,4 @@
-package com.weatherrisk.api.cnst;
+package com.weatherrisk.api.cnst.movie;
 
 public enum ShowTimeTheater {
 	STARSTAR("欣欣秀泰", "2"),
