@@ -154,6 +154,13 @@ public class LineMsgHandler {
 		private LineQueryFunction lineQueryFunc;
 		private LineFinancialFunction lineFincFunc;
 		private LineSubFunction lineSubFunc;
+		private QueryMovieInfo queryMovieInfo;
+	}
+	
+	@Data
+	@AllArgsConstructor
+	private class QueryMovieInfo {
+		private SupprotedTheaterCompany theaterCompany;
 		private MovieTheater movieTheater;
 	}
 	
@@ -304,10 +311,10 @@ public class LineMsgHandler {
     	CurrentFunction currentFunction = getUserCurrentFunction(userId);
     	if (currentFunction != null) {
     		if (currentFunction.getLineQueryFunc() != null) {
-    			processUserCurrentQryFunction(userId, replyToken, currentFunction.getLineQueryFunc(), currentFunction.getLineSubFunc(), inputMsg);
+    			processUserCurrentQryFunction(userId, replyToken, currentFunction, inputMsg);
     		}
     		else if (currentFunction.getLineFincFunc() != null) {
-    			processUserCurrentFincFunction(userId, replyToken, currentFunction.getLineFincFunc(), currentFunction.getLineSubFunc(), inputMsg);
+    			processUserCurrentFincFunction(userId, replyToken, currentFunction, inputMsg);
     		}
     		queryResult = "";
     	}
@@ -1134,10 +1141,13 @@ public class LineMsgHandler {
 
 			case QUERY_MOVIE_TIME:
 				String[] splits = postbackData.split("&");
+				
+				// 查詢電影時刻表 meun 選定
 				if (splits.length == 2) {
 					logger.info("----- Create supported theater companies menu -----");
 					createSupportedTheaterCompanyTemplateMsg(replyToken);
 				}
+				// 影城 menu 選定
 				else if (splits.length == 3) {
 					String theaterCompanyEnumName = splits[2];
 					
@@ -1150,15 +1160,23 @@ public class LineMsgHandler {
 					
 					createMovieTheatersTemplateMsg(theaterCompany, movieTheaters, replyToken);
 				}
+				// 戲院 menu 選定
 				else if (splits.length == 4) {
-					replyMsg = "請輸入電影名稱";
+					replyMsg = "請輸入上映: 查詢目前上映電影\n輸入電影名稱: 查詢電影時刻表";
+					
+					String theaterCompanyEnumName = splits[2];
+					SupprotedTheaterCompany theaterCompany 
+						= SupprotedTheaterCompany.convertByEnumName(theaterCompanyEnumName);
 					
 					String theaterEnumName = splits[3];
 					MovieTheater theater = getTheaterByEnumName(theaterEnumName);
 					
-					logger.info("---> Process theater: <{}>, ask user to input film name", theater);
+					logger.info("---> Process TheaterCompany: <{}>, theater: <{}>, ask user to input film name", theaterCompany, theater);
 					
-					recordUserCurrentAction(userId, LineQueryFunction.MOVIE, null, MovieSubFunction.QUERY_MOVIE_TIME, theater);
+					QueryMovieInfo queryMovieInfo 
+						= new QueryMovieInfo(theaterCompany, theater);
+					
+					recordUserCurrentAction(userId, LineQueryFunction.MOVIE, null, MovieSubFunction.QUERY_MOVIE_TIME, queryMovieInfo);
 				}
 				break;
 		}
@@ -1416,16 +1434,16 @@ public class LineMsgHandler {
 	 * @param subFunc
 	 * @param movieTheater
 	 */
-	private void recordUserCurrentAction(String userId, LineQueryFunction lineQryFunc, LineFinancialFunction lineFincFunc, LineSubFunction lineSubFunc, MovieTheater movieTheater) {
+	private void recordUserCurrentAction(String userId, LineQueryFunction lineQryFunc, LineFinancialFunction lineFincFunc, LineSubFunction lineSubFunc, QueryMovieInfo queryMovieInfo) {
 		CurrentFunction currentFunc = userCurrentFunc.get(userId);
 		if (currentFunc == null) {
-			currentFunc = new CurrentFunction(lineQryFunc, lineFincFunc, lineSubFunc, movieTheater);
+			currentFunc = new CurrentFunction(lineQryFunc, lineFincFunc, lineSubFunc, queryMovieInfo);
 		}
 		else {
 			currentFunc.setLineQueryFunc(lineQryFunc);
 			currentFunc.setLineFincFunc(lineFincFunc);
 			currentFunc.setLineSubFunc(lineSubFunc);
-			currentFunc.setMovieTheater(movieTheater);
+			currentFunc.setQueryMovieInfo(queryMovieInfo);
 		}
 		userCurrentFunc.put(userId, currentFunc);
 	}
@@ -1450,14 +1468,16 @@ public class LineMsgHandler {
 	 * 
 	 * @param userId 
 	 * @param replyToken 
-	 * @param lineQryFunc
-	 * @param lineSubFunc
+	 * @param currentFunction
 	 * @param inputMsg 
 	 */
-    private void processUserCurrentQryFunction(String userId, String replyToken, LineQueryFunction lineQryFunc, LineSubFunction lineSubFunc, String inputMsg) {
+    private void processUserCurrentQryFunction(String userId, String replyToken, CurrentFunction currentFunction, String inputMsg) {
+    	LineQueryFunction lineQryFunc = currentFunction.getLineQueryFunc();
+    	LineSubFunction lineSubFunc = currentFunction.getLineSubFunc();
+    	
 		logger.info("----> Prepare to process userId: <{}>, LineQueryFunction: <{}>, LineSubFunction: <{}>, input: <{}>", userId, lineQryFunc, lineSubFunc, inputMsg);
 		
-		String replyMsg = ERROR_MSG;
+		String replyMsg = null;
 		
 		switch (lineQryFunc) {
 			case PARKING_LOT_INFO:
@@ -1490,7 +1510,23 @@ public class LineMsgHandler {
 				MovieSubFunction movieSubFunction = (MovieSubFunction) lineSubFunc;
 				switch (movieSubFunction) {
 					case QUERY_MOVIE_TIME:
+						QueryMovieInfo qryMovieInfo = currentFunction.getQueryMovieInfo();
 						
+						// TODO 根據不同戲院來查詢
+						SupprotedTheaterCompany theaterCompany = qryMovieInfo.getTheaterCompany();
+						switch (theaterCompany) {
+							case AMBASSADOR:
+								break;
+
+							case MIRAMAR:
+								break;
+
+							case SHOWTIME:
+								break;
+
+							case VIEWSHOW:
+								break;
+						}
 						break;
 	
 					default:
@@ -1504,7 +1540,9 @@ public class LineMsgHandler {
 		
 		removeUserCurrentFunction(userId);
 		
-		reply(replyToken, new TextMessage(replyMsg));
+		if (replyMsg != null) {
+			reply(replyToken, new TextMessage(replyMsg));
+		}
 	}
     
 	/**
@@ -1512,11 +1550,13 @@ public class LineMsgHandler {
 	 * 
 	 * @param userId 
 	 * @param replyToken 
-	 * @param lineQryFunc
-	 * @param lineSubFunc
+	 * @param currentFunction
 	 * @param inputMsg 
 	 */
-    private void processUserCurrentFincFunction(String userId, String replyToken, LineFinancialFunction lineFincFunc, LineSubFunction lineSubFunc, String inputMsg) {
+    private void processUserCurrentFincFunction(String userId, String replyToken, CurrentFunction currentFunction, String inputMsg) {
+    	LineFinancialFunction lineFincFunc = currentFunction.getLineFincFunc();
+    	LineSubFunction lineSubFunc = currentFunction.getLineSubFunc();
+
     	logger.info("----> Prepare to process userId: <{}>, LineFinancialFunction: <{}>, LineSubFunction: <{}>, input: <{}>", userId, lineFincFunc, lineSubFunc, inputMsg);
 		
 		String replyMsg = ERROR_MSG;
