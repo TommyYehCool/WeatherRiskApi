@@ -1171,7 +1171,7 @@ public class LineMsgHandler {
 					String theaterEnumName = splits[3];
 					MovieTheater theater = getTheaterByEnumName(theaterEnumName);
 					
-					logger.info("---> Process TheaterCompany: <{}>, theater: <{}>, ask user to input film name", theaterCompany, theater);
+					logger.info("---> Process TheaterCompany: <{}>, theater: <{}>, ask user to input", theaterCompany, theater);
 					
 					QueryMovieInfo queryMovieInfo 
 						= new QueryMovieInfo(theaterCompany, theater);
@@ -1512,19 +1512,49 @@ public class LineMsgHandler {
 					case QUERY_MOVIE_TIME:
 						QueryMovieInfo qryMovieInfo = currentFunction.getQueryMovieInfo();
 						
-						// TODO 根據不同戲院來查詢
+						String NOW_PLAYING_KEYWORD = "上映";
+
+						// 根據不同戲院來查詢
 						SupprotedTheaterCompany theaterCompany = qryMovieInfo.getTheaterCompany();
+						MovieTheater movieTheater = qryMovieInfo.getMovieTheater();
+						
+						String theaterName = movieTheater.getChineseName();
+						
 						switch (theaterCompany) {
 							case AMBASSADOR:
+								if (inputMsg.equals(NOW_PLAYING_KEYWORD)) {
+									replyMsg = ambassadorMovieService.queryNowPlayingByTheaterName(theaterName);
+								}
+								else {
+									replyMsg = ambassadorMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theaterName, inputMsg);
+								}
 								break;
 
 							case MIRAMAR:
+								if (inputMsg.equals(NOW_PLAYING_KEYWORD)) {
+									replyMsg = miramarMovieService.queryNowPlayingByTheaterName(theaterName);
+								}
+								else {
+									replyMsg = miramarMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theaterName, inputMsg);
+								}
 								break;
 
 							case SHOWTIME:
+								if (inputMsg.equals(NOW_PLAYING_KEYWORD)) {
+									replyMsg = showTimeMovieService.queryNowPlayingByTheaterName(theaterName);
+								}
+								else {
+									replyMsg = showTimeMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theaterName, inputMsg);
+								}
 								break;
 
 							case VIEWSHOW:
+								if (inputMsg.equals(NOW_PLAYING_KEYWORD)) {
+									replyMsg = viewshowMovieService.queryNowPlayingByTheaterName(theaterName);
+								}
+								else {
+									replyMsg = viewshowMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theaterName, inputMsg);
+								}
 								break;
 						}
 						break;
