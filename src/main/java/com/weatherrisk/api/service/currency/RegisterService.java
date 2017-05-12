@@ -171,10 +171,13 @@ public class RegisterService {
 		
 		List<CryptoCurrencyPriceReached> pricesReached = this.cryptoCurrencyRegisterMap.get(userId);
 		StringBuilder buffer = new StringBuilder();
-		for (CryptoCurrencyPriceReached priceReached : pricesReached) {
+		for (int i = 0; i < pricesReached.size(); i++) {
+			CryptoCurrencyPriceReached priceReached = pricesReached.get(i);
 			buffer.append("貨幣: ").append(priceReached.getCurrency()).append(" => ");
 			buffer.append(decFormat.format(priceReached.getLowerPrice().doubleValue())).append(" ~ ").append(decFormat.format(priceReached.getUpperPrice().doubleValue()));
-			buffer.append("\n");
+			if (i != pricesReached.size() - 1) {
+				buffer.append("\n");
+			}
 		}
 		return buffer.toString();
 	}
@@ -182,10 +185,13 @@ public class RegisterService {
 	public String getStockPricesReachedInfos(String userId) {
 		List<StockPriceReached> pricesReached = this.stockRegisterMap.get(userId);
 		StringBuilder buffer = new StringBuilder();
-		for (StockPriceReached priceReached : pricesReached) {
+		for (int i = 0; i < pricesReached.size(); i++) {
+			StockPriceReached priceReached = pricesReached.get(i);
 			buffer.append(priceReached.getStockNameOrId()).append(" => ");
 			buffer.append(priceReached.getLowerPrice().doubleValue()).append(" ~ ").append(priceReached.getUpperPrice().doubleValue());
-			buffer.append("\n");
+			if (i != pricesReached.size() - 1) {
+				buffer.append("\n");
+			}
 		}
 		return buffer.toString();
 	}

@@ -999,7 +999,6 @@ public class LineMsgHandler {
 		        	case STOCK:
 		        		StockSubFunction stockSubFunc = StockSubFunction.convertByName(strLineSubFunc);
 		        		if (stockSubFunc != null) {
-		        			// TODO 看股票資訊怎麼抓出
 		        			replyMsg = handleStockSubFunction(stockSubFunc, userId, replyToken);
 		        		}
 		        		break;

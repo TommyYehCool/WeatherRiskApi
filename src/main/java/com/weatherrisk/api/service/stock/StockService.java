@@ -206,7 +206,7 @@ public class StockService {
 		buffer.append(name).append("\n");
 		buffer.append("最高價: ").append(high).append("\n");
 		buffer.append("成交價: ").append(match).append("\n");
-		buffer.append("最低價: ").append(low).append("\n");
+		buffer.append("最低價: ").append(low);
 		
 		return buffer.toString();
 	}
