@@ -49,6 +49,7 @@ import com.weatherrisk.api.cnst.line.sub.query.MovieSubFunction;
 import com.weatherrisk.api.cnst.line.sub.query.ParkingLotSubFunction;
 import com.weatherrisk.api.cnst.line.sub.query.ReceiptRewardSubFunction;
 import com.weatherrisk.api.cnst.line.sub.query.WeatherSubFunction;
+import com.weatherrisk.api.cnst.movie.MovieTheater;
 import com.weatherrisk.api.cnst.movie.SupprotedTheaterCompany;
 import com.weatherrisk.api.cnst.movie.theaters.AmbassadorTheater;
 import com.weatherrisk.api.cnst.movie.theaters.MiramarTheater;
@@ -1129,7 +1130,20 @@ public class LineMsgHandler {
 				break;
 
 			case QUERY_MOVIE_TIME:
-				createSupportedTheaterCompanyTemplateMsg(replyToken);
+				String[] splits = postbackData.split("&");
+				if (splits.length == 2) {
+					createSupportedTheaterCompanyTemplateMsg(replyToken);
+				}
+				else if (splits.length == 3) {
+					String theaterCompanyName = splits[2];
+					
+					SupprotedTheaterCompany theaterCompany 
+						= SupprotedTheaterCompany.convertByName(theaterCompanyName);
+					
+					MovieTheater[] movieTheaters = theaterCompany.getMovieTheaters();
+					
+					createMovieTheatersTemplateMsg(theaterCompany, movieTheaters, replyToken);
+				}
 				break;
 		}
 		
@@ -1154,6 +1168,35 @@ public class LineMsgHandler {
 			SupprotedTheaterCompany supprotedTheaterCompany = supprotedTheaterCompanies[i];
 			PostbackAction postbackAction
 				= new PostbackAction(supprotedTheaterCompany.getTheaterCompanyName(), LineQueryFunction.MOVIE + "&" + MovieSubFunction.QUERY_MOVIE_TIME + "&" + supprotedTheaterCompany.toString());
+			postbackActions.add(postbackAction);
+		}
+		
+		ButtonsTemplate buttonsTemplate 
+			= new ButtonsTemplate(createUri(LineQueryFunction.QUERY_MENU_IMG_PATH), menuTitle, menuText, postbackActions);
+	
+		TemplateMessage message = new TemplateMessage(altText, buttonsTemplate);
+		reply(replyToken, message);
+	}
+	
+	/**
+	 * 開起支援影城提供戲院功能表
+	 * 
+	 * @param theaterCompany 
+	 * @param movieTheaters
+	 * @param replyToken
+	 */
+	private void createMovieTheatersTemplateMsg(SupprotedTheaterCompany theaterCompany, MovieTheater[] movieTheaters, String replyToken) {
+		final String menuTitle = theaterCompany.getTheaterCompanyName() + "查詢";
+		final String menuText = "提供下列戲院";
+		final String altText = "戲院查詢";
+		
+		// Create sub functions menu
+		List<Action> postbackActions = new ArrayList<>();
+		
+		for (int i = 0; i < LINE_TEMPLATE_MSG_MAX_ITEMS; i++) {
+			MovieTheater movieTheater = movieTheaters[i];
+			PostbackAction postbackAction
+				= new PostbackAction(movieTheater.getChineseName(), LineQueryFunction.MOVIE + "&" + MovieSubFunction.QUERY_MOVIE_TIME + "&" + theaterCompany.toString() + "&" + movieTheater.toString());
 			postbackActions.add(postbackAction);
 		}
 		

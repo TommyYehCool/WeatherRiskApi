@@ -41,7 +41,7 @@ public enum LineQueryFunction implements LineFunction {
 		Arrays.asList("movive", "電影"),
 		"電影",
 		"電影時刻表查詢",
-		"提供下列影城",
+		"提供下列功能",
 		"電影",
 		"/buttons/bitcoin.jpeg",
 		MovieSubFunction.values()
