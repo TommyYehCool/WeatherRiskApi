@@ -1144,6 +1144,9 @@ public class LineMsgHandler {
 					
 					createMovieTheatersTemplateMsg(theaterCompany, movieTheaters, replyToken);
 				}
+				else if (splits.length == 4) {
+					logger.info("----> Prepare to query movie information");
+				}
 				break;
 		}
 		
