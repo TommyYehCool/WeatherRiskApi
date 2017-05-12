@@ -168,7 +168,7 @@ public class WovieMovieService implements MovieService {
 			for (String filmName : filmNames) {
 				buffer.append(filmName).append("\n");
 			}
-			return buffer.toString();
+			return buffer.toString().substring(0, buffer.toString().length() - 2);
 		}
 		else {
 			logger.info("<<<<< Query Wovie now playing by theaterName: {}, content is empty", theaterName);

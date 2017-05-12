@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +54,6 @@ import com.weatherrisk.api.cnst.movie.theaters.AmbassadorTheater;
 import com.weatherrisk.api.cnst.movie.theaters.MiramarTheater;
 import com.weatherrisk.api.cnst.movie.theaters.ShowTimeTheater;
 import com.weatherrisk.api.cnst.movie.theaters.ViewshowTheater;
-import com.weatherrisk.api.cnst.movie.theaters.WovieTheater;
 import com.weatherrisk.api.cnst.ubike.UBikeCity;
 import com.weatherrisk.api.service.currency.CurrencyService;
 import com.weatherrisk.api.service.currency.RegisterService;
@@ -200,9 +198,12 @@ public class LineMsgHandler {
 	}
     
     private String constructHelpMsg() {
+    	final String supportedCryptoCurrency = CurrencyCnst.getSupportedCryptoCurrency();
+    	
     	StringBuilder buffer = new StringBuilder();
 
-    	buffer.append("說聲 hi").append("\n");
+    	buffer.append("1: 查詢功能").append("\n");
+    	buffer.append("2: 金融功能").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[發票]").append("\n");
     	buffer.append("發票對獎功能, 直接輸入號碼即可 => Ex: 168").append("\n");
@@ -212,24 +213,14 @@ public class LineMsgHandler {
     	buffer.append("查詢最近的兩個 UBike 場站資訊 => 傳送您目前的位置資訊即可").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[貨幣]").append("\n");
-    	buffer.append("<支援虛擬貨幣: ").append(CurrencyCnst.getSupportedCryptoCurrency().substring(0, CurrencyCnst.getSupportedCryptoCurrency().length() - 2)).append(">\n");
+		buffer.append("<支援虛擬貨幣: ").append(supportedCryptoCurrency).append(">\n");
     	buffer.append("<支援真實貨幣: usd, jpy...等>").append("\n");
-    	buffer.append("查詢虛擬貨幣匯率 => Ex: ").append(CurrencyCnst.getSupportedCryptoCurrency().substring(0, CurrencyCnst.getSupportedCryptoCurrency().length() - 2)).append("\n");
+    	buffer.append("查詢虛擬貨幣匯率 => Ex: ").append(supportedCryptoCurrency).append("\n");
     	buffer.append("查詢真實貨幣匯率 => Ex: usd, jpy...等").append("\n");
     	buffer.append("註冊虛擬貨幣到價通知 => Ex: 註冊貨幣eth 40 50").append("\n");
     	buffer.append("取消虛擬貨幣到價通知 => Ex: 取消貨幣eth").append("\n");
     	buffer.append("新增虛擬貨幣買進資訊 => Ex: 2017/05/08-08:07:30 買貨幣 STR 0.00004900 20000").append("\n");
     	buffer.append("新增虛擬貨幣賣出資訊 => Ex: 2017/05/08-20:07:30 賣貨幣 STR 0.00004900 20000").append("\n");
-    	buffer.append("-----------------------").append("\n");
-    	buffer.append("[電影]").append("\n");
-    	buffer.append("<支援威秀影城: 信義威秀, 京站威秀, 日新威秀, 板橋大遠百威秀>").append("\n");
-    	buffer.append("<支援秀泰影城: 欣欣秀泰, 今日秀泰, 板橋秀泰, 東南亞秀泰>").append("\n");
-    	buffer.append("<支援美麗華影城: 大直美麗華>").append("\n");
-    	buffer.append("<支援華威影城: 天母華威>").append("\n");
-    	buffer.append("<支援國賓影城: 西門國賓, 微風國賓, 晶冠國賓>").append("\n");
-    	buffer.append("請系統更新電影時刻表 => Ex: 更新電影時刻表").append("\n");
-    	buffer.append("查詢某一家影城上映電影 => 格式: 戲院名稱 + 上映, Ex: 信義威秀上映").append("\n");
-    	buffer.append("查詢某一部電影今日時刻表 => 格式: 戲院名稱 + 關鍵字, Ex: 信義威秀羅根").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[查詢股票]").append("\n");
     	buffer.append("註冊股票到價通知 => Ex: 註冊股票 3088 40 50").append("\n");
@@ -367,16 +358,6 @@ public class LineMsgHandler {
 					queryResult = "您未註冊 " + stockNameOrId + " 到價通知";
 				}
 			}
-    	}
-    	// 更新股票
-    	else if (inputMsg.equals("更新股票")) {
-    		stockService.refreshStockInfo();
-    		queryResult = "更新成功";
-    	}
-    	// 股票價格
-    	else if (inputMsg.startsWith("股票")) {
-    		String stockNameOrId = inputMsg.substring(inputMsg.indexOf("股票") + "股票".length(), inputMsg.length()).trim();
-    		queryResult = stockService.getStockPriceStrByNameOrId(stockNameOrId);
     	}
     	// 新增股票買賣紀錄
     	else if (inputMsg.contains("買股票") || inputMsg.contains("賣股票")) {
@@ -571,100 +552,6 @@ public class LineMsgHandler {
     		else {
     			queryResult = "目前只援台北市及新北市, 搜尋範例: 台北市 + 關鍵字 + ubike";
     		}
-    	}
-    	// 威秀電影
-    	else if (ViewshowTheater.isSupportedTheater(inputMsg)) {
-    		ViewshowTheater theater = ViewshowTheater.convertByChineseNameStartWith(inputMsg);
-    		
-    		String command = inputMsg.substring(theater.getChineseName().length(), inputMsg.length()).trim();
-    		
-    		if (StringUtils.isEmpty(command)) {
-    			queryResult = "請輸入欲查詢電影名稱或'上映'";
-    		}
-    		else if (command.equals("上映")) {
-    			queryResult = viewshowMovieService.queryNowPlayingByTheaterName(theater.getChineseName());
-    		}
-    		else {
-    			String filmName = command;
-    			queryResult = viewshowMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theater.getChineseName(), filmName);
-    		}
-    	}
-    	// 秀泰電影
-    	else if (ShowTimeTheater.isSupportedTheater(inputMsg)) {
-    		ShowTimeTheater theater = ShowTimeTheater.convertByChineseNameStartWith(inputMsg);
-    		
-    		String command = inputMsg.substring(theater.getChineseName().length(), inputMsg.length()).trim();
-    		
-    		if (StringUtils.isEmpty(command)) {
-    			queryResult = "請輸入欲查詢電影名稱或'上映'";
-    		}
-    		else if (command.equals("上映")) {
-    			queryResult = showTimeMovieService.queryNowPlayingByTheaterName(theater.getChineseName());
-    		}
-    		else {
-    			String filmName = command;
-    			queryResult = showTimeMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theater.getChineseName(), filmName);
-    		}
-    	}
-    	// 美麗華電影
-    	else if (MiramarTheater.isSupportedTheater(inputMsg)) {
-    		MiramarTheater theater = MiramarTheater.convertByChineseNameStartWith(inputMsg);
-    		
-    		String command = inputMsg.substring(theater.getChineseName().length(), inputMsg.length()).trim();
-    		
-    		if (StringUtils.isEmpty(command)) {
-    			queryResult = "請輸入欲查詢電影名稱或'上映'";
-    		}
-    		else if (command.equals("上映")) {
-    			queryResult = miramarMovieService.queryNowPlayingByTheaterName(theater.getChineseName());
-    		}
-    		else {
-    			String filmName = command;
-    			queryResult = miramarMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theater.getChineseName(), filmName);
-    		}
-    	}
-    	// 華威電影
-    	else if (WovieTheater.isSupportedTheater(inputMsg)) {
-    		WovieTheater theater = WovieTheater.convertByChineseNameStartWith(inputMsg);
-    		
-    		String command = inputMsg.substring(theater.getChineseName().length(), inputMsg.length()).trim();
-    		
-    		if (StringUtils.isEmpty(command)) {
-    			queryResult = "請輸入欲查詢電影名稱或'上映'";
-    		}
-    		else if (command.equals("上映")) {
-    			queryResult = wovieMovieService.queryNowPlayingByTheaterName(theater.getChineseName());
-    		}
-    		else {
-    			String filmName = command;
-    			queryResult = wovieMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theater.getChineseName(), filmName);
-    		}
-    	}
-    	// 國賓電影
-    	else if (AmbassadorTheater.isSupportedTheater(inputMsg)) {
-    		AmbassadorTheater theater = AmbassadorTheater.convertByChineseNameStartWith(inputMsg);
-    		
-    		String command = inputMsg.substring(theater.getChineseName().length(), inputMsg.length()).trim();
-    		
-    		if (StringUtils.isEmpty(command)) {
-    			queryResult = "請輸入欲查詢電影名稱或'上映'";
-    		}
-    		else if (command.equals("上映")) {
-    			queryResult = ambassadorMovieService.queryNowPlayingByTheaterName(theater.getChineseName());
-    		}
-    		else {
-    			String filmName = command;
-    			queryResult = ambassadorMovieService.queryMovieTimesByTheaterNameAndFilmNameLike(theater.getChineseName(), filmName);
-    		} 
-    	}
-    	// 更新電影時刻
-    	else if (inputMsg.equals("更新電影時刻表")) {
-    		viewshowMovieService.refreshMovieTimes();
-    		showTimeMovieService.refreshMovieTimes();
-    		miramarMovieService.refreshMovieTimes();
-    		wovieMovieService.refreshMovieTimes();
-    		ambassadorMovieService.refreshMovieTimes();
-    		queryResult = "更新成功";
     	}
     	// 其他判斷
     	else {

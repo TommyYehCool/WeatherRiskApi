@@ -155,7 +155,7 @@ public class CurrencyService {
 			buffer.append("更新時間: ").append(updateTimeFormat.format(ticker.getTimestamp())).append("\n");
 		}
 		buffer.append("USD/TWD: ").append(usdTwdRate).append("\n");
-		buffer.append("(備註: 美金對台幣匯率, 參考台灣銀行現金買入)\n");
+		buffer.append("(備註: 美金對台幣匯率, 參考台灣銀行現金買入)");
 	}
 	
 	/**
@@ -181,7 +181,7 @@ public class CurrencyService {
 		buffer.append("BTC/USD: ").append(btcUsdRate).append("\n");
 		buffer.append("USD/TWD: ").append(usdTwdRate).append("\n");
 		buffer.append("(備註: BTC對美金匯率, 參考 BTC-E)\n");
-		buffer.append("(備註: 美金對台幣匯率, 參考台灣銀行現金買入)\n");
+		buffer.append("(備註: 美金對台幣匯率, 參考台灣銀行現金買入)");
 	}
 	
 	/**

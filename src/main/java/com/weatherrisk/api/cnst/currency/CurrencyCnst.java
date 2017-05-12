@@ -108,7 +108,7 @@ public enum CurrencyCnst {
 			buffer.append(currency.toString());
 			buffer.append(", ");
 		}
-		return buffer.toString();
+		return buffer.toString().substring(0, buffer.toString().length() - 2);
 	}
 	
 	public static String getTreasurySupportedCryptoCurrency() {
@@ -117,7 +117,7 @@ public enum CurrencyCnst {
 			buffer.append(currency.toString());
 			buffer.append(", ");
 		}
-		return buffer.toString();
+		return buffer.toString().substring(0, buffer.toString().length() - 2);
 	}
 	
 	public static boolean isRealCurrency(String code) {
