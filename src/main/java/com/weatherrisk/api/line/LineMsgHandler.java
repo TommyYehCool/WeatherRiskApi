@@ -1199,7 +1199,7 @@ public class LineMsgHandler {
 		// Create sub functions menu
 		List<Action> postbackActions = new ArrayList<>();
 		
-		for (int i = 0; i < LINE_TEMPLATE_MSG_MAX_ITEMS; i++) {
+		for (int i = 0; i < movieTheaters.length && i < LINE_TEMPLATE_MSG_MAX_ITEMS; i++) {
 			MovieTheater movieTheater = movieTheaters[i];
 			PostbackAction postbackAction
 				= new PostbackAction(movieTheater.getChineseName(), LineQueryFunction.MOVIE + "&" + MovieSubFunction.QUERY_MOVIE_TIME + "&" + theaterCompany.toString() + "&" + movieTheater.toString());
