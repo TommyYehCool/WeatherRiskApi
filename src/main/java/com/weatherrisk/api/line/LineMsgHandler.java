@@ -154,6 +154,7 @@ public class LineMsgHandler {
 		private LineQueryFunction lineQueryFunc;
 		private LineFinancialFunction lineFincFunc;
 		private LineSubFunction lineSubFunc;
+		private MovieTheater movieTheater;
 	}
 	
 	private final String[] openQueryFunctionKeywords
@@ -1052,7 +1053,7 @@ public class LineMsgHandler {
 				break;
 		}
 		
-		recordUserCurrentAction(userId, lineFunc, null, linSubFunc);
+		recordUserCurrentAction(userId, lineFunc, null, linSubFunc, null);
 		
 		return replyMsg;
 	}
@@ -1077,7 +1078,7 @@ public class LineMsgHandler {
 				break;
 		}
 		
-		recordUserCurrentAction(userId, lineFunc, null, lineSubFunc);
+		recordUserCurrentAction(userId, lineFunc, null, lineSubFunc, null);
 		
 		return replyMsg;
 	}
@@ -1150,12 +1151,41 @@ public class LineMsgHandler {
 					createMovieTheatersTemplateMsg(theaterCompany, movieTheaters, replyToken);
 				}
 				else if (splits.length == 4) {
-					logger.info("----> Prepare to query movie information");
+					replyMsg = "請輸入電影名稱";
+					
+					String theaterName = splits[3];
+					MovieTheater theater = getTheaterByName(theaterName);
+					
+					logger.info("---> Process theater: <{}>, ask user to input film name", theater);
+					
+					recordUserCurrentAction(userId, LineQueryFunction.MOVIE, null, MovieSubFunction.QUERY_MOVIE_TIME, theater);
 				}
 				break;
 		}
 		
 		return replyMsg;
+	}
+
+	private MovieTheater getTheaterByName(String theaterName) {
+		MovieTheater theater = null;
+
+		AmbassadorTheater ambassadorTheater = AmbassadorTheater.convertByName(theaterName);
+		if (ambassadorTheater != null) {
+			theater = ambassadorTheater;
+		}
+		MiramarTheater miramarTheater = MiramarTheater.convertByName(theaterName);
+		if (miramarTheater != null) {
+			theater = miramarTheater;
+		}
+		ShowTimeTheater showTimeTheater = ShowTimeTheater.convertByName(theaterName);
+		if (showTimeTheater != null) {
+			theater = showTimeTheater;
+		}
+		ViewshowTheater viewshowTheater = ViewshowTheater.convertByName(theaterName);
+		if (viewshowTheater != null) {
+			theater = viewshowTheater;
+		}
+		return theater;
 	}
 
 	/**
@@ -1357,7 +1387,7 @@ public class LineMsgHandler {
 
 			case QUERY_MATCH_PRICE:
 				replyMsg = "請輸入股票名稱或代號";
-				recordUserCurrentAction(userId, null, lineFunc, lineSubFunc);
+				recordUserCurrentAction(userId, null, lineFunc, lineSubFunc, null);
 				break;
 
 			case HIT_PRICE_INFO:
@@ -1384,16 +1414,18 @@ public class LineMsgHandler {
 	 * @param lineQryFunc
 	 * @param lineFincFunc
 	 * @param subFunc
+	 * @param movieTheater
 	 */
-	private void recordUserCurrentAction(String userId, LineQueryFunction lineQryFunc, LineFinancialFunction lineFincFunc, LineSubFunction lineSubFunc) {
+	private void recordUserCurrentAction(String userId, LineQueryFunction lineQryFunc, LineFinancialFunction lineFincFunc, LineSubFunction lineSubFunc, MovieTheater movieTheater) {
 		CurrentFunction currentFunc = userCurrentFunc.get(userId);
 		if (currentFunc == null) {
-			currentFunc = new CurrentFunction(lineQryFunc, lineFincFunc, lineSubFunc);
+			currentFunc = new CurrentFunction(lineQryFunc, lineFincFunc, lineSubFunc, movieTheater);
 		}
 		else {
 			currentFunc.setLineQueryFunc(lineQryFunc);
 			currentFunc.setLineFincFunc(lineFincFunc);
 			currentFunc.setLineSubFunc(lineSubFunc);
+			currentFunc.setMovieTheater(movieTheater);
 		}
 		userCurrentFunc.put(userId, currentFunc);
 	}
@@ -1453,6 +1485,18 @@ public class LineMsgHandler {
 						break;
 				}
 				break;
+				
+			case MOVIE:
+				MovieSubFunction movieSubFunction = (MovieSubFunction) lineSubFunc;
+				switch (movieSubFunction) {
+					case QUERY_MOVIE_TIME:
+						
+						break;
+	
+					default:
+						logger.warn("---> Upexpected MovieSubFunction received: <{}>, please checked...", movieSubFunction);
+						break;
+				}
 
 			default:
 				break;
