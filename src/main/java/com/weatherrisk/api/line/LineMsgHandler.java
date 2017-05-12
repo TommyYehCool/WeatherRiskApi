@@ -933,7 +933,7 @@ public class LineMsgHandler {
     public void handleDefaultMessageEvent(PostbackEvent event) {
         logger.info(">>>>> handle default message event, event: {}", event);
         
-        String replyMsg = ERROR_MSG;
+        String replyMsg = null;
 
         UserSource source = (UserSource) event.getSource();
         PostbackContent postbackContent = event.getPostbackContent();
@@ -1023,8 +1023,10 @@ public class LineMsgHandler {
 	        }
         }
         
-        // 回應給 user
-    	reply(replyToken, new TextMessage(replyMsg));
+        if (replyMsg != null) {
+        	// 回應給 user
+        	reply(replyToken, new TextMessage(replyMsg));
+        }
     }
 	
 	/**
@@ -1117,7 +1119,7 @@ public class LineMsgHandler {
 	private String handleMovieSubFunction(MovieSubFunction lineSubFunc, String userId, String replyToken, String postbackData) {
 		logger.info("----> Prepare to process movie, SubFunction: <{}>, UserId: <{}>, PostbackData: <{}>", lineSubFunc, userId, postbackData);
 		
-		String replyMsg = "";
+		String replyMsg = null;
 		
 		switch (lineSubFunc) {
 			case UPDATE_MOVIE_TIME:
