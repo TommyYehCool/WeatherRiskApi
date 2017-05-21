@@ -176,8 +176,8 @@ public class CurrencyService {
 		buffer.append(exchangeName).append(":\n");
 		buffer.append("目前成交價 ").append(ticker.getCurrencyPair()).append(": ").append(ticker.getLast()).append("\n");
 		buffer.append("換算台幣價 ").append(baseCurrency).append("/TWD: ").append(outDecFormat.format(usdTwdRate.multiply(btcUsdRate.multiply(ticker.getLast())))).append("\n");
-		buffer.append("最高價 ").append(baseCurrency).append("/USD: ").append(ticker.getHigh()).append("\n");
-		buffer.append("最低價 ").append(baseCurrency).append("/USD: ").append(ticker.getLow()).append("\n");
+		buffer.append("最高價 ").append(baseCurrency).append("/BTC: ").append(ticker.getHigh()).append("\n");
+		buffer.append("最低價 ").append(baseCurrency).append("/BTC: ").append(ticker.getLow()).append("\n");
 		buffer.append("BTC/USD: ").append(btcUsdRate).append("\n");
 		buffer.append("USD/TWD: ").append(usdTwdRate).append("\n");
 		buffer.append("(備註: BTC對美金匯率, 參考 BTC-E)\n");
