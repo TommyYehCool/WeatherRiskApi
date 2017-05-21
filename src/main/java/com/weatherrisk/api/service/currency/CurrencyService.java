@@ -547,7 +547,8 @@ public class CurrencyService {
 				
 				if (btcUsdRate != null && usdTwdRate != null) {
 					DecimalFormat twdFormat = new DecimalFormat("#");
-					buffer.append("\n損益試算(TWD): ").append(twdFormat.format(btcWinLoseAmount.multiply(btcUsdRate).multiply(usdTwdRate))).append("\n");
+					buffer.append("賣出可得金額(TWD): ").append(twdFormat.format(currentSellMatchAmount.multiply(btcUsdRate).multiply(usdTwdRate))).append("\n");
+					buffer.append("損益試算(TWD): ").append(twdFormat.format(btcWinLoseAmount.multiply(btcUsdRate).multiply(usdTwdRate))).append("\n");
 					buffer.append("BTC/USD: ").append(btcUsdRate).append("\n");
 					buffer.append("USD/TWD: ").append(usdTwdRate).append("\n");
 					buffer.append("(備註: BTC對美金匯率, 參考 BTC-E)\n");
