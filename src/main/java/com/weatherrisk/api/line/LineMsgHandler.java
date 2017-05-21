@@ -525,6 +525,10 @@ public class LineMsgHandler {
     			queryResult = "格式錯誤, Ex: 2017/5/8 買貨幣 STR 0.00004900 20000";
     		}
     	}
+    	// 查詢貨幣庫存
+    	else if (inputMsg.equals("查詢貨幣庫存")) {
+    		queryResult = currencyService.queryTreasuryCryptoCurrency(userId);
+    	}
     	// UBike 場站名稱模糊搜尋
     	else if (inputMsg.endsWith("ubike")) {
     		final int cityNameLen = 3;
