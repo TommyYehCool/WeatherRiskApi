@@ -155,7 +155,7 @@ public class CurrencyService {
 			buffer.append("更新時間: ").append(updateTimeFormat.format(ticker.getTimestamp())).append("\n");
 		}
 		buffer.append("USD/TWD: ").append(usdTwdRate).append("\n");
-		buffer.append("(備註: 美金對台幣匯率, 參考台灣銀行現金買入)");
+		buffer.append("(備註: USD/TWD匯率, 參考台灣銀行現金買入)");
 	}
 	
 	/**
@@ -180,8 +180,8 @@ public class CurrencyService {
 		buffer.append("最低價 ").append(baseCurrency).append("/BTC: ").append(ticker.getLow()).append("\n");
 		buffer.append("BTC/USD: ").append(btcUsdRate).append("\n");
 		buffer.append("USD/TWD: ").append(usdTwdRate).append("\n");
-		buffer.append("(備註: BTC對美金匯率, 參考 BTC-E)\n");
-		buffer.append("(備註: 美金對台幣匯率, 參考台灣銀行現金買入)");
+		buffer.append("(備註: BTC/USD匯率, 參考 BTC-E)\n");
+		buffer.append("(備註: USD/TWD匯率, 參考台灣銀行現金買入)");
 	}
 	
 	/**
