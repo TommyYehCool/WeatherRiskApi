@@ -551,8 +551,8 @@ public class CurrencyService {
 					buffer.append("損益試算(TWD): ").append(twdFormat.format(btcWinLoseAmount.multiply(btcUsdRate).multiply(usdTwdRate))).append("\n");
 					buffer.append("BTC/USD: ").append(btcUsdRate).append("\n");
 					buffer.append("USD/TWD: ").append(usdTwdRate).append("\n");
-					buffer.append("(備註: BTC對美金匯率, 參考 BTC-E)\n");
-					buffer.append("(備註: 美金對台幣匯率, 參考台灣銀行現金買入)");
+					buffer.append("(備註: BTC/USD, 參考 BTC-E)\n");
+					buffer.append("(備註: USD/TWD, 參考台灣銀行現金買入)");
 				}
 			}
 			
