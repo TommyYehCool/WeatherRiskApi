@@ -40,34 +40,22 @@ public class Test_Line_MessageHandler {
 		System.out.println("test_01_deleteTestingData done");
 	}
 	
-	@Test
-	public void test_02_sendAddBuyCurrency() {
-		sendAddBuyCurrency();
-	}
-	
-	@Test
-	@Ignore
-	public void test_03_queryTreasuryCurrency() {
-		String text = "查詢貨幣庫存";
-		sendLineMsg(text);
-	}
-	
-	// 測試 templateMsg
-	@Test
-	@Ignore
-	public void test_04_testTemplateMsg() {
-		String text = "coin";
-		sendLineMsg(text);
-	}
-
 	private void deleteTestingData() {
 		currencyService.deleteCryptoCurrencyBuySellRecord(userId, "STR", "2017/05/08-08:07:30", BuySell.BUY);
 		currencyService.deleteCryptoCurrencyBuySellRecord(userId, "STR", "2017/05/08-08:07:31", BuySell.BUY);
 		currencyService.deleteCryptoCurrencyBuySellRecord(userId, "STR", "2017/05/09-04:08:46", BuySell.BUY);
 		currencyService.deleteCryptoCurrencyBuySellRecord(userId, "STR", "2017/05/09-23:33:29", BuySell.BUY);
+		currencyService.deleteCryptoCurrencyBuySellRecord(userId, "STR", "2017/05/22-03:42:24", BuySell.SELL);
 		currencyService.deleteTreasuryCryptoCurrency(userId, "STR");
 	}
-
+	
+	@Test
+	public void test_02_sendBuySellCurrency() {
+		sendAddBuyCurrency();
+		
+		sendAddSellCurrency();
+	}
+	
 	private void sendAddBuyCurrency() {
 		String text = "";
 		
@@ -81,6 +69,29 @@ public class Test_Line_MessageHandler {
 		sendLineMsg(text);
 		
 		text = "2017/05/09-23:33:29 買貨幣 STR 0.00001800 17";
+		sendLineMsg(text);
+	}
+	
+	private void sendAddSellCurrency() {
+		String text = "";
+		
+		text = "2017/05/22-03:42:24 賣貨幣 STR 0.00003281 19467.7545";
+		sendLineMsg(text);
+	}
+
+	
+	@Test
+	@Ignore
+	public void test_03_queryTreasuryCurrency() {
+		String text = "查詢貨幣庫存";
+		sendLineMsg(text);
+	}
+	
+	// 測試 templateMsg
+	@Test
+	@Ignore
+	public void test_04_testTemplateMsg() {
+		String text = "coin";
 		sendLineMsg(text);
 	}
 

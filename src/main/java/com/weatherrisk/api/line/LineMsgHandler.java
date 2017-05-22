@@ -329,8 +329,8 @@ public class LineMsgHandler {
     			}
     			else {
     				try {
-	    				BigDecimal lowerPrice = new BigDecimal(Double.parseDouble(split[1]));
-						BigDecimal upperPrice = new BigDecimal(Double.parseDouble(split[2]));
+	    				BigDecimal lowerPrice = new BigDecimal(split[1]);
+						BigDecimal upperPrice = new BigDecimal(split[2]);
 						StockPriceReached stockPriceReached = new StockPriceReached(stockNameOrId, lowerPrice, upperPrice);
 						registerService.registerStock(userId, stockPriceReached);
 						queryResult = "註冊 " + stockNameOrId + " 到價通知成功, 價格: " + lowerPrice.doubleValue() + " ~ " + upperPrice.doubleValue();
@@ -453,8 +453,8 @@ public class LineMsgHandler {
     			else {
     				try {
     					CurrencyCnst currency = CurrencyCnst.convert(code);
-    					BigDecimal lowerPrice = new BigDecimal(Double.parseDouble(split[1]));
-    					BigDecimal upperPrice = new BigDecimal(Double.parseDouble(split[2]));
+    					BigDecimal lowerPrice = new BigDecimal(split[1]);
+    					BigDecimal upperPrice = new BigDecimal(split[2]);
     					CryptoCurrencyPriceReached priceReached = new CryptoCurrencyPriceReached(currency, lowerPrice, upperPrice);
 						registerService.registerCryptoCurrency(userId, priceReached);
 						
@@ -500,8 +500,8 @@ public class LineMsgHandler {
     				String buyDateTime = split[0];
 					String currencyCode = split[2];
 					currencyCode = currencyCode.toUpperCase();
-					BigDecimal buyPrice = new BigDecimal(Double.parseDouble(split[3]));
-					BigDecimal buyVolumes = new BigDecimal(Double.parseDouble(split[4]));
+					BigDecimal buyPrice = new BigDecimal(split[3]);
+					BigDecimal buyVolumes = new BigDecimal(split[4]);
 					queryResult = currencyService.addBuyCryptoCurrency(userId, buyDateTime, currencyCode, buyPrice, buyVolumes);
     			}
     		}
@@ -516,8 +516,8 @@ public class LineMsgHandler {
     				String sellDateTime = split[0];
 					String currencyCode = split[2];
 					currencyCode = currencyCode.toUpperCase();
-					BigDecimal sellPrice = new BigDecimal(Double.parseDouble(split[3]));
-					BigDecimal sellVolumes = new BigDecimal(Double.parseDouble(split[4]));
+					BigDecimal sellPrice = new BigDecimal(split[3]);
+					BigDecimal sellVolumes = new BigDecimal(split[4]);
 					queryResult = currencyService.addSellCryptoCurrency(userId, sellDateTime, currencyCode, sellPrice, sellVolumes);
     			}
     		}
