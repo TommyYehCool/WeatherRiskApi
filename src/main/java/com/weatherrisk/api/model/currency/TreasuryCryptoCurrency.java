@@ -31,23 +31,42 @@ public class TreasuryCryptoCurrency {
 		return userId + "-" + currencyCode;
 	}
 	
-	public void setNewData(CryptoCurrencyBSRecord bsRecord) {
+	/**
+	 * 非 BTC 新資料
+	 * 
+	 * @param bsRecord
+	 */
+	public void setNewDataNonBtc(CryptoCurrencyBSRecord bsRecord) {
 		this.id = getId(bsRecord.getUserId(), bsRecord.getCurrencyCode());
 		this.userId = bsRecord.getUserId();
 		this.currencyCode = bsRecord.getCurrencyCode();
 		this.avgPrice = bsRecord.getPrice();
 		// 數量要扣掉手續費
-		double volumeSubFee = getVolumeSubFee(bsRecord.getVolumes(), bsRecord.getFee());
-		this.totalVolumes = volumeSubFee;
+		double buyVolumeSubFee = getBuyVolumeSubFee(bsRecord.getVolumes(), bsRecord.getFee());
+		this.totalVolumes = buyVolumeSubFee;
 		this.amount = bsRecord.getAmount();
 	}
 	
-	public void buyUpdateExistData(CryptoCurrencyBSRecord bsRecord) {
+	/**
+	 * TODO BTC 買更新
+	 * 
+	 * @param bsRecord
+	 */
+	public void buyUpdateExistDataBtc(CryptoCurrencyBSRecord bsRecord) {
+		
+	}
+
+	/**
+	 * 非 BTC 買更新
+	 * 
+	 * @param bsRecord
+	 */
+	public void buyUpdateExistDataNonBtc(CryptoCurrencyBSRecord bsRecord) {
 		// 算出新數量扣掉手續費
-		double newVolume = getVolumeSubFee(bsRecord.getVolumes(), bsRecord.getFee());
+		double buyVolumeSubFee = getBuyVolumeSubFee(bsRecord.getVolumes(), bsRecord.getFee());
 		
 		// 加到總數量
-		addTotalVolumes(newVolume);
+		addTotalVolumes(buyVolumeSubFee);
 		
 		// 加到總價金
 		addAmount(bsRecord.getAmount());
@@ -56,24 +75,48 @@ public class TreasuryCryptoCurrency {
 		calAvgPrice();	
 	}
 	
-	private double getVolumeSubFee(double volumes, double fee) {
-		BigDecimal bVolumes = new BigDecimal(String.valueOf(volumes));
+	/**
+	 * 非 BTC 賣更新
+	 * 
+	 * @param bsRecord
+	 */
+	public void sellUpdateExistDataNonBtc(CryptoCurrencyBSRecord bsRecord) {
+		// 扣掉總數量
+		subTotalVolumes(bsRecord.getVolumes());
+		
+		// FIXME 先把總價金清成 0
+		this.amount = 0;
+		
+		// FIXME 先把平均價格清成 0
+		this.avgPrice = 0;
+	}
+
+	/**
+	 * BTC 賣更新
+	 * 
+	 * @param bsRecord
+	 */
+	public void sellUpdateExistDataBtc(CryptoCurrencyBSRecord bsRecord) {
+		// 扣掉總數量
+		addTotalVolumes(bsRecord.getAmount());
+	}
+	
+	private double getBuyVolumeSubFee(double buyVolumes, double fee) {
+		BigDecimal bBuyVolumes = new BigDecimal(String.valueOf(buyVolumes));
 		BigDecimal bFee = new BigDecimal(String.valueOf(fee));
-		double volumeSubFee = bVolumes.subtract(bFee).doubleValue();
-		return volumeSubFee;
+		return bBuyVolumes.subtract(bFee).doubleValue();
 	}
 	
-	private void addTotalVolumes(double newVolume) {
+	private void addTotalVolumes(double volumes) {
 		BigDecimal bTotalVolumes = new BigDecimal(String.valueOf(this.totalVolumes));
-		BigDecimal bNewVolumes = new BigDecimal(String.valueOf(newVolume));
-		this.totalVolumes = bTotalVolumes.add(bNewVolumes).doubleValue();
+		BigDecimal bVolumes = new BigDecimal(String.valueOf(volumes));
+		this.totalVolumes = bTotalVolumes.add(bVolumes).doubleValue();
 	}
 	
-	private void addAmount(double newAmount) {
+	private void addAmount(double amount) {
 		BigDecimal bOrigAmount = new BigDecimal(String.valueOf(this.amount));
-		BigDecimal bNewAmount = new BigDecimal(String.valueOf(newAmount));
-		BigDecimal bAmount = bOrigAmount.add(bNewAmount);
-		this.amount = bAmount.doubleValue();
+		BigDecimal bAmount = new BigDecimal(String.valueOf(amount));
+		this.amount = bOrigAmount.add(bAmount).doubleValue();
 	}
 	
 	private void calAvgPrice() {
@@ -82,7 +125,13 @@ public class TreasuryCryptoCurrency {
 		BigDecimal bAvgPrice = bAmount.divide(bTotalVolumes, 8, RoundingMode.CEILING);
 		this.avgPrice = bAvgPrice.doubleValue();
 	}
-
+	
+	private void subTotalVolumes(double volumes) {
+		BigDecimal bTotalVolumes = new BigDecimal(String.valueOf(this.totalVolumes));
+		BigDecimal bVolumes = new BigDecimal(String.valueOf(volumes));
+		this.totalVolumes = bTotalVolumes.subtract(bVolumes).doubleValue();
+	}
+	
 	public String getId() {
 		return id;
 	}

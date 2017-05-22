@@ -42,7 +42,9 @@ public class CurrencyService {
 	
 	private Logger logger = LoggerFactory.getLogger(CurrencyService.class);
 	
-	private final DecimalFormat cryptoCurrencyDecFormat = new DecimalFormat("0.00000000");
+	private final DecimalFormat cryptoCurrencyDecFormat = new DecimalFormat("0.00");
+	
+	private final DecimalFormat twdFormat = new DecimalFormat("#");
 	
 	@Autowired
 	private CryptoCurrencyBSRecordRepository cryptoCurrencyBSRecordRepo;
@@ -401,8 +403,11 @@ public class CurrencyService {
 			return "新增失敗, 因日期時間格式錯誤, 格式:yyyy/MM/dd-HH:mm";
 		}
 
-		// 更新庫存資訊
+		// 更新非 BTC 庫存資訊
 		updateTreasuryCurrency(bsRecord);
+		
+		// 更新 BTC 庫存資訊
+		updateTreasuryBtc(bsRecord);
 
 		// 回傳訊息
 		DecimalFormat decFormat = new DecimalFormat("###0.00000000");
@@ -446,7 +451,7 @@ public class CurrencyService {
 	}
 
 	/**
-	 * 更新虛擬貨幣庫存紀錄
+	 * 更新非 BTC 庫存資訊
 	 * 
 	 * @param bsRecord
 	 */
@@ -465,7 +470,7 @@ public class CurrencyService {
 		// 代表全新, 要新增
 		if (existData == null) {
 			TreasuryCryptoCurrency newData = new TreasuryCryptoCurrency();
-			newData.setNewData(bsRecord);
+			newData.setNewDataNonBtc(bsRecord);
 			
 			startTime = System.currentTimeMillis();
 			logger.info(">>>>> Prepare to insert treasury currency: <{}>...", newData);
@@ -474,7 +479,57 @@ public class CurrencyService {
 		}
 		// 買進資料更新
 		else if (BuySell.BUY == buySell) {
-			existData.buyUpdateExistData(bsRecord);
+			existData.buyUpdateExistDataNonBtc(bsRecord);
+			
+			startTime = System.currentTimeMillis();
+			logger.info(">>>>> Prepare to update treasury currency: <{}>...", existData);
+			treasuryCryptoCurrencyRepo.save(existData);
+			logger.info("<<<<< Update treasury currency: <{}> done, time-spent: <{} ms>", existData, (System.currentTimeMillis() - startTime));
+		}
+		// 賣出資料更新
+		else if (BuySell.SELL == buySell) {
+			existData.sellUpdateExistDataNonBtc(bsRecord);
+			
+			startTime = System.currentTimeMillis();
+			logger.info(">>>>> Prepare to update treasury currency: <{}>...", existData);
+			treasuryCryptoCurrencyRepo.save(existData);
+			logger.info("<<<<< Update treasury currency: <{}> done, time-spent: <{} ms>", existData, (System.currentTimeMillis() - startTime));
+		}
+	}
+	
+	/**
+	 * 更新 BTC 庫存資訊
+	 * 
+	 * @param bsRecord
+	 */
+	private void updateTreasuryBtc(CryptoCurrencyBSRecord bsRecord) {
+		String userId = bsRecord.getUserId();
+		String currencyCode = CurrencyCnst.BTC.toString();
+		BuySell buySell = bsRecord.getBuySell();
+		
+		String id = TreasuryCryptoCurrency.getId(userId, currencyCode);
+		
+		long startTime = System.currentTimeMillis();
+		logger.info(">>>>> Prepare to get treasury currency by id: <{}>...", id);
+		TreasuryCryptoCurrency existData = treasuryCryptoCurrencyRepo.findOne(id);
+		logger.info("<<<<< Get treasury currency by id: <{}> done, time-spent: <{} ms>", id, (System.currentTimeMillis() - startTime));
+		
+		// 代表全新, 要新增
+		if (existData == null) {
+			// FIXME 目前先建了, 所以不會有這個
+		}
+		// 買進資料更新
+		else if (BuySell.BUY == buySell) {
+			existData.buyUpdateExistDataBtc(bsRecord);
+			
+			startTime = System.currentTimeMillis();
+			logger.info(">>>>> Prepare to update treasury currency: <{}>...", existData);
+			treasuryCryptoCurrencyRepo.save(existData);
+			logger.info("<<<<< Update treasury currency: <{}> done, time-spent: <{} ms>", existData, (System.currentTimeMillis() - startTime));
+		}
+		// 賣出資料更新
+		else if (BuySell.SELL == buySell) {
+			existData.sellUpdateExistDataBtc(bsRecord);
 			
 			startTime = System.currentTimeMillis();
 			logger.info(">>>>> Prepare to update treasury currency: <{}>...", existData);
@@ -613,8 +668,8 @@ public class CurrencyService {
 	private boolean appendNonBtcTreasury(StringBuilder buffer, TreasuryCryptoCurrency treasuryCryptoCurrency) {
 		String currencyCode = treasuryCryptoCurrency.getCurrencyCode();
 		double avgPrice = treasuryCryptoCurrency.getAvgPrice();
-		double totalVolumes = treasuryCryptoCurrency.getTotalVolumes();
-		double amount = treasuryCryptoCurrency.getAmount();
+		double btcTotalVolumes = treasuryCryptoCurrency.getTotalVolumes();
+		double btcAmount = treasuryCryptoCurrency.getAmount();
 		
 		CurrencyPair currencyPair = getCurrencyPairByCurrencyCode(currencyCode);
 		if (currencyPair == null) {
@@ -650,26 +705,34 @@ public class CurrencyService {
 			return false;
 		}
 
-		DecimalFormat twdFormat = new DecimalFormat("#");
-		
 		buffer.append("[").append(currencyCode.toUpperCase()).append("]");
 		buffer.append("\n均價(BTC): ").append(cryptoCurrencyDecFormat.format(avgPrice));
-		buffer.append("\n總數量: ").append(totalVolumes);
-		buffer.append("\n總金額(BTC): ").append(amount);
-		buffer.append("\n總金額(TWD): ").append(twdFormat.format(new BigDecimal(amount).multiply(btcUsdRate).multiply(usdTwdRate)));
+		buffer.append("\n總數量: ").append(btcTotalVolumes);
+		buffer.append("\n總金額(BTC): ").append(btcAmount);
+
+		BigDecimal twdAmount = new BigDecimal(String.valueOf(btcAmount)).multiply(btcUsdRate).multiply(usdTwdRate);
+		buffer.append("\n總金額(TWD): ").append(twdFormat.format(twdAmount));
+
 		buffer.append("\n--------------------");
 
 		buffer.append("\n目前成交價(BTC): ").append(cryptoCurrencyDecFormat.format(lastPrice));
 		buffer.append("\n--------------------");
 
-		BigDecimal currentSellMatchAmount = getCurrentSellMatcAmount(lastPrice, totalVolumes);
-		buffer.append("\n賣出可得金額(BTC): ").append(cryptoCurrencyDecFormat.format(currentSellMatchAmount));
-		BigDecimal btcWinLoseAmount = getBtcWinLoseAmount(currentSellMatchAmount, amount);
+		BigDecimal sellRightNowBtcAmount = lastPrice.multiply(new BigDecimal(String.valueOf(btcTotalVolumes)));
+		buffer.append("\n賣出可得金額(BTC): ").append(cryptoCurrencyDecFormat.format(sellRightNowBtcAmount));
+
+		BigDecimal btcWinLoseAmount = sellRightNowBtcAmount.subtract(new BigDecimal(String.valueOf(btcAmount)));
 		buffer.append("\n損益試算(BTC): ").append(cryptoCurrencyDecFormat.format(btcWinLoseAmount));
+
 		buffer.append("\n--------------------");
 			
-		buffer.append("\n賣出可得金額(TWD): ").append(twdFormat.format(currentSellMatchAmount.multiply(btcUsdRate).multiply(usdTwdRate)));
-		buffer.append("\n損益試算(TWD): ").append(twdFormat.format(btcWinLoseAmount.multiply(btcUsdRate).multiply(usdTwdRate)));
+		BigDecimal sellRightNowTwdAmount = sellRightNowBtcAmount.multiply(btcUsdRate).multiply(usdTwdRate);
+		buffer.append("\n賣出可得金額(TWD): ").append(twdFormat.format(sellRightNowTwdAmount));
+		
+
+		BigDecimal twdWinLoseAmount = btcWinLoseAmount.multiply(btcUsdRate).multiply(usdTwdRate);
+		buffer.append("\n損益試算(TWD): ").append(twdFormat.format(twdWinLoseAmount));
+		
 		buffer.append("\n--------------------");
 
 		buffer.append("\nBTC/USD (參考 BTC-E): ").append(btcUsdRate);
@@ -677,18 +740,6 @@ public class CurrencyService {
 		return true;
 	}
 
-	private BigDecimal getCurrentSellMatcAmount(BigDecimal lastPrice, double totalVolumes) {
-		BigDecimal bTotalVoumes = new BigDecimal(String.valueOf(totalVolumes));
-		BigDecimal bCurrentSellMatchAmount = lastPrice.multiply(bTotalVoumes);
-		return bCurrentSellMatchAmount;
-	}
-
-	private BigDecimal getBtcWinLoseAmount(BigDecimal currentSellMatchAmount, double amount) {
-		BigDecimal bAmount = new BigDecimal(String.valueOf(amount));
-		BigDecimal bBtcWinLostAmount = currentSellMatchAmount.subtract(bAmount);
-		return bBtcWinLostAmount;
-	}
-	
 	private CurrencyPair getCurrencyPairByCurrencyCode(String currencyCode) {
 		if (currencyCode.equalsIgnoreCase(CurrencyCnst.BTC.toString())) {
 			return CurrencyPair.BTC_USD;
