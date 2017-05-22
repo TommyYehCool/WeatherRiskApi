@@ -401,8 +401,8 @@ public class CurrencyService {
 			return "新增失敗, 因日期時間格式錯誤, 格式:yyyy/MM/dd-HH:mm";
 		}
 
-		// FIXME 更新庫存資訊
-		// updateTreasuryCurrency(bsRecord);
+		// 更新庫存資訊
+		updateTreasuryCurrency(bsRecord);
 
 		// 回傳訊息
 		DecimalFormat decFormat = new DecimalFormat("###0.00000000");
@@ -571,30 +571,32 @@ public class CurrencyService {
 		buffer.append("[").append(currencyCode.toUpperCase()).append("]\n");
 		buffer.append("總數量: ").append(totalVolumes);
 		
-		BigDecimal btcUsdRate = null;
-		try {
-			btcUsdRate = getCryptoLastPriceFromBtcE(CurrencyPair.BTC_USD);
-		} catch (Exception e) {
-			logger.error("Get BTC/USD from BTC-E got exception, please check...", e);
-			buffer.append("\n從 BTC-E 取得 BTC/USD 匯率失敗, 請通知系統管理員");
-			return false;
+		if (totalVolumes != 0) {
+			BigDecimal btcUsdRate = null;
+			try {
+				btcUsdRate = getCryptoLastPriceFromBtcE(CurrencyPair.BTC_USD);
+			} catch (Exception e) {
+				logger.error("Get BTC/USD from BTC-E got exception, please check...", e);
+				buffer.append("\n從 BTC-E 取得 BTC/USD 匯率失敗, 請通知系統管理員");
+				return false;
+			}
+			BigDecimal usdAmount = new BigDecimal(String.valueOf(totalVolumes)).multiply(btcUsdRate);
+			buffer.append("\n賣出可得金額(USD): ").append(usdFormat.format(usdAmount));
+			
+			BigDecimal usdTwdRate = null;
+			try {
+				usdTwdRate = getBuyCashRatesFromTaiwanBank(CurrencyCnst.USD);
+			} catch (Exception e) {
+				logger.error("Get USD/TWD from Taiwan Bank got exception, please check...", e);
+				buffer.append("\n從中央銀行取得 USD/TWD 匯率失敗, 請通知系統管理員");
+				return false;
+			}
+			BigDecimal twdAmount = usdAmount.multiply(usdTwdRate);
+			buffer.append("\n賣出可得金額(TWD): ").append(twdFormat.format(twdAmount));
+			
+			buffer.append("\nBTC/USD (參考 BTC-E): ").append(btcUsdRate);
+			buffer.append("\nUSD/TWD (參考台灣銀行現金買入): ").append(usdTwdRate);
 		}
-		BigDecimal usdAmount = new BigDecimal(String.valueOf(totalVolumes)).multiply(btcUsdRate);
-		buffer.append("\n賣出可得金額(USD): ").append(usdFormat.format(usdAmount));
-		
-		BigDecimal usdTwdRate = null;
-		try {
-			usdTwdRate = getBuyCashRatesFromTaiwanBank(CurrencyCnst.USD);
-		} catch (Exception e) {
-			logger.error("Get USD/TWD from Taiwan Bank got exception, please check...", e);
-			buffer.append("\n從中央銀行取得 USD/TWD 匯率失敗, 請通知系統管理員");
-			return false;
-		}
-		BigDecimal twdAmount = usdAmount.multiply(usdTwdRate);
-		buffer.append("\n賣出可得金額(TWD): ").append(twdFormat.format(twdAmount));
-		
-		buffer.append("\nBTC/USD (參考 BTC-E): ").append(btcUsdRate);
-		buffer.append("\nUSD/TWD (參考台灣銀行現金買入): ").append(usdTwdRate);
 		
 		return true;
 	}
