@@ -79,7 +79,6 @@ public class Test_Line_MessageHandler {
 	}
 	
 	@Test
-	@Ignore
 	public void test_03_queryTreasuryCurrency() {
 		String text = "查詢貨幣庫存";
 		sendLineMsg(text);

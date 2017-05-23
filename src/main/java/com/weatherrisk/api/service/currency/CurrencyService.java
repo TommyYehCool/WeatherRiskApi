@@ -42,7 +42,7 @@ public class CurrencyService {
 	
 	private Logger logger = LoggerFactory.getLogger(CurrencyService.class);
 	
-	private final DecimalFormat cryptoCurrencyDecFormat = new DecimalFormat("0.00");
+	private final DecimalFormat cryptoCurrencyDecFormat = new DecimalFormat("0.00000000");
 	
 	private final DecimalFormat twdFormat = new DecimalFormat("#");
 	
