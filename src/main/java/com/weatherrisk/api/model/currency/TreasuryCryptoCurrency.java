@@ -48,12 +48,13 @@ public class TreasuryCryptoCurrency {
 	}
 	
 	/**
-	 * TODO BTC 買更新
+	 * BTC 買更新
 	 * 
 	 * @param bsRecord
 	 */
 	public void buyUpdateExistDataBtc(CryptoCurrencyBSRecord bsRecord) {
-		
+		// BTC 總數量減少
+		subTotalVolumes(bsRecord.getAmount());
 	}
 
 	/**
@@ -97,7 +98,7 @@ public class TreasuryCryptoCurrency {
 	 * @param bsRecord
 	 */
 	public void sellUpdateExistDataBtc(CryptoCurrencyBSRecord bsRecord) {
-		// 扣掉總數量
+		// BTC 總數量增加
 		addTotalVolumes(bsRecord.getAmount());
 	}
 	
@@ -147,13 +148,25 @@ public class TreasuryCryptoCurrency {
 	public double getAvgPrice() {
 		return avgPrice;
 	}
+	
+	public void setAvgPrice(double avgPrice) {
+		this.avgPrice = avgPrice;
+	}
 
 	public double getTotalVolumes() {
 		return totalVolumes;
 	}
+	
+	public void setTotalVolumes(double totalVolumes) {
+		this.totalVolumes = totalVolumes;
+	}
 
 	public double getAmount() {
 		return amount;
+	}
+	
+	public void setAmount(double amount) {
+		this.amount = amount;
 	}
 
 	@Override

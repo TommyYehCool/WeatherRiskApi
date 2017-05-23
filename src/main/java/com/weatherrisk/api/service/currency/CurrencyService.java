@@ -370,6 +370,9 @@ public class CurrencyService {
 		
 		// 更新庫存資訊
 		updateTreasuryCurrency(bsRecord);
+		
+		// 更新 BTC 庫存資訊 (如果要回復測試資料, 要把這個 mark 掉, 不然會亂掉, 之後穩定就留著)
+		updateTreasuryBtc(bsRecord);
 
 		// 回傳訊息
 		DecimalFormat decFormat = new DecimalFormat("###0.00000000");
@@ -754,5 +757,26 @@ public class CurrencyService {
 			return CurrencyPair.XRP_BTC;
 		}
 		return null;
+	}
+	
+	/**
+	 * 還原預設值, 測試用 
+	 */
+	public void resetTreasury() {
+		List<TreasuryCryptoCurrency> treasuryCryptoCurrencys = treasuryCryptoCurrencyRepo.findByUserId("U8e1ad9783b416aa040e54575e92ef776");
+		for (TreasuryCryptoCurrency treasuryCryptoCurrency : treasuryCryptoCurrencys) {
+			String currencyCode = treasuryCryptoCurrency.getCurrencyCode();
+			if (currencyCode.equals("BTC")) {
+				treasuryCryptoCurrency.setAvgPrice(0);
+				treasuryCryptoCurrency.setTotalVolumes(0.00000459d);
+				treasuryCryptoCurrency.setAmount(0);
+			}
+			else {
+				treasuryCryptoCurrency.setAvgPrice(0);
+				treasuryCryptoCurrency.setTotalVolumes(0);
+				treasuryCryptoCurrency.setAmount(0);
+			}
+			treasuryCryptoCurrencyRepo.save(treasuryCryptoCurrency);
+		}
 	}
 }
