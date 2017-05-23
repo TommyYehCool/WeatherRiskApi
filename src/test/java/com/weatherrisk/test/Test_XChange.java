@@ -2,11 +2,15 @@ package com.weatherrisk.test;
 
 import java.io.IOException;
 
+import org.junit.Test;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.bitstamp.BitstampExchange;
 import org.knowm.xchange.bitstamp.dto.marketdata.BitstampTicker;
 import org.knowm.xchange.bitstamp.service.BitstampMarketDataServiceRaw;
+import org.knowm.xchange.btce.v3.BTCEExchange;
+import org.knowm.xchange.btce.v3.dto.marketdata.BTCETickerWrapper;
+import org.knowm.xchange.btce.v3.service.BTCEMarketDataServiceRaw;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.service.marketdata.MarketDataService;
@@ -19,7 +23,8 @@ import org.knowm.xchange.service.marketdata.MarketDataService;
  */
 public class Test_XChange {
 
-	public static void main(String[] args) throws IOException {
+	@Test
+	public void test_01_Bitstamp() throws IOException {
 		// Use the factory to get Bitstamp exchange API using default settings
 		Exchange bitstamp = ExchangeFactory.INSTANCE.createExchange(BitstampExchange.class.getName());
 
@@ -30,18 +35,33 @@ public class Test_XChange {
 
 		raw((BitstampMarketDataServiceRaw) marketDataService);
 	}
+	
+	@Test
+	public void test_02_BTCE() throws IOException {
+		Exchange btce = ExchangeFactory.INSTANCE.createExchange(BTCEExchange.class.getName());
+		
+		MarketDataService marketDataService = btce.getMarketDataService();
+		
+		generic(marketDataService);
+		
+		raw((BTCEMarketDataServiceRaw) marketDataService);
+	}
 
-	private static void generic(MarketDataService marketDataService) throws IOException {
-
+	private void generic(MarketDataService marketDataService) throws IOException {
 		Ticker ticker = marketDataService.getTicker(CurrencyPair.BTC_USD);
 
 		System.out.println(ticker.toString());
 	}
 
-	private static void raw(BitstampMarketDataServiceRaw marketDataService) throws IOException {
-
+	private void raw(BitstampMarketDataServiceRaw marketDataService) throws IOException {
 		BitstampTicker bitstampTicker = marketDataService.getBitstampTicker(CurrencyPair.BTC_USD);
 
 		System.out.println(bitstampTicker.toString());
+	}
+	
+	private void raw(BTCEMarketDataServiceRaw marketDataService) throws IOException {
+		BTCETickerWrapper btceTicker = marketDataService.getBTCETicker("btc_usd");
+		
+		System.out.println(btceTicker.toString());
 	}
 }
