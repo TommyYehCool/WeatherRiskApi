@@ -1,7 +1,6 @@
 package com.weatherrisk.test;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
