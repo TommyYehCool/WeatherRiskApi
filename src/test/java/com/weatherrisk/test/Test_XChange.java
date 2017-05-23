@@ -1,7 +1,6 @@
 package com.weatherrisk.test;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
