@@ -138,7 +138,6 @@ public class ShowTimeMovieService implements MovieService {
 			ShowTimeMovie showTimeMovie = showTimeMovies.get(i);
 			
 			buffer.append(showTimeMovie.getFilmName()).append("\n");
-			buffer.append("\n");
 			
 			Map<String, LinkedList<String>> timesMap = new HashMap<>();
 			
@@ -170,8 +169,8 @@ public class ShowTimeMovieService implements MovieService {
 					times.addLast(first);
 				}
 				
-				buffer.append("日期: ").append(date).append("\n");
-				buffer.append("場次: ").append(StringUtils.join(times, ", "));
+				buffer.append("\n日期: ").append(date);
+				buffer.append("\n場次: ").append(StringUtils.join(times, ", "));
 			}
 			
 			if (i != showTimeMovies.size() - 1) {
@@ -194,11 +193,11 @@ public class ShowTimeMovieService implements MovieService {
 			
 			StringBuilder buffer = new StringBuilder();
 			
-			buffer.append(theaterName).append("上映電影如下:\n");
+			buffer.append(theaterName).append("上映電影如下:");
 			for (String filmName : filmNames) {
-				buffer.append(filmName).append("\n");
+				buffer.append("\n").append(filmName);
 			}
-			return buffer.toString().substring(0, buffer.toString().length() - 2);
+			return buffer.toString();
 		}
 		else {
 			logger.info("<<<<< Query Show Time now playing by theaterName: {}, content is empty", theaterName);

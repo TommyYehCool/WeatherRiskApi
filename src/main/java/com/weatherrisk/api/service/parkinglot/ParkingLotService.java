@@ -91,16 +91,19 @@ public class ParkingLotService {
 			Map<String, ParkingLotAvailable> map = availables.stream().collect(Collectors.toMap(ParkingLotAvailable::getId, Function.identity()));
 			
 			StringBuilder buffer = new StringBuilder();
-			for (ParkingLotInfo info : infos) {
-				buffer.append("名稱：").append(info.getName()).append("\n")
-					  .append("地址：").append(info.getAddress()).append("\n")
-					  .append("服務時間：").append(info.getServiceTime()).append("\n");
+			for (int i = 0; i < infos.size(); i++) {
+				ParkingLotInfo info = infos.get(i);
+				buffer.append("名稱：").append(info.getName())
+					  .append("\n地址：").append(info.getAddress())
+					  .append("\n服務時間：").append(info.getServiceTime());
 				ParkingLotAvailable available = map.get(info.getId());
 				if (available != null) {
-					buffer.append("汽車剩餘位數: ").append(available.getAvailableCar() != -9 ? available.getAvailableCar() : "不提供即時訊息").append("\n")
-					  	  .append("機車剩餘位數: ").append(available.getAvailableMotor() != -9 ? available.getAvailableMotor() : "不提供即時訊息").append("\n");
+					buffer.append("\n汽車剩餘位數: ").append(available.getAvailableCar() != -9 ? available.getAvailableCar() : "不提供即時訊息")
+					  	  .append("\n機車剩餘位數: ").append(available.getAvailableMotor() != -9 ? available.getAvailableMotor() : "不提供即時訊息");
 				}
-				buffer.append("-------------\n");
+				if (i != infos.size() - 1) {
+					buffer.append("\n-------------");
+				}
 			}
 			return buffer.toString();
 		}

@@ -68,10 +68,10 @@ public class ReceiptRewardService {
 					String[] yearMonths = section.split("_");
 					String year = yearMonths[0];
 					String months = yearMonths[1];
-					buffer.append(year).append("年").append(months).append("月, 發票獎號如下:\n");
+					buffer.append(year).append("年").append(months).append("月, 發票獎號如下:");
 				}
 				
-				buffer.append(reward.getRewardType().getKeyword()).append(": ").append(reward.getNo()).append("\n");
+				buffer.append("\n").append(reward.getRewardType().getKeyword()).append(": ").append(reward.getNo());
 			}
 		}
 		return buffer.toString();
