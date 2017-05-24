@@ -1,6 +1,7 @@
 package com.weatherrisk.test;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
@@ -15,10 +16,9 @@ import org.knowm.xchange.utils.CertHelper;
 
 public class Test_PoloniexAccount {
 	
-	private static final String API_KEY = "Your API Key";
+	private static final String API_KEY = "Your Api Key";
 	private static final String SECRET_KEY = "Your Secret Key";
 	
-
 	public static void main(String[] args) throws Exception {
 		CertHelper.trustAllCerts();
 
@@ -34,10 +34,18 @@ public class Test_PoloniexAccount {
 		BigDecimal tradingFee = accountInfo.getTradingFee();
 		System.out.println("Trading Fee: " + tradingFee);
 		
-		Wallet wallet = accountInfo.getWallet();
-		Balance btcBalance = wallet.getBalance(Currency.BTC);
-		BigDecimal availableForWithdrawal = btcBalance.getAvailableForWithdrawal();
-		System.out.println("Available BTC for withdrawal: " + availableForWithdrawal.doubleValue());
+		Map<String, Wallet> wallets = accountInfo.getWallets();
+		wallets.values().forEach(wallet -> {
+			Map<Currency, Balance> balances = wallet.getBalances();
+			balances.forEach((currency, balance) -> {
+				if (balance.getAvailableForWithdrawal().doubleValue() != 0) {
+					System.out.println("[" + currency + "] Available for withdrawal: " + balance.getAvailableForWithdrawal().doubleValue());
+				}
+				if (balance.getFrozen().doubleValue() != 0) {
+					System.out.println("[" + currency + "] Frozen: " + balance.getFrozen().doubleValue());
+				}
+			});
+		});
 	}
 
 	public static Exchange getExchange() {
