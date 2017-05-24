@@ -157,7 +157,7 @@ public class CurrencyService {
 			buffer.append("更新時間: ").append(updateTimeFormat.format(ticker.getTimestamp())).append("\n");
 		}
 		buffer.append("USD/TWD: ").append(usdTwdRate).append("\n");
-		buffer.append("(備註: USD/TWD匯率, 參考台灣銀行現金買入)");
+		buffer.append("(備註: USD/TWD匯率, 參考台灣銀行)");
 	}
 	
 	/**
@@ -183,7 +183,7 @@ public class CurrencyService {
 		buffer.append("BTC/USD: ").append(btcUsdRate).append("\n");
 		buffer.append("USD/TWD: ").append(usdTwdRate).append("\n");
 		buffer.append("(備註: BTC/USD匯率, 參考 BTC-E)\n");
-		buffer.append("(備註: USD/TWD匯率, 參考台灣銀行現金買入)");
+		buffer.append("(備註: USD/TWD匯率, 參考台灣銀行)");
 	}
 	
 	/**
@@ -603,7 +603,7 @@ public class CurrencyService {
 			}
 			
 			if (i != treasuryCryptoCurrencys.size() - 1) {
-				buffer.append("\n=======================\n");
+				buffer.append("\n==================================\n");
 			} 
 		}
 		
@@ -653,7 +653,7 @@ public class CurrencyService {
 			buffer.append("\n賣出可得金額(TWD): ").append(twdFormat.format(twdAmount));
 			
 			buffer.append("\nBTC/USD (參考 BTC-E): ").append(btcUsdRate);
-			buffer.append("\nUSD/TWD (參考台灣銀行現金買入): ").append(usdTwdRate);
+			buffer.append("\nUSD/TWD (參考台灣銀行): ").append(usdTwdRate);
 		}
 		
 		return true;
@@ -717,10 +717,10 @@ public class CurrencyService {
 			BigDecimal twdAmount = new BigDecimal(String.valueOf(btcAmount)).multiply(btcUsdRate).multiply(usdTwdRate);
 			buffer.append("\n總金額(TWD): ").append(twdFormat.format(twdAmount));
 	
-			buffer.append("\n--------------------");
+			buffer.append("\n");
 	
 			buffer.append("\n目前成交價(BTC): ").append(cryptoCurrencyDecFormat.format(lastPrice));
-			buffer.append("\n--------------------");
+			buffer.append("\n");
 	
 			BigDecimal sellRightNowBtcAmount = lastPrice.multiply(new BigDecimal(String.valueOf(totalVolumes)));
 			buffer.append("\n賣出可得金額(BTC): ").append(cryptoCurrencyDecFormat.format(sellRightNowBtcAmount));
@@ -728,7 +728,7 @@ public class CurrencyService {
 			BigDecimal btcWinLoseAmount = sellRightNowBtcAmount.subtract(new BigDecimal(String.valueOf(btcAmount)));
 			buffer.append("\n損益試算(BTC): ").append(cryptoCurrencyDecFormat.format(btcWinLoseAmount));
 	
-			buffer.append("\n--------------------");
+			buffer.append("\n");
 				
 			BigDecimal sellRightNowTwdAmount = sellRightNowBtcAmount.multiply(btcUsdRate).multiply(usdTwdRate);
 			buffer.append("\n賣出可得金額(TWD): ").append(twdFormat.format(sellRightNowTwdAmount));
@@ -737,10 +737,10 @@ public class CurrencyService {
 			BigDecimal twdWinLoseAmount = btcWinLoseAmount.multiply(btcUsdRate).multiply(usdTwdRate);
 			buffer.append("\n損益試算(TWD): ").append(twdFormat.format(twdWinLoseAmount));
 			
-			buffer.append("\n--------------------");
+			buffer.append("\n");
 	
 			buffer.append("\nBTC/USD (參考 BTC-E): ").append(btcUsdRate);
-			buffer.append("\nUSD/TWD (參考台灣銀行現金買入): ").append(usdTwdRate);
+			buffer.append("\nUSD/TWD (參考台灣銀行): ").append(usdTwdRate);
 		}
 		
 		return true;
