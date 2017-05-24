@@ -19,6 +19,13 @@ public class Test_PoloniexAccount {
 	private static final String API_KEY = "Your Api Key";
 	private static final String SECRET_KEY = "Your Secret Key";
 	
+	public static Exchange getExchange() {
+		ExchangeSpecification spec = new ExchangeSpecification(PoloniexExchange.class);
+		spec.setApiKey(API_KEY);
+		spec.setSecretKey(SECRET_KEY);
+		return ExchangeFactory.INSTANCE.createExchange(spec);
+	}
+	
 	public static void main(String[] args) throws Exception {
 		CertHelper.trustAllCerts();
 
@@ -46,13 +53,6 @@ public class Test_PoloniexAccount {
 				}
 			});
 		});
-	}
-
-	public static Exchange getExchange() {
-		ExchangeSpecification spec = new ExchangeSpecification(PoloniexExchange.class);
-		spec.setApiKey(API_KEY);
-		spec.setSecretKey(SECRET_KEY);
-		return ExchangeFactory.INSTANCE.createExchange(spec);
 	}
 
 }
