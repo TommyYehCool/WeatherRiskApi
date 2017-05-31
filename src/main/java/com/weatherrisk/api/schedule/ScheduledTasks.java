@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.dto.marketdata.Ticker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,7 +131,8 @@ public class ScheduledTasks {
     	try {
     		logger.debug(">>>>> Prepare to get {} price from Poloneix...", baseCurrency);
 
-			BigDecimal lastPrice = currencyService.getCryptoLastPriceFromPoloneix(currencyPair);
+			Ticker ticker = currencyService.getCryptoLastPriceFromPoloneix(currencyPair);
+			BigDecimal lastPrice = ticker.getLast(); 
 
 			logger.debug("<<<<< Get {} price from Poloneix done, price: {}", baseCurrency, lastPrice);
 
