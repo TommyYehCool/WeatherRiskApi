@@ -108,6 +108,12 @@ public class Test_Line_MessageHandler {
 		sendLineMsg(text);
 	}
 	
+	@Test
+	public void test_03_queryCryptoCurrencyPrice() {
+		String text = "ltc";
+		sendLineMsg(text);
+	}
+	
 	private void sendLineMsg(String text) {
 		Source src = getSource();
 		String msgId = "xxxxxxxxxxxxx";

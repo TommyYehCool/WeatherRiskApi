@@ -39,6 +39,9 @@ public class Test_CryptoCurrencyService {
 		String data = currencyService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.BTC_USD);
 		System.out.println(data);
 		
+		data = currencyService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.LTC_USD);
+		System.out.println(data);
+		
 		data = currencyService.getCryptoCurrencyPriceFromExchanges(CurrencyPair.ETH_USD);
 		System.out.println(data);
 		

@@ -62,10 +62,10 @@ public enum CurrencyCnst {
 	
 	static {
 		crypto_currency 
-			= EnumSet.of(CurrencyCnst.BTC, CurrencyCnst.ETH, CurrencyCnst.STR, CurrencyCnst.XRP);
+			= EnumSet.of(CurrencyCnst.BTC, CurrencyCnst.ETH, CurrencyCnst.LTC, CurrencyCnst.STR, CurrencyCnst.XRP);
 		
 		poloneix_crypto_currency
-			= EnumSet.of(CurrencyCnst.STR, CurrencyCnst.XRP);
+			= EnumSet.of(CurrencyCnst.ETH, CurrencyCnst.LTC, CurrencyCnst.STR, CurrencyCnst.XRP);
 		
 		real_currency
 			= EnumSet.complementOf(crypto_currency);
