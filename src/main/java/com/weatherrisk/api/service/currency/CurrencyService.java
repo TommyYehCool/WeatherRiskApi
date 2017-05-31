@@ -161,8 +161,7 @@ public class CurrencyService {
 		if (ticker.getTimestamp() != null) {
 			buffer.append("\n更新時間: ").append(updateTimeFormat.format(ticker.getTimestamp()));
 		}
-		buffer.append("\nUSD/TWD: ").append(usdTwdRate);
-		buffer.append("\n(備註: USD/TWD匯率, 參考台灣銀行)");
+		buffer.append("\nUSD/TWD(參考台灣銀行): ").append(usdTwdRate);
 		
 		// 若為 BTC 多抓 BitoEx 目前價格
 		if (baseCurrency == CurrencyCnst.BTC) {
@@ -202,12 +201,9 @@ public class CurrencyService {
 		buffer.append("\n換算台幣價 ").append(baseCurrency).append("/TWD (BitoEx): ").append(outDecFormat.format(twdCostByBitoEx));
 		buffer.append("\n最高價 ").append(baseCurrency).append("/BTC: ").append(ticker.getHigh());
 		buffer.append("\n最低價 ").append(baseCurrency).append("/BTC: ").append(ticker.getLow());
-		buffer.append("\nBTC/USD: ").append(btcUsdRate);
-		buffer.append("\nUSD/TWD: ").append(usdTwdRate);
-		buffer.append("\nBTC/TWD: ").append(btcTwdRateFromBitoEx);
-		buffer.append("\n(備註: BTC/USD匯率, 參考 BTC-E)");
-		buffer.append("\n(備註: USD/TWD匯率, 參考台灣銀行)");
-		buffer.append("\n(備註: BTC/TWD匯率, 參考 BitoEx 賣價)");
+		buffer.append("\nBTC/USD(參考 BTC-E): ").append(btcUsdRate);
+		buffer.append("\nUSD/TWD(參考台灣銀行): ").append(usdTwdRate);
+		buffer.append("\nBTC/TWD(參考 BitoEx 賣價): ").append(btcTwdRateFromBitoEx);
 	}
 	
 	/**
@@ -767,9 +763,9 @@ public class CurrencyService {
 			BigDecimal twdAmountBitoEx = new BigDecimal(String.valueOf(totalVolumes)).multiply(btcBuySellPriceFromBitoEx.getSellPrice());
 			buffer.append("\n賣出可得金額(TWD)(BitoEx): ").append(twdFormat.format(twdAmountBitoEx));
 
-			buffer.append("\nBTC/USD (參考 BTC-E): ").append(btcUsdRate);
-			buffer.append("\nUSD/TWD (參考台灣銀行): ").append(usdTwdRate);
-			buffer.append("\nBTC/TWD (參考 BitoEx): ").append(btcBuySellPriceFromBitoEx.getSellPrice());
+			buffer.append("\nBTC/USD(參考 BTC-E): ").append(btcUsdRate);
+			buffer.append("\nUSD/TWD(參考台灣銀行): ").append(usdTwdRate);
+			buffer.append("\nBTC/TWD(參考 BitoEx 賣價): ").append(btcBuySellPriceFromBitoEx.getSellPrice());
 		}
 		
 		appendResult.setAppendResult(true);
