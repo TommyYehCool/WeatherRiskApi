@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.weatherrisk.api.Application;
 import com.weatherrisk.api.cnst.currency.CurrencyCnst;
 import com.weatherrisk.api.service.currency.CurrencyService;
+import com.weatherrisk.api.vo.BtcPriceFromBitoEx;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -61,5 +62,12 @@ public class Test_CryptoCurrencyService {
 	public void test_04_queryTreasuryCryptoCurrency() {
 		String result = currencyService.queryTreasuryCryptoCurrency("U8e1ad9783b416aa040e54575e92ef776");
 		System.out.println(result);
+	}
+	
+	@Test
+	public void test_05_getBtcBuySellPriceFromBitoEx() throws Exception {
+		BtcPriceFromBitoEx test = currencyService.getBtcBuySellPriceFromBitoEx();
+		System.out.println("買: " + test.getBuyPrice().doubleValue());
+		System.out.println("賣: " + test.getSellPrice().doubleValue());
 	}
 }
