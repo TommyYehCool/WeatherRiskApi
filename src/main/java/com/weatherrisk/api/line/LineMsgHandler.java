@@ -634,7 +634,7 @@ public class LineMsgHandler {
 	private String checkBuySellCryptoCurrencyMsg(String buySellKeyWord, String inputMsg) {
 		String[] split = inputMsg.split(" ");
 		if (split.length != 6) {
-			return "格式說明: 日期 + 買/賣貨幣 + 幣別 + 價格 + 數量 + 手續費%數(0.15/0.25), 每個 '+' 用空格取代/nEx: 2017/05/08-08:07:30 " + buySellKeyWord + " STR 0.00004900 20000 0.15";
+			return "格式說明:\n日期 + 買/賣貨幣 + 幣別 + 價格 + 數量 + 手續費%數(0.15/0.25)\n每個 '+' 用空格取代\nEx: 2017/05/08-08:07:30 " + buySellKeyWord + " STR 0.00004900 20000 0.15";
 		}
 		else {
 			// check 日期時間
