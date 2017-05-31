@@ -60,7 +60,12 @@ public class ReceiptRewardService {
 		else {
 			Set<String> showedSection = new HashSet<>();
 			
-			for (ReceiptReward reward : rewards) {
+			for (int i = 0; i < rewards.size(); i++) {
+				ReceiptReward reward = rewards.get(i);
+				if (i != 0) {
+					buffer.append("\n");
+				}
+
 				String section = reward.getSection();
 				if (!showedSection.contains(section)) {
 					showedSection.add(section);
