@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -581,7 +582,29 @@ public class CurrencyService {
 			return "您無虛擬貨幣庫存紀錄";
 		}
 		
-		boolean appendResult = true;
+		// 從 BTC-E 取得 BTC/USD 
+		BigDecimal btcUsdRate = null;
+		try {
+			btcUsdRate = getCryptoLastPriceFromBtcE(CurrencyPair.BTC_USD);
+		} catch (Exception e) {
+			logger.error("Get BTC/USD from BTC-E got exception, please check...", e);
+			return "從 BTC-E 取得 BTC/USD 匯率失敗, 請通知系統管理員";
+		}
+		
+		// 從中央銀行取得 USD/TWD
+		BigDecimal usdTwdRate = null;
+		try {
+			usdTwdRate = getBuyCashRatesFromTaiwanBank(CurrencyCnst.USD);
+		} catch (Exception e) {
+			logger.error("Get USD/TWD from Taiwan Bank got exception, please check...", e);
+			return "從中央銀行取得 USD/TWD 匯率失敗, 請通知系統管理員";
+		}
+		
+		// 用來儲存所有幣別目前 BTC 價值
+		List<AppendResult> forWinLoss = new ArrayList<>();
+		
+		// 暫存處理每個幣別結果
+		AppendResult appendResult = null;
 		
 		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < treasuryCryptoCurrencys.size(); i++) {
@@ -590,24 +613,64 @@ public class CurrencyService {
 			String currencyCode = treasuryCryptoCurrency.getCurrencyCode();
 			CurrencyCnst currency = CurrencyCnst.convert(currencyCode);
 			if (currency == CurrencyCnst.BTC) {
-				appendResult = appendBtcTreasury(buffer, treasuryCryptoCurrency); 
-				if (!appendResult) {
+				appendResult = appendBtcTreasury(buffer, btcUsdRate, usdTwdRate, treasuryCryptoCurrency);
+				forWinLoss.add(appendResult);
+				if (!appendResult.isAppendResult()) {
 					return buffer.toString();
 				}
 			}
 			else {
-				appendResult = appendNonBtcTreasury(buffer, treasuryCryptoCurrency);
-				if (!appendResult) {
+				appendResult = appendNonBtcTreasury(buffer, btcUsdRate, usdTwdRate, treasuryCryptoCurrency);
+				forWinLoss.add(appendResult);
+				if (!appendResult.isAppendResult()) {
 					return buffer.toString();
 				}
 			}
-			
-			if (i != treasuryCryptoCurrencys.size() - 1) {
-				buffer.append("\n==================================\n");
-			} 
+			buffer.append("\n==================================\n");
 		}
 		
+		appendWinLossAmount(buffer, btcUsdRate, usdTwdRate, forWinLoss);
+		
 		return buffer.toString();
+	}
+	
+	private void appendWinLossAmount(StringBuilder buffer, BigDecimal btcUsdRate, BigDecimal usdTwdRate, List<AppendResult> forWinLoss) {
+		buffer.append("[總盈虧]");
+		
+		BigDecimal totalCostBtc = new BigDecimal(0);
+		for (AppendResult appendResult : forWinLoss) {
+			BigDecimal btcAmount = appendResult.getBtcAmount();
+			totalCostBtc = totalCostBtc.add(btcAmount);
+		}
+		
+		BigDecimal sellRightNowTwdAmount = totalCostBtc.multiply(btcUsdRate).multiply(usdTwdRate);
+		
+		buffer.append("\n目前總共價值 BTC: ").append(cryptoCurrencyDecFormat.format(totalCostBtc));
+		buffer.append("\n目前總共價值 TWD: ").append(twdFormat.format(sellRightNowTwdAmount));
+	}
+
+	private class AppendResult {
+		private boolean appendResult;
+		private BigDecimal btcAmount;
+		
+		public AppendResult() {
+		}
+		
+		public void setAppendResult(boolean appendResult) {
+			this.appendResult = appendResult;
+		}
+
+		public void setBtcAmount(BigDecimal btcAmount) {
+			this.btcAmount = btcAmount;
+		}
+
+		public boolean isAppendResult() {
+			return appendResult;
+		}
+
+		public BigDecimal getBtcAmount() {
+			return btcAmount;
+		}
 	}
 	
 	/**
@@ -616,10 +679,14 @@ public class CurrencyService {
 	 * </pre>
 	 * 
 	 * @param buffer
+	 * @param btcUsdRate 
+	 * @param usdTwdRate 
 	 * @param treasuryCryptoCurrency
 	 * @return
 	 */
-	private boolean appendBtcTreasury(StringBuilder buffer, TreasuryCryptoCurrency treasuryCryptoCurrency) {
+	private AppendResult appendBtcTreasury(StringBuilder buffer, BigDecimal btcUsdRate, BigDecimal usdTwdRate, TreasuryCryptoCurrency treasuryCryptoCurrency) {
+		AppendResult appendResult = new AppendResult();
+		
 		final DecimalFormat usdFormat = new DecimalFormat("#.00");
 		final DecimalFormat twdFormat = new DecimalFormat("#");
 
@@ -630,25 +697,9 @@ public class CurrencyService {
 		buffer.append("總數量: ").append(totalVolumes);
 		
 		if (totalVolumes != 0) {
-			BigDecimal btcUsdRate = null;
-			try {
-				btcUsdRate = getCryptoLastPriceFromBtcE(CurrencyPair.BTC_USD);
-			} catch (Exception e) {
-				logger.error("Get BTC/USD from BTC-E got exception, please check...", e);
-				buffer.append("\n從 BTC-E 取得 BTC/USD 匯率失敗, 請通知系統管理員");
-				return false;
-			}
 			BigDecimal usdAmount = new BigDecimal(String.valueOf(totalVolumes)).multiply(btcUsdRate);
 			buffer.append("\n賣出可得金額(USD): ").append(usdFormat.format(usdAmount));
 			
-			BigDecimal usdTwdRate = null;
-			try {
-				usdTwdRate = getBuyCashRatesFromTaiwanBank(CurrencyCnst.USD);
-			} catch (Exception e) {
-				logger.error("Get USD/TWD from Taiwan Bank got exception, please check...", e);
-				buffer.append("\n從中央銀行取得 USD/TWD 匯率失敗, 請通知系統管理員");
-				return false;
-			}
 			BigDecimal twdAmount = usdAmount.multiply(usdTwdRate);
 			buffer.append("\n賣出可得金額(TWD): ").append(twdFormat.format(twdAmount));
 			
@@ -656,7 +707,10 @@ public class CurrencyService {
 			buffer.append("\nUSD/TWD (參考台灣銀行): ").append(usdTwdRate);
 		}
 		
-		return true;
+		appendResult.setAppendResult(true);
+		appendResult.setBtcAmount(new BigDecimal(String.valueOf(totalVolumes)));
+		
+		return appendResult;
 	}
 
 	/**
@@ -665,21 +719,28 @@ public class CurrencyService {
 	 * </pre>
 	 * 
 	 * @param buffer
+	 * @param btcUsdRate 
+	 * @param usdTwdRate 
 	 * @param treasuryCryptoCurrency
 	 * @return
 	 */
-	private boolean appendNonBtcTreasury(StringBuilder buffer, TreasuryCryptoCurrency treasuryCryptoCurrency) {
+	private AppendResult appendNonBtcTreasury(StringBuilder buffer, BigDecimal btcUsdRate, BigDecimal usdTwdRate, TreasuryCryptoCurrency treasuryCryptoCurrency) {
+		AppendResult appendResult = new AppendResult();
+		
 		String currencyCode = treasuryCryptoCurrency.getCurrencyCode();
 		double avgPrice = treasuryCryptoCurrency.getAvgPrice();
 		double totalVolumes = treasuryCryptoCurrency.getTotalVolumes();
 		double btcAmount = treasuryCryptoCurrency.getAmount();
+		
+		BigDecimal sellRightNowBtcAmount = null;
 		
 		if (totalVolumes != 0) {
 			CurrencyPair currencyPair = getCurrencyPairByCurrencyCode(currencyCode);
 			if (currencyPair == null) {
 				logger.error("Get CurrencyPair by currencyCode: <{}> is null, please check...", currencyCode);
 				buffer.append("\n不支援紀錄的虛擬貨幣, 請通知系統管理員");
-				return false;
+				appendResult.setAppendResult(false);
+				return appendResult;
 			}
 			
 			BigDecimal lastPrice = null;
@@ -688,27 +749,10 @@ public class CurrencyService {
 			} catch (Exception e) {
 				logger.error("Get Last Price from Poloneix by CurrencyPair: <{}> got exception, please check...", currencyPair, e);
 				buffer.append("\n從 Poloneix 取得 ").append(currencyPair).append(" 匯率失敗, 請通知系統管理員");
-				return false;
+				appendResult.setAppendResult(false);
+				return appendResult;
 			}
 			
-			BigDecimal btcUsdRate = null;
-			try {
-				btcUsdRate = getCryptoLastPriceFromBtcE(CurrencyPair.BTC_USD);
-			} catch (Exception e) {
-				logger.error("Get BTC/USD from BTC-E got exception, please check...", e);
-				buffer.append("\n從 BTC-E 取得 BTC/USD 匯率失敗, 請通知系統管理員");
-				return false;
-			}
-	
-			BigDecimal usdTwdRate = null;
-			try {
-				usdTwdRate = getBuyCashRatesFromTaiwanBank(CurrencyCnst.USD);
-			} catch (Exception e) {
-				logger.error("Get USD/TWD from Taiwan Bank got exception, please check...", e);
-				buffer.append("\n從台灣銀行取得 USD/TWD 匯率失敗, 請通知系統管理員");
-				return false;
-			}
-	
 			buffer.append("[").append(currencyCode.toUpperCase()).append("]");
 			buffer.append("\n均價(BTC): ").append(cryptoCurrencyDecFormat.format(avgPrice));
 			buffer.append("\n總數量: ").append(totalVolumes);
@@ -722,7 +766,7 @@ public class CurrencyService {
 			buffer.append("\n目前成交價(BTC): ").append(cryptoCurrencyDecFormat.format(lastPrice));
 			buffer.append("\n");
 	
-			BigDecimal sellRightNowBtcAmount = lastPrice.multiply(new BigDecimal(String.valueOf(totalVolumes)));
+			sellRightNowBtcAmount = lastPrice.multiply(new BigDecimal(String.valueOf(totalVolumes)));
 			buffer.append("\n賣出可得金額(BTC): ").append(cryptoCurrencyDecFormat.format(sellRightNowBtcAmount));
 	
 			BigDecimal btcWinLoseAmount = sellRightNowBtcAmount.subtract(new BigDecimal(String.valueOf(btcAmount)));
@@ -736,14 +780,12 @@ public class CurrencyService {
 	
 			BigDecimal twdWinLoseAmount = btcWinLoseAmount.multiply(btcUsdRate).multiply(usdTwdRate);
 			buffer.append("\n損益試算(TWD): ").append(twdFormat.format(twdWinLoseAmount));
-			
-			buffer.append("\n");
-	
-			buffer.append("\nBTC/USD (參考 BTC-E): ").append(btcUsdRate);
-			buffer.append("\nUSD/TWD (參考台灣銀行): ").append(usdTwdRate);
 		}
 		
-		return true;
+		appendResult.setAppendResult(true);
+		appendResult.setBtcAmount(sellRightNowBtcAmount);
+		
+		return appendResult;
 	}
 
 	private CurrencyPair getCurrencyPairByCurrencyCode(String currencyCode) {

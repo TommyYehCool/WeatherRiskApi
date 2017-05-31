@@ -528,6 +528,7 @@ public class LineMsgHandler {
     	// 查詢貨幣庫存
     	else if (inputMsg.equals("查詢貨幣庫存")) {
     		queryResult = currencyService.queryTreasuryCryptoCurrency(userId);
+    		System.out.println(queryResult);
     	}
     	// UBike 場站名稱模糊搜尋
     	else if (inputMsg.endsWith("ubike")) {
