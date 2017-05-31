@@ -523,9 +523,6 @@ public class LineMsgHandler {
 					queryResult = currencyService.addSellCryptoCurrency(userId, sellDateTime, currencyCode, sellPrice, sellVolumes, feeRate);
     			}
     		}
-    		else {
-    			queryResult = "格式錯誤\n格式:日期 + 買/賣貨幣 + 幣別 + 價格 + 數量 + 手續費%數\nEx: 2017/5/8 買貨幣 STR 0.00004900 20000 0.15";
-    		}
     	}
     	// 查詢貨幣庫存
     	else if (inputMsg.equals("查詢貨幣庫存")) {
