@@ -219,8 +219,8 @@ public class LineMsgHandler {
     	buffer.append("查詢真實貨幣匯率 => Ex: usd, jpy...等").append("\n");
     	buffer.append("註冊虛擬貨幣到價通知 => Ex: 註冊貨幣eth 40 50").append("\n");
     	buffer.append("取消虛擬貨幣到價通知 => Ex: 取消貨幣eth").append("\n");
-    	buffer.append("新增虛擬貨幣買進資訊 => Ex: 2017/05/08-08:07:30 買貨幣 STR 0.00004900 20000").append("\n");
-    	buffer.append("新增虛擬貨幣賣出資訊 => Ex: 2017/05/08-20:07:30 賣貨幣 STR 0.00004900 20000").append("\n");
+    	buffer.append("新增虛擬貨幣買進資訊 => Ex: 2017/05/08-08:07:30 買貨幣 STR 0.00004900 20000 0.15").append("\n");
+    	buffer.append("新增虛擬貨幣賣出資訊 => Ex: 2017/05/08-20:07:30 賣貨幣 STR 0.00004900 20000 0.25").append("\n");
     	buffer.append("-----------------------").append("\n");
     	buffer.append("[查詢股票]").append("\n");
     	buffer.append("註冊股票到價通知 => Ex: 註冊股票 3088 40 50").append("\n");
@@ -502,7 +502,8 @@ public class LineMsgHandler {
 					currencyCode = currencyCode.toUpperCase();
 					BigDecimal buyPrice = new BigDecimal(split[3]);
 					BigDecimal buyVolumes = new BigDecimal(split[4]);
-					queryResult = currencyService.addBuyCryptoCurrency(userId, buyDateTime, currencyCode, buyPrice, buyVolumes);
+					BigDecimal feeRate = new BigDecimal(split[5]);
+					queryResult = currencyService.addBuyCryptoCurrency(userId, buyDateTime, currencyCode, buyPrice, buyVolumes, feeRate);
     			}
     		}
     		else if (inputMsg.contains("賣")) {
@@ -518,7 +519,8 @@ public class LineMsgHandler {
 					currencyCode = currencyCode.toUpperCase();
 					BigDecimal sellPrice = new BigDecimal(split[3]);
 					BigDecimal sellVolumes = new BigDecimal(split[4]);
-					queryResult = currencyService.addSellCryptoCurrency(userId, sellDateTime, currencyCode, sellPrice, sellVolumes);
+					BigDecimal feeRate = new BigDecimal(split[5]);
+					queryResult = currencyService.addSellCryptoCurrency(userId, sellDateTime, currencyCode, sellPrice, sellVolumes, feeRate);
     			}
     		}
     		else {
@@ -633,8 +635,8 @@ public class LineMsgHandler {
 	
 	private String checkBuySellCryptoCurrencyMsg(String buySellKeyWord, String inputMsg) {
 		String[] split = inputMsg.split(" ");
-		if (split.length != 5) {
-			return "格式範例: 2017/05/08-08:07:30 " + buySellKeyWord + " STR 0.00004900 20000";
+		if (split.length != 6) {
+			return "格式範例: 2017/05/08-08:07:30 " + buySellKeyWord + " STR 0.00004900 20000 0.15";
 		}
 		else {
 			// check 日期時間
@@ -671,6 +673,17 @@ public class LineMsgHandler {
 			String strVolumes = split[4];
 			try {
 				Double.parseDouble(strVolumes);
+			} catch (Exception e) {
+				return "請確認輸入的數量";
+			}
+			
+			// check 手續費 
+			String strFeeRate = split[5];
+			try {
+				double feeRate = Double.parseDouble(strFeeRate);
+				if (feeRate != 0.15 && feeRate != 0.25) {
+					return "請確認手續費為 0.15 或 0.25, 無其他";
+				}
 			} catch (Exception e) {
 				return "請確認輸入的數量";
 			}

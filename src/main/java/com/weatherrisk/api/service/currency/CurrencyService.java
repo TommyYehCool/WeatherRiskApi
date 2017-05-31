@@ -357,14 +357,15 @@ public class CurrencyService {
 	 * @param currencyCode
 	 * @param buyPrice
 	 * @param buyVolumes
+	 * @param feeRate 
 	 * @return
 	 */
-	public String addBuyCryptoCurrency(String userId, String buyDateTime, String currencyCode, BigDecimal buyPrice, BigDecimal buyVolumes) {
+	public String addBuyCryptoCurrency(String userId, String buyDateTime, String currencyCode, BigDecimal buyPrice, BigDecimal buyVolumes, BigDecimal feeRate) {
 		CryptoCurrencyBSRecord bsRecord = null;
 		
 		// 新增買進紀錄
 		try {
-			bsRecord = addBuySellRecord(userId, currencyCode, BuySell.BUY, buyDateTime, buyPrice, buyVolumes);
+			bsRecord = addBuySellRecord(userId, currencyCode, BuySell.BUY, buyDateTime, buyPrice, buyVolumes, feeRate);
 		} catch (ParseException e) {
 			return "新增失敗, 因日期時間格式錯誤, 格式:yyyy/MM/dd-HH:mm";
 		}
@@ -395,14 +396,15 @@ public class CurrencyService {
 	 * @param currencyCode
 	 * @param sellPrice
 	 * @param sellVolumes
+	 * @param feeRate 
 	 * @return
 	 */
-	public String addSellCryptoCurrency(String userId, String sellDateTime, String currencyCode, BigDecimal sellPrice, BigDecimal sellVolumes) {
+	public String addSellCryptoCurrency(String userId, String sellDateTime, String currencyCode, BigDecimal sellPrice, BigDecimal sellVolumes, BigDecimal feeRate) {
 		CryptoCurrencyBSRecord bsRecord = null;
 		
 		// 新增賣出紀錄
 		try {
-			bsRecord = addBuySellRecord(userId, currencyCode, BuySell.SELL, sellDateTime, sellPrice, sellVolumes);
+			bsRecord = addBuySellRecord(userId, currencyCode, BuySell.SELL, sellDateTime, sellPrice, sellVolumes, feeRate);
 		} catch (ParseException e) {
 			return "新增失敗, 因日期時間格式錯誤, 格式:yyyy/MM/dd-HH:mm";
 		}
@@ -434,13 +436,14 @@ public class CurrencyService {
 	 * @param dateTime
 	 * @param price
 	 * @param volumes
+	 * @param feeRate 
 	 * @return
 	 * @throws ParseException
 	 */
-	private CryptoCurrencyBSRecord addBuySellRecord(String userId, String currencyCode, BuySell buySell, String dateTime, BigDecimal price, BigDecimal volumes) throws ParseException {
+	private CryptoCurrencyBSRecord addBuySellRecord(String userId, String currencyCode, BuySell buySell, String dateTime, BigDecimal price, BigDecimal volumes, BigDecimal feeRate) throws ParseException {
 		CryptoCurrencyBSRecord currencyRecord = new CryptoCurrencyBSRecord();
 		try {
-			currencyRecord.setData(userId, currencyCode, buySell, dateTime, price, volumes);
+			currencyRecord.setData(userId, currencyCode, buySell, dateTime, price, volumes, feeRate);
 		} catch (ParseException e) {
 			logger.error("Exception raised while paring dateTime, the correct format is 'yyyy/MM/dd-HH:mm:ss'");
 			throw e;
@@ -694,7 +697,7 @@ public class CurrencyService {
 		double totalVolumes = treasuryCryptoCurrency.getTotalVolumes();
 		
 		buffer.append("[").append(currencyCode.toUpperCase()).append("]\n");
-		buffer.append("總數量: ").append(totalVolumes);
+		buffer.append("總數量: ").append(cryptoCurrencyDecFormat.format(totalVolumes));
 		
 		if (totalVolumes != 0) {
 			BigDecimal usdAmount = new BigDecimal(String.valueOf(totalVolumes)).multiply(btcUsdRate);
@@ -804,13 +807,13 @@ public class CurrencyService {
 	/**
 	 * 還原預設值, 測試用 
 	 */
-	public void resetTreasury() {
+	public void resetTreasury(double initialBtcVolumes) {
 		List<TreasuryCryptoCurrency> treasuryCryptoCurrencys = treasuryCryptoCurrencyRepo.findByUserId("U8e1ad9783b416aa040e54575e92ef776");
 		for (TreasuryCryptoCurrency treasuryCryptoCurrency : treasuryCryptoCurrencys) {
 			String currencyCode = treasuryCryptoCurrency.getCurrencyCode();
 			if (currencyCode.equals("BTC")) {
 				treasuryCryptoCurrency.setAvgPrice(0);
-				treasuryCryptoCurrency.setTotalVolumes(0.00000459d);
+				treasuryCryptoCurrency.setTotalVolumes(initialBtcVolumes);
 				treasuryCryptoCurrency.setAmount(0);
 			}
 			else {

@@ -18,12 +18,6 @@ public class CryptoCurrencyBSRecord {
 	@Transient
 	private final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
 	
-	@Transient
-	private final BigDecimal buyFeePercent = new BigDecimal(0.0015);
-	
-	@Transient
-	private final BigDecimal sellFeePercent = new BigDecimal(0.0025);
-	
 	@Id
 	private String id;
 	
@@ -47,7 +41,7 @@ public class CryptoCurrencyBSRecord {
 		return userId + "-" + currencyCode + "-" + buySell + "-" + dateTime;
 	}
 	
-	public void setData(String userId, String currencyCode, BuySell buySell, String dateTime, BigDecimal price, BigDecimal volumes) throws ParseException {
+	public void setData(String userId, String currencyCode, BuySell buySell, String dateTime, BigDecimal price, BigDecimal volumes, BigDecimal feeRate) throws ParseException {
 		this.id = getId(userId, currencyCode, dateTime, buySell);
 		this.userId = userId;
 		this.currencyCode = currencyCode;
@@ -55,10 +49,13 @@ public class CryptoCurrencyBSRecord {
 		this.buySell = buySell;
 		this.price = price.setScale(8, RoundingMode.DOWN).doubleValue();
 		this.volumes = volumes.doubleValue();
+		
+		BigDecimal feeRatePercent = feeRate.divide(new BigDecimal(String.valueOf(100)));
 		this.fee = 
 			BuySell.BUY == buySell ? 
-				volumes.multiply(buyFeePercent).setScale(8, RoundingMode.HALF_UP).doubleValue() :
-				price.multiply(volumes).multiply(sellFeePercent).setScale(8, RoundingMode.HALF_UP).doubleValue();
+				volumes.multiply(feeRatePercent).setScale(8, RoundingMode.HALF_UP).doubleValue() :
+				price.multiply(volumes).multiply(feeRatePercent).setScale(8, RoundingMode.HALF_UP).doubleValue();
+
 		this.amount = 
 			BuySell.BUY == buySell ?
 				price.multiply(volumes).setScale(8, RoundingMode.DOWN).doubleValue() :
