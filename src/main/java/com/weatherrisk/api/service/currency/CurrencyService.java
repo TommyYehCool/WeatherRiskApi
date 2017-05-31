@@ -693,7 +693,7 @@ public class CurrencyService {
 	}
 	
 	private void appendWinLossAmount(StringBuilder buffer, BigDecimal btcUsdRate, BigDecimal usdTwdRate, BtcPriceFromBitoEx btcBuySellPriceFromBitoEx, List<AppendResult> forWinLoss) {
-		buffer.append("[總盈虧]");
+		buffer.append("[總價值]");
 		
 		BigDecimal totalCostBtc = new BigDecimal(0);
 		for (AppendResult appendResult : forWinLoss) {
@@ -704,9 +704,9 @@ public class CurrencyService {
 		BigDecimal sellRightNowTwdAmountBtcE = totalCostBtc.multiply(btcUsdRate).multiply(usdTwdRate);
 		BigDecimal sellRightNowTwdAmountBitoEx = totalCostBtc.multiply(btcBuySellPriceFromBitoEx.getSellPrice());
 		
-		buffer.append("\n目前總共價值 BTC: ").append(cryptoCurrencyDecFormat.format(totalCostBtc));
-		buffer.append("\n目前總共價值 TWD (BTC-E): ").append(twdFormat.format(sellRightNowTwdAmountBtcE));
-		buffer.append("\n目前總共價值 TWD (BitoEx): ").append(twdFormat.format(sellRightNowTwdAmountBitoEx));
+		buffer.append("\nBTC: ").append(cryptoCurrencyDecFormat.format(totalCostBtc));
+		buffer.append("\nTWD (BTC-E): ").append(twdFormat.format(sellRightNowTwdAmountBtcE));
+		buffer.append("\nTWD (BitoEx): ").append(twdFormat.format(sellRightNowTwdAmountBitoEx));
 	}
 
 	private class AppendResult {
