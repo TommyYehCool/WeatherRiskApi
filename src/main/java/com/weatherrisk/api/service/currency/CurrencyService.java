@@ -200,15 +200,15 @@ public class CurrencyService {
 	}
 	
 	/**
-	 * 從 Poloneix 取得某一檔虛擬貨幣的價格
+	 * 從 Poloneix 取得某一檔虛擬貨幣的目前成交價格
 	 * 
 	 * @param currencyPair
 	 * @return
 	 * @throws Exception
 	 */
-	public BigDecimal getCryptoLastPriceFromPoloneix(CurrencyPair currencyPair) throws Exception {
+	public Ticker getCryptoLastPriceFromPoloneix(CurrencyPair currencyPair) throws Exception {
 		Ticker ticker = getTickerByCurrencyPairFromExchange(PoloniexExchange.class.getName(), currencyPair);
-		return ticker.getLast();
+		return ticker;
 	}
 
 	/**
@@ -746,11 +746,17 @@ public class CurrencyService {
 				return appendResult;
 			}
 			
+			Ticker ticker = null;
 			BigDecimal lastPrice = null;
+			BigDecimal highPrice = null;
+			BigDecimal lowPrice = null;
 			try {
-				lastPrice = getCryptoLastPriceFromPoloneix(currencyPair);
+				ticker = getCryptoLastPriceFromPoloneix(currencyPair);
+				lastPrice = ticker.getLast();
+				highPrice = ticker.getHigh();
+				lowPrice = ticker.getLow();
 			} catch (Exception e) {
-				logger.error("Get Last Price from Poloneix by CurrencyPair: <{}> got exception, please check...", currencyPair, e);
+				logger.error("Get Ticker from Poloneix by CurrencyPair: <{}> got exception, please check...", currencyPair, e);
 				buffer.append("\n從 Poloneix 取得 ").append(currencyPair).append(" 匯率失敗, 請通知系統管理員");
 				appendResult.setAppendResult(false);
 				return appendResult;
@@ -767,6 +773,8 @@ public class CurrencyService {
 			buffer.append("\n");
 	
 			buffer.append("\n目前成交價(BTC): ").append(cryptoCurrencyDecFormat.format(lastPrice));
+			buffer.append("\n最高價(BTC): ").append(cryptoCurrencyDecFormat.format(highPrice));
+			buffer.append("\n最低價(BTC): ").append(cryptoCurrencyDecFormat.format(lowPrice));
 			buffer.append("\n");
 	
 			sellRightNowBtcAmount = lastPrice.multiply(new BigDecimal(String.valueOf(totalVolumes)));
