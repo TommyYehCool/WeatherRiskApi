@@ -62,10 +62,6 @@ public class ReceiptRewardService {
 			
 			for (int i = 0; i < rewards.size(); i++) {
 				ReceiptReward reward = rewards.get(i);
-				if (i != 0) {
-					buffer.append("\n");
-				}
-
 				String section = reward.getSection();
 				if (!showedSection.contains(section)) {
 					showedSection.add(section);
@@ -73,6 +69,9 @@ public class ReceiptRewardService {
 					String[] yearMonths = section.split("_");
 					String year = yearMonths[0];
 					String months = yearMonths[1];
+					if (i != 0) {
+						buffer.append("\n");
+					}
 					buffer.append(year).append("年").append(months).append("月, 發票獎號如下:");
 				}
 				
