@@ -1,6 +1,7 @@
 package com.weatherrisk.api.service.movie;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -158,6 +159,8 @@ public class ShowTimeMovieService implements MovieService {
 			}
 			
 			String[] dates = timesMap.keySet().toArray(new String[0]);
+			Arrays.sort(dates);
+			
 			for (String date : dates) {
 				LinkedList<String> times = timesMap.get(date);
 

@@ -63,7 +63,7 @@ public class Test_MovieService {
 	
 	@Test
 	public void test_05_ShowTimeMoviceService_queryByTheaterNameAndFilmNameLike() {
-		String queryResult = showTimeMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("板橋秀泰", "神鬼奇航");
+		String queryResult = showTimeMovieService.queryMovieTimesByTheaterNameAndFilmNameLike("板橋秀泰", "女超人");
 		System.out.println(queryResult);
 	}
 	
