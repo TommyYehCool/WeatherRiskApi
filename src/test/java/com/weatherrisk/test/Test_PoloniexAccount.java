@@ -16,8 +16,10 @@ import org.knowm.xchange.utils.CertHelper;
 
 public class Test_PoloniexAccount {
 	
-	private static final String API_KEY = "Your Api Key";
-	private static final String SECRET_KEY = "Your Secret Key";
+	private static final String API_KEY 
+		= "Your API Key";
+	private static final String SECRET_KEY 
+		= "Your Secret Key";
 	
 	public static Exchange getExchange() {
 		ExchangeSpecification spec = new ExchangeSpecification(PoloniexExchange.class);
