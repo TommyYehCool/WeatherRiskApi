@@ -846,10 +846,9 @@ public class CurrencyService {
 			BigDecimal btcWinLoseAmount = sellRightNowBtcAmount.subtract(new BigDecimal(String.valueOf(btcAmount)));
 			buffer.append("\n損益試算(BTC): ").append(cryptoCurrencyDecFormat.format(btcWinLoseAmount));
 			
-			// Mark 掉每個幣別換算成台幣的結果, 好像沒啥意義
-//	
-//			buffer.append("\n");
-//				
+			buffer.append("\n");
+
+			// Mark 掉每個幣別根據 BTC-E 換算成台幣的結果, 好像沒啥意義
 //			BigDecimal sellRightNowTwdAmountBtcE = sellRightNowBtcAmount.multiply(btcUsdRate).multiply(usdTwdRate);
 //			buffer.append("\n賣出可得金額(TWD)(BTC-E): ").append(twdFormat.format(sellRightNowTwdAmountBtcE));
 //	
@@ -857,12 +856,12 @@ public class CurrencyService {
 //			buffer.append("\n損益試算(TWD)(BTC-E): ").append(twdFormat.format(twdWinLoseAmountBtcE));
 //			
 //			buffer.append("\n");
-//			
-//			BigDecimal sellRightNowTwdAmountBitoEx = sellRightNowBtcAmount.multiply(btcBuySellPriceFromBitoEx.getSellPrice());
-//			buffer.append("\n賣出可得金額(TWD)(BitoEx): ").append(twdFormat.format(sellRightNowTwdAmountBitoEx));
-//			
-//			BigDecimal twdWinLoseAmountBitoEx = btcWinLoseAmount.multiply(btcBuySellPriceFromBitoEx.getSellPrice());
-//			buffer.append("\n損益試算(TWD)(BitoEx): ").append(twdFormat.format(twdWinLoseAmountBitoEx));
+			
+			BigDecimal sellRightNowTwdAmountBitoEx = sellRightNowBtcAmount.multiply(btcBuySellPriceFromBitoEx.getSellPrice());
+			buffer.append("\n賣出可得金額(TWD)(BitoEx): ").append(twdFormat.format(sellRightNowTwdAmountBitoEx));
+			
+			BigDecimal twdWinLoseAmountBitoEx = btcWinLoseAmount.multiply(btcBuySellPriceFromBitoEx.getSellPrice());
+			buffer.append("\n損益試算(TWD)(BitoEx): ").append(twdFormat.format(twdWinLoseAmountBitoEx));
 		}
 		
 		appendResult.setAppendResult(true);
