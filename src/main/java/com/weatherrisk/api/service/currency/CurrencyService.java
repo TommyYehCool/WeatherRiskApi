@@ -762,11 +762,11 @@ public class CurrencyService {
 			
 			BigDecimal twdAmountBitoEx = new BigDecimal(String.valueOf(totalVolumes)).multiply(btcBuySellPriceFromBitoEx.getSellPrice());
 			buffer.append("\n賣出可得金額(TWD)(BitoEx): ").append(twdFormat.format(twdAmountBitoEx));
-
-			buffer.append("\nBTC/USD(參考 BTC-E): ").append(btcUsdRate);
-			buffer.append("\nUSD/TWD(參考台灣銀行): ").append(usdTwdRate);
-			buffer.append("\nBTC/TWD(參考 BitoEx 賣價): ").append(btcBuySellPriceFromBitoEx.getSellPrice());
 		}
+		
+		buffer.append("\nBTC/USD(參考 BTC-E): ").append(btcUsdRate);
+		buffer.append("\nUSD/TWD(參考台灣銀行): ").append(usdTwdRate);
+		buffer.append("\nBTC/TWD(參考 BitoEx 賣價): ").append(btcBuySellPriceFromBitoEx.getSellPrice());
 		
 		appendResult.setAppendResult(true);
 		appendResult.setBtcAmount(new BigDecimal(String.valueOf(totalVolumes)));
